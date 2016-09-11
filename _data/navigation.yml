@@ -1,0 +1,19 @@
+# Navigation Links
+main:
+  - title: "Blog"
+    url: /
+
+  - title: "Attacks"
+    url: /
+
+  - title: "Projects"
+    url: /projects/
+
+  - title: "Tricks & CheatSheets"
+    url: /
+
+  - title: "About"
+    url: /about/
+
+  - title: "Links"
+    url: /links/
