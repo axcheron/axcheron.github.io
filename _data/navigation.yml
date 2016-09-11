@@ -6,11 +6,11 @@ main:
   - title: "Projects"
     url: /projects/
 
+  - title: "Links"
+    url: /links/
+
   - title: "About"
     url: /about/
 
   - title: "Disclaimer"
     url: /disclaimer/
-
-  - title: "Links"
-    url: /links/
