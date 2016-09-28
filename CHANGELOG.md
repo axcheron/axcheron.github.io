@@ -1,3 +1,30 @@
+## [3.4.8](https://github.com/mmistakes/minimal-mistakes/releases/tag/3.4.8)
+
+### Enhancements
+
+- Improve type readability for larger viewports by bumping up base `font-size`. [#533](https://github.com/mmistakes/minimal-mistakes/issues/533)
+- Update Portuguese localized UI text. [#541](https://github.com/mmistakes/minimal-mistakes/pull/541)
+- Add `page.title` and via parameter to Twitter share link. [#538](https://github.com/mmistakes/minimal-mistakes/pull/538)
+
+### Bug Fixes
+
+- Fix Last.fm author profile URL. [#540](https://github.com/mmistakes/minimal-mistakes/pull/540)
+
+### Maintenance
+
+- Move Brazilian Portuguese localized text under `pt-BR` key.
+
+## [3.4.7](https://github.com/mmistakes/minimal-mistakes/releases/tag/3.4.7)
+
+### Enhancements
+
+- Add `layout` based and user-defined class names to `<body>` element for added CSS hooks. [#526](https://github.com/mmistakes/minimal-mistakes/pull/526)
+- Add simplified Chinese localized UI text. [#532](https://github.com/mmistakes/minimal-mistakes/pull/532)
+
+### Bug Fixes
+
+- Remove duplicate include of `base_path` in category-list.html [#522](https://github.com/mmistakes/minimal-mistakes/pull/522)
+
 ## [3.4.6](https://github.com/mmistakes/minimal-mistakes/releases/tag/3.4.6)
 
 ### Enhancements
