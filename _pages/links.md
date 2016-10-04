@@ -92,7 +92,8 @@ There are too much bright people with really interesting blogs in the hacking co
 [Kali Linux Forum](https://forums.kali.org/)<br/>
 [HackThisSite](https://www.hackthissite.org/forums/)<br/>
 [BrightShadows](http://bright-shadows.net)<br/>
-[HackForums](http://hackforums.net/)
+[HackForums](http://hackforums.net/)<br/>
+[Bug Bounty Forum](http://bugbountyforum.com/)<br/>
 
 ### Magazines
 
