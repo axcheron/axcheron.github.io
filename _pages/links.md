@@ -124,7 +124,6 @@ There are too much bright people with really interesting blogs in the hacking co
 [Reaver - Brute force attack against WPS](https://github.com/gabrielrcouto/reaver-wps)<br/>
 [Reaver by t6x](https://github.com/t6x/reaver-wps-fork-t6x)<br/>
 
-
 ### SDR
 
 [http://www.rtl-sdr.com](http://www.rtl-sdr.com)<br/>
@@ -147,19 +146,19 @@ There are too much bright people with really interesting blogs in the hacking co
 
 ### Official Websites
 
-[https://www.defcon.org](https://www.defcon.org)<br/>
-[http://www.blackhat.com](http://www.blackhat.com)<br/>
-[http://shmoocon.org](http://shmoocon.org)<br/>
-[https://www.derbycon.com](https://www.derbycon.com)<br/>
-[https://recon.cx](https://recon.cx)<br/>
-[https://cansecwest.com](https://cansecwest.com)<br/>
-[http://sector.ca](http://sector.ca)<br/>
-[https://www.nsec.io](https://www.nsec.io)<br/>
-[http://www.hackfest.ca](http://www.hackfest.ca)<br/>
-[https://www.sstic.org](https://www.sstic.org)<br/>
-[http://hack.lu](http://hack.lu)<br/>
-[http://brucon.org](http://brucon.org)<br/>
-[https://hackinparis.com](https://hackinparis.com)<br/>
+[DEFCON](https://www.defcon.org)<br/>
+[BlackHat](http://www.blackhat.com)<br/>
+[ShmooCon](http://shmoocon.org)<br/>
+[DerbyCon](https://www.derbycon.com)<br/>
+[REcon](https://recon.cx)<br/>
+[CanSecWest](https://cansecwest.com)<br/>
+[Sector](http://sector.ca)<br/>
+[NorthSec](https://www.nsec.io)<br/>
+[Hackfest](http://www.hackfest.ca)<br/>
+[SSTIC](https://www.sstic.org)<br/>
+[Hack.lu](http://hack.lu)<br/>
+[BruCON](http://brucon.org)<br/>
+[HackInParis](https://hackinparis.com)<br/>
 
 ### Calendar
 
