@@ -496,7 +496,7 @@ All the exploit tutorials wrote by Corelan. High quality content !
 [american fuzzy lop](http://lcamtuf.coredump.cx/afl/)<br/>
 [angr](https://github.com/angr)<br/>
 [kitty](https://github.com/cisco-sas/kitty)<br/>
-[libFuzzer – a library for coverage-guided fuzz testing](http://llvm.org/docs/LibFuzzer.html)<br/>
+[libFuzzer - a library for coverage-guided fuzz testing](http://llvm.org/docs/LibFuzzer.html)<br/>
 [funfuzz - JavaScript engine & DOM fuzzers](https://github.com/MozillaSecurity/funfuzz)<br/>
 [Grinder](https://github.com/stephenfewer/grinder)<br/>
 [Radamsa](https://github.com/aoh/radamsa)<br/>
