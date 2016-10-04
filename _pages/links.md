@@ -107,20 +107,23 @@ There are too much bright people with really interesting blogs in the hacking co
 
 # Methodologies
 
-[http://www.vulnerabilityassessment.co.uk](http://www.vulnerabilityassessment.co.uk)<br/>
-[http://www.pentest-standard.org](http://www.pentest-standard.org)<br/>
-[http://projects.webappsec.org/w/page/13246978/Threat-Classification](http://projects.webappsec.org/w/page/13246978/Threat-Classification)<br/>
-[https://www.owasp.org/index.php/OWASP_Testing_Project](https://www.owasp.org/index.php/OWASP_Testing_Project)<br/>
-[http://www.social-engineer.org](http://www.social-engineer.org)<br/>
+[Penetration Test Framework (PTF)](http://www.vulnerabilityassessment.co.uk/Penetration%20Test.html)<br/>
+[The Penetration Testing Execution Standard (PTES)](http://www.pentest-standard.org)<br/>
+[OWASP Testing Project](https://www.owasp.org/index.php/OWASP_Testing_Project)<br/>
+[The Official Social Engineering Portal](http://www.social-engineer.org)<br/>
 
 # Wireless Hacking
 
 ### WiFi
 
-[https://github.com/JPaulMora/Pyrit](https://github.com/JPaulMora/Pyrit)<br/>
-[http://dl.aircrack-ng.org/breakingwepandwpa.pdf](http://dl.aircrack-ng.org/breakingwepandwpa.pdf)<br/>
-[https://www.wigle.net](https://www.wigle.net)<br/>
-[http://www.fruitywifi.com](http://www.fruitywifi.com)<br/>
+[Pyrit - WPA Precomputed Cracker](https://github.com/JPaulMora/Pyrit)<br/>
+[Practical attacks against WEP and WPA](http://dl.aircrack-ng.org/breakingwepandwpa.pdf)<br/>
+[WiGLE: Wireless Network Mapping](https://www.wigle.net)<br/>
+[FruityWifi](http://www.fruitywifi.com)<br/>
+[PixieWPS - An offline WPS bruteforce utility](https://github.com/wiire/pixiewps)<br/>
+[Reaver - Brute force attack against WPS](https://github.com/gabrielrcouto/reaver-wps)<br/>
+[Reaver by t6x](https://github.com/t6x/reaver-wps-fork-t6x)<br/>
+
 
 ### SDR
 
