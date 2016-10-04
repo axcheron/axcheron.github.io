@@ -88,26 +88,22 @@ There are too much bright people with really interesting blogs in the hacking co
 
 ### Forums
 
-[http://www.ethicalhacker.net](http://www.ethicalhacker.net)<br/>
-[http://www.backtrack-linux.org/forums/](http://www.backtrack-linux.org/forums/)<br/>
-[http://www.elitehackers.info/forums/](http://www.elitehackers.info/forums/)<br/>
-[http://www.hackthissite.org/forums/index.php](http://www.hackthissite.org/forums/index.php)<br/>
-[http://www.iexploit.org](http://www.iexploit.org)<br/>
-[http://bright-shadows.net](http://bright-shadows.net)<br/>
-[http://forum.intern0t.net](http://forum.intern0t.net)<br/>
+[The Ethical Hacker Network](https://www.ethicalhacker.net/forums/i)<br/>
+[Kali Linux Forum](https://forums.kali.org/)<br/>
+[HackThisSite](https://www.hackthissite.org/forums/)<br/>
+[BrightShadows](http://bright-shadows.net)<br/>
+[HackForums](http://hackforums.net/)
 
 ### Magazines
 
-[http://www.net-security.org/insecuremag.php](http://www.net-security.org/insecuremag.php)<br/>
-[https://hakin9.org](https://hakin9.org)<br/>
+[(IN)SECURE Magazine](https://www.helpnetsecurity.com/insecuremag-archive/)<br/>
+[Phrack](http://www.phrack.org/)<br/>
 
 # Wiki
 
-[http://pwnwiki.io](http://pwnwiki.io)<br/>
-[https://wiki.skullsecurity.org](https://wiki.skullsecurity.org)<br/>
-[https://www.blindseeker.com](https://www.blindseeker.com)<br/>
-[http://www.sqlinjectionwiki.com](http://www.sqlinjectionwiki.com)<br/>
-[http://ctf.forgottensec.com/wiki/index.php](http://ctf.forgottensec.com/wiki/index.php)<br/>
+[PwnWiki.io](http://pwnwiki.io)<br/>
+[Skull Security Wiki](https://wiki.skullsecurity.org)<br/>
+[SQL Injection Wiki](http://www.sqlinjectionwiki.com)<br/>
 
 # Methodologies
 
@@ -432,17 +428,15 @@ All the exploit tutorials wrote by Corelan. High quality content !
 
 ### Social Enginnering
 
-[http://www.secmaniac.com/](http://www.secmaniac.com/)<br/>
+[Social-Engineer Toolkit](https://github.com/trustedsec/social-engineer-toolkit)<br/>
 
 ### Passwords Cracking
 
-[http://nmap.org/ncrack/](http://nmap.org/ncrack/)<br/>
-[http://www.foofus.net/~jmk/medusa/medusa.html](http://www.foofus.net/~jmk/medusa/medusa.html)<br/>
-[http://www.openwall.com/john/](http://www.openwall.com/john/)<br/>
-[http://ophcrack.sourceforge.net/](http://ophcrack.sourceforge.net/)<br/>
-[http://blog.0x3f.net/tool/keimpx-in-action/](http://blog.0x3f.net/tool/keimpx-in-action/)<br/>
-[http://code.google.com/p/keimpx/](http://code.google.com/p/keimpx/)<br/>
-[http://sourceforge.net/projects/hashkill/](http://sourceforge.net/projects/hashkill/)<br/>
+[Ncrack](http://nmap.org/ncrack/)<br/>
+[Medusa](http://www.foofus.net/~jmk/medusa/medusa.html)<br/>
+[John the Ripper](http://www.openwall.com/john/)<br/>
+[Ophcrack](http://ophcrack.sourceforge.net/)<br/>
+[hashkill](http://sourceforge.net/projects/hashkill/)<br/>
 
 ### Metasploit
 
@@ -482,7 +476,7 @@ All the exploit tutorials wrote by Corelan. High quality content !
 [http://www.radarhack.com/tutorial/ads.pdf](http://www.radarhack.com/tutorial/ads.pdf)<br/>
 [http://www.infosecwriters.com/text_resources/pdf/Netcat_for_the_Masses_DDebeer.pdf](http://www.infosecwriters.com/text_resources/pdf/Netcat_for_the_Masses_DDebeer.pdf)<br/>
 [http://www.sans.org/security-resources/sec560/netcat_cheat_sheet_v1.pdf](http://www.sans.org/security-resources/sec560/netcat_cheat_sheet_v1.pdf)<br/>
-[http://www.dest-unreach.org/socat/](http://www.dest-unreach.org/socat/)<br/>
+[socat](http://www.dest-unreach.org/socat/)<br/>
 [http://www.antionline.com/archive/index.php/t-230603.html](http://www.antionline.com/archive/index.php/t-230603.html)<br/>
 [http://technotales.wordpress.com/2009/06/14/netcat-tricks/](http://technotales.wordpress.com/2009/06/14/netcat-tricks/)<br/>
 [http://seclists.org/nmap-dev/2009/q1/581](http://seclists.org/nmap-dev/2009/q1/581)<br/>
@@ -491,12 +485,12 @@ All the exploit tutorials wrote by Corelan. High quality content !
 
 ### Source Inspection
 
-[http://www.justanotherhacker.com/projects/graudit.html](http://www.justanotherhacker.com/projects/graudit.html)<br/>
+[Graudit](http://www.justanotherhacker.com/projects/graudit.html)<br/>
 
 ### Misc
 
-[http://www.mavetju.org/unix/dnstracer-man.php](http://www.mavetju.org/unix/dnstracer-man.php)<br/>
-[http://www.paterva.com/web6/](http://www.paterva.com/web6/)<br/>
+[dnstracer](http://www.mavetju.org/unix/dnstracer-man.php)<br/>
+[Maltego](https://www.paterva.com)<br/>
 
 # CTF and Wargames
 
@@ -529,8 +523,9 @@ All the exploit tutorials wrote by Corelan. High quality content !
 
 [Lock Picking 101 Forum](http://www.lockpicking101.com)<br/>
 [locksport.fr](http://www.locksport.fr)<br/>
-[www.sparrowslockpicks.com](http://www.sparrowslockpicks.com)<br/>
+[Sparrows Lockpicks](http://www.sparrowslockpicks.com)<br/>
 [Ouverture Fine](https://www.ouverture-fine.com)<br/>
+[Southord Lockpicks](https://www.southord.com)<br/>
 
 # Awesome Lists
 
