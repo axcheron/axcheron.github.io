@@ -490,6 +490,13 @@ All the exploit tutorials wrote by Corelan. High quality content !
 
 [Graudit](http://www.justanotherhacker.com/projects/graudit.html)<br/>
 
+
+### Fuzzing
+
+[american fuzzy lop](http://lcamtuf.coredump.cx/afl/)<br/>
+[angr](https://github.com/angr)<br/>
+[kitty](https://github.com/cisco-sas/kitty)<br/>
+
 ### Misc
 
 [dnstracer](http://www.mavetju.org/unix/dnstracer-man.php)<br/>
