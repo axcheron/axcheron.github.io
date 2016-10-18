@@ -17,7 +17,7 @@ tags:
 ---
 {% include toc title="Links" icon="fa-link" %}
 
->**Note:** This section is constantly evolving. **Last update:** 04.10.2016.
+>**Note:** This section is constantly evolving. **Last update:** 19.10.2016.
 
 This is a curated collection of handy bookmarks focusing on hacking, penetration testing and other computer security topics.
 
@@ -504,6 +504,14 @@ All the exploit tutorials wrote by Corelan. High quality content !
 [Peach](http://www.peachfuzzer.com/resources/peachcommunity/)<br/>
 [FuzzManager - A fuzzing management tools collection](https://github.com/MozillaSecurity/FuzzManager)<br/>
 [marifuzz](https://github.com/MozillaSecurity/marifuzz)<br/>
+[https://github.com/attekett/NodeFuzz](https://github.com/attekett/NodeFuzz)<br/>
+[https://github.com/DCNWS/FuzzLabs](https://github.com/DCNWS/FuzzLabs)<br/>
+[https://github.com/hgascon/pulsar](https://github.com/hgascon/pulsar)<br/>
+[http://neural-fuzzer.org/](http://neural-fuzzer.org/)<br/>
+[https://github.com/samhocevar/zzuf](https://github.com/samhocevar/zzuf)<br/>
+[https://github.com/OpenRCE/sulley](https://github.com/OpenRCE/sulley)<br/>
+[https://github.com/ernw/dizzy](https://github.com/ernw/dizzy)<br/>
+[https://github.com/joxeankoret/nightmare](https://github.com/joxeankoret/nightmare)<br/>
 
 ### Misc
 
