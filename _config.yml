@@ -11,10 +11,10 @@ title                    : "BreakInSecurity"
 title_separator          : "-"
 name                     : "Alexandre CHERON"
 description              : "Privacy Is Dead - Get Over It"
-url                      : #"http://localhost:4000" # local -> "http://localhost:4000"
+url                      : "http://localhost:4000" # local -> "http://localhost:4000"
 baseurl                  : # the subpath of your site, e.g. "/blog"
-repository               : "axcheron/axcheron.github.io"
-teaser                   : # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
+repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
+teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
 comments:
@@ -30,12 +30,12 @@ comments:
     colorscheme          : # "light" (default), "dark"
 staticman:
   allowedFields          : ['name', 'email', 'url', 'message']
-  branch                 : # "master", "gh-pages"
+  branch                 : "master"
   commitMessage          : "New comment."
   filename               : comment-{@timestamp}
   format                 : "yml"
   moderation             : true
-  path                   : "_data/comments/{options.slug}"
+  path                   : "docs/_data/comments/{options.slug}"
   requiredFields         : ['name', 'email', 'message']
   transforms:
     email                : "md5"
@@ -78,7 +78,7 @@ analytics:
 # Site Author
 author:
   name             : "Alexandre CHERON"
-  avatar           : "bio_main.jpg"
+  avatar           : "/images/bio_main.jpg"
   bio              : "Just Another Hacker. Security Researcher. Bytes Addict. Almost Human."
   location         : "Everywhere"
   email            :
@@ -135,6 +135,8 @@ exclude:
   - Rakefile
   - README
   - tmp
+  - /docs # ignore Minimal Mistakes /docs
+  - /test # ignore Minimal Mistakes /test
 keep_files:
   - .git
   - .svn
@@ -160,27 +162,7 @@ kramdown:
   toc_levels: 1..6
   smart_quotes: lsquo,rsquo,ldquo,rdquo
   enable_coderay: false
-
-# Defaults
-defaults:
-  # _posts
-  - scope:
-      path: ""
-      type: posts
-    values:
-      layout: single
-      author_profile: true
-      read_time: true
-      comments: false
-      share: true
-      related: false
-  # _pages
-  - scope:
-      path: ""
-      type: pages
-    values:
-      layout: single
-      author_profile: true
+  
 
 # Sass/SCSS
 sass:
@@ -247,3 +229,25 @@ compress_html:
   clippings: all
   ignore:
     envs: development
+
+
+# Defaults
+defaults:
+  # _posts
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: false
+      share: true
+      related: false
+  # _pages
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: single
+      author_profile: true
