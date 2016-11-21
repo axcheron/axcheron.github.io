@@ -1,3 +1,45 @@
+## [4.0.8](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.0.8)
+
+### Bug Fixes
+
+- Set default value for `words_per_minute`. [#657](https://github.com/mmistakes/minimal-mistakes/issues/657)
+- Adjust sidebar navigation list CSS so it collapses at the correct width.
+
+### Maintenance
+
+- Add Google AdSense banner to `/docs/_layouts/default.html` for demo site.
+
+## [4.0.7](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.0.7)
+
+### Enhancements
+
+- Add `!default` values to **_sass/_variables.scss**.
+- Collapse sidebar navigation lists on smaller screens. [#607](https://github.com/mmistakes/minimal-mistakes/issues/607)
+
+### Bug Fixes
+
+- Rename `#comments` to something more unique to avoid clashes with Kramdown generated headline IDs. [#582](https://github.com/mmistakes/minimal-mistakes/issues/582)
+
+### Maintenance
+
+- Reorganize SCSS partials in **assets/css/main.scss**
+
+## [4.0.6](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.0.6)
+
+### Enhancements
+
+- Add [`figure` helper](https://mmistakes.github.io/minimal-mistakes/docs/helpers/#figure) to make generating a `<figure>` element with a single image and caption easier. [#572](https://github.com/mmistakes/minimal-mistakes/pull/572)
+- Add structured data markup for `itemprop="person"` in author profile sidebar. [#647](https://github.com/mmistakes/minimal-mistakes/pull/647)
+
+### Bug Fixes
+
+- Fix improper YAML formatting of some locales. [#651](https://github.com/mmistakes/minimal-mistakes/pull/651)
+
+### Maintenance
+
+- Clarify "migrating to gem-theme" instructions in **Quick Start Guide**. 
+- Add `rake preview` task for testing `/test` during theme development.
+
 ## [4.0.5](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.0.5)
 
 ### Enhancements

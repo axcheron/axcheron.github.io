@@ -3,7 +3,7 @@ permalink: /disclaimer/
 title: "Disclaimer"
 excerpt: "Disclaimer"
 ---
-Any actions and or activities related to the material contained within this Website is solely your responsibility. The misuse of the information in this website can result in criminal charges brought against the persons in question. The author, axcheron.github.io and breakingsecurity.com will not be held responsible in the event any criminal charges be brought against any individuals misusing the information in this website to break the law.
+Any actions and or activities related to the material contained within this Website is solely your responsibility. The misuse of the information in this website can result in criminal charges brought against the persons in question. The author, axcheron.github.io and breakinsecurity.com will not be held responsible in the event any criminal charges be brought against any individuals misusing the information in this website to break the law.
 
 This site contains materials that can be potentially damaging or dangerous. If you do not fully understand something on this site, then got out of here ! Refer to the laws in your province/country before accessing, using, or in any other way utilizing these materials. These materials are for educational and research purposes only. Do not attempt to violate the law with anything contained here. If this is your intention, then LEAVE NOW ! Neither administration of this server, the author of this material, or anyone else affiliated in any way, is going to accept responsibility for your actions.
 
