@@ -17,7 +17,7 @@ tags:
 ---
 {% include toc title="Links" icon="fa-link" %}
 
->**Note:** This section is constantly evolving. **Last update:** 19.10.2016.
+>**Note:** This section is constantly evolving. **Last update:** 29.11.2016.
 
 This is a curated collection of handy bookmarks focusing on hacking, penetration testing and other computer security topics.
 
@@ -572,4 +572,5 @@ A curated list of Awesome lists. An awesome list is a collection of links focuse
 
 # Miscs
 
-[Free Security and Hacking eBooks](https://github.com/Hack-with-Github/Free-Security-eBooks)
+[Free Security and Hacking eBooks](https://github.com/Hack-with-Github/Free-Security-eBooks)<br/>
+[Zenk Security Repository](https://repo.zenk-security.com)
