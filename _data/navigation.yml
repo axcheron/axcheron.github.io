@@ -6,6 +6,9 @@ main:
   - title: "Projects"
     url: /projects/
 
+  - title: "Write-Ups"
+    url: /writeups/
+
   - title: "Links"
     url: /links/
 
@@ -14,3 +17,91 @@ main:
 
   - title: "Disclaimer"
     url: /disclaimer/
+
+dvwa:
+  - title: "Getting Started"
+    children:
+      - title: "Installation"
+        url: /writeups/dvwa/installation/
+      - title: "Notes"
+        url: /writeups/dvwa/notes/
+  - title: "Brute Force"
+    children:
+      - title: "Low"
+        url: /writeups/dvwa/bruteforce-low/
+      - title: "Medium"
+        url: /writeups/dvwa/bruteforce-medium/
+      - title: "High"
+        url: /writeups/dvwa/bruteforce-high/
+  - title: "Command Injection"
+    children:
+      - title: "Low"
+        url: /writeups/dvwa/command-injection-low/
+      - title: "Medium"
+        url: /writeups/dvwa/command-injection-medium/
+      - title: "High"
+        url: /writeups/dvwa/command-injection-high/
+  - title: "CSRF"
+    children:
+      - title: "Low"
+        url: /writeups/dvwa/csrf-low/
+      - title: "Medium"
+        url: /writeups/dvwa/csrf-medium/
+      - title: "High"
+        url: /writeups/dvwa/csrf-high/
+  - title: "File Inclusion"
+    children:
+      - title: "Low"
+        url: /writeups/dvwa/file-inclusion-low/
+      - title: "Medium"
+        url: /writeups/dvwa/file-inclusion-medium/
+      - title: "High"
+        url: /writeups/dvwa/file-inclusion-high/
+  - title: "File Upload"
+    children:
+      - title: "Low"
+        url: /writeups/dvwa/file-upload-low/
+      - title: "Medium"
+        url: /writeups/dvwa/file-upload-medium/
+      - title: "High"
+        url: /writeups/dvwa/file-upload-high/
+  - title: "Insecure CAPTCHA"
+    children:
+      - title: "Low"
+        url: /writeups/dvwa/insecure-captcha-low/
+      - title: "Medium"
+        url: /writeups/dvwa/insecure-captcha-medium/
+      - title: "High"
+        url: /writeups/dvwa/insecure-captcha-high/
+  - title: "SQL Injection"
+    children:
+      - title: "Low"
+        url: /writeups/dvwa/sql-injection-low/
+      - title: "Medium"
+        url: /writeups/dvwa/sql-injection-medium/
+      - title: "High"
+        url: /writeups/dvwa/sql-injection-high/
+  - title: "SQL Injection (Blind)"
+    children:
+      - title: "Low"
+        url: /writeups/dvwa/sql-injection-blind-low/
+      - title: "Medium"
+        url: /writeups/dvwa/sql-injection-blind-medium/
+      - title: "High"
+        url: /writeups/dvwa/sql-injection-blind-high/
+  - title: "XSS (Reflected)"
+    children:
+      - title: "Low"
+        url: /writeups/dvwa/xss-reflected-low/
+      - title: "Medium"
+        url: /writeups/dvwa/xss-reflected-medium/
+      - title: "High"
+        url: /writeups/dvwa/xss-reflected-high/
+  - title: "XSS (Stored)"
+    children:
+      - title: "Low"
+        url: /writeups/dvwa/xss-stored-low/
+      - title: "Medium"
+        url: /writeups/dvwa/xss-stored-medium/
+      - title: "High"
+        url: /writeups/dvwa/xss-stored-high/

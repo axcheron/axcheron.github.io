@@ -11,7 +11,7 @@ title                    : "BreakInSecurity"
 title_separator          : "-"
 name                     : "Alexandre CHERON"
 description              : "Privacy Is Dead - Get Over It"
-url                      : #"http://localhost:4000" # local -> "http://localhost:4000"
+url                      : "http://localhost:4000" # local -> "http://localhost:4000"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
 teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
@@ -230,6 +230,11 @@ compress_html:
   ignore:
     envs: development
 
+# Collections
+collections:
+  dvwa:
+    output: true
+    permalink: /:collection/:path/
 
 # Defaults
 defaults:
@@ -251,3 +256,16 @@ defaults:
     values:
       layout: single
       author_profile: true
+  # _dvwa
+  - scope:
+      path: ""
+      type: dvwa
+    values:
+      layout: single
+      read_time: false
+      author_profile: false
+      share: false
+      comments: false
+      related: false
+      sidebar:
+        nav: "dvwa"
