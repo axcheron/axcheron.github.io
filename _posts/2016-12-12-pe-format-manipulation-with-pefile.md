@@ -8,7 +8,8 @@ tags:
 ---
 
 ---
-A long time ago, I wrote an article about how to use **pefile** module to analyze the Portable Executable file format but this post does not exist anymore. As I use this module quite often, I decided to rewrite it. This module now supports Python 3 and some bugs have been fixed.
+{% include toc title="PE Format Manipulation" %}
+A long time ago, I wrote an article about how to use the **pefile** module to analyze the *Portable Executable* file format, but this post does not exist anymore. As I use this module quite often, I decided to rewrite it. This module now supports Python 3 and some bugs have been fixed.
 
 **pefile** is a Python module to read and work with PE (Portable Executable) files, it was developed by [Ero Carrera](https://github.com/erocarrera). This module is multi-platform and is able to parse and edit Portable Executable files. Most of the information contained in the PE headers is accessible as well as all sections' details and their data. To fully appreciate this post it is required to have some basic understanding of the layout of a PE file.
 
@@ -30,7 +31,7 @@ Also, the [project repository](https://github.com/erocarrera/pefile/blob/wiki/Us
 This procedure has been tested on the last version of Microsoft Windows 10, but it should work on previous version. First, be sure to prepare your environment :
 
 * Install [Python 3](https://www.python.org/downloads/)
-* Download or clone *pefile* (https://github.com/erocarrera/pefile.git)
+* Download or clone *pefile* [https://github.com/erocarrera/pefile.git](https://github.com/erocarrera/pefile.git)
 
 Run *cmd.exe* as administrator and type the following commands:
 
@@ -56,7 +57,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 If you get no error, you are ready to go !
 
-**Note** For the tests I used *putty.exe*. [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/) is a free implementation of SSH and Telnet for Windows, but you can use any executable.
+**Note:** For the tests I used **putty.exe**. [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/) is a free implementation of SSH and Telnet for Windows, but you can use any executable.
 {: .notice--info}
 
 ## Loading a file
@@ -102,10 +103,10 @@ pe = pefile.PE(data=pe_data)
 
 If your file is quite big, setting the `fast_load` argument to **True** will prevent parsing the directories. It will speed up the loading if you don't need information from the data directories. Only the basic headers information will be available in the attributes:
 
-* DOS_HEADER
-* NT_HEADERS
-* FILE_HEADER
-* OPTIONAL_HEADER
+* `DOS_HEADER`
+* `NT_HEADERS`
+* `FILE_HEADER`
+* `OPTIONAL_HEADER`
 
 If you change your mind, you can always load the missing data by using the `full_load()` method at a later stage.
 
@@ -146,7 +147,7 @@ print("[*] Signature value: %s" % hex(pe.NT_HEADERS.Signature))
 
 If you want to enemuerate each members of a specific structure, like *DOS_HEADER*, it can easily be done by using a `for` loop.
 
-**Note** The DOS header can be found starting at offset zero in all Portable Executable files. Its main objective is to indicate the offset of the main headers containing the actual information about the PE file, the **NT headers**. The offset where to find those headers is stored in the *e_lfanew* member.
+**Note:** The DOS header can be found starting at offset zero in all Portable Executable files. Its main objective is to indicate the offset of the main headers containing the actual information about the PE file, the **NT headers**. The offset where to find those headers is stored in the *e_lfanew* member.
 {: .notice--info}
 
 ```python
@@ -204,7 +205,7 @@ In this output, the first filed is the offset related to the executable and the 
 
 ## Data Directories
 
-Now, we will list the Data Directories. Those directories contains address/size pairs for special tables that are found in the image file and are used by the operating system (for example, the import table and the export table). We can find the number of Data Directories in *NumberOfRvaAndSizes* located in the *Optional Header* struture.
+Now, we will list the Data Directories. Those directories contains address/size pairs for special tables that are found in the image file and are used by the operating system (for example, the import table and the export table). We can find the number of Data Directories in `NumberOfRvaAndSizes` located in the *Optional Header* struture.
 
 **Note** The Optional header member describes elements of the file such as the import and export directories that make possible to locate and link DLL libraries. Other entries provide structural information about the layout of the file, such as the alignment of its sections.
 {: .notice--info}
@@ -338,9 +339,6 @@ for entry in pe.DIRECTORY_ENTRY_IMPORT:
 ### Exports
 
 Similarly, the exported symbols. As **putty.exe** does not export any symbols, we will use the **kernel32.dll** in this example.
-Pour lister la table d'export, le code n'est pas réellement diffèrent, et par la même occasion, nous allons tacher de gérer une petite erreur. En effet, si nous listons une table d'export (ou d'import) vide, PEFile ne va pas apprécier. Les exécutables comme notre calculatrice Windows n'ont pas de table d'export en tant qu'application, ce sont plus généralement les DLLs qui possèdent ce genre de table. 
-
-Afin de gérer au mieux ce problème il suffit de vérifier la taille de la table, qui est contenu dans le champ <strong>Size</strong> de la structure lui correspondant, et d'appliquer une condition:
 
 ```python
 import pefile
@@ -515,7 +513,7 @@ pe.write(new_exe_path)
 
 By executing the new executable, you should see a message box indicating that the injection was successful.
 
-**Note** To generate the shellcode I used [Metasploit](https://www.metasploit.com).
+**Note:** To generate the shellcode I used [Metasploit](https://www.metasploit.com).
 {: .notice--info}
 
 ## Conclusion
