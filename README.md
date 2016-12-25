@@ -8,7 +8,9 @@ You can visite my blog [here](https://axcheron.github.io).
 
 ### Running Jekyll (Local Testing)
 
-First you have to run `bundle install` to install dependencies. Make sure to use the last version of bundler by updating the gem via `gem install bundler` 
+First you have to run `bundle install` to install dependencies. Make sure to use the last version of bundler by updating the gem via `gem install bundler`. 
+
+> **Note:** On macOS, you can easily install *Ruby* by using [Homebrew](http://brew.sh) and running the command `brew install ruby`.
 
 If `jekyll build` and `jekyll serve` throw errors you may have to run Jekyll with `bundle exec` instead.
 
