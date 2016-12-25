@@ -1,6 +1,6 @@
 ---
 title: "Code Disassembly with Pydasm"
-excerpt: "How to disassemble x86 code with Pydasm on Windows"
+excerpt: "How to disassemble x86 code with Pydasm on Windows."
 tags:
   - x86
   - python
