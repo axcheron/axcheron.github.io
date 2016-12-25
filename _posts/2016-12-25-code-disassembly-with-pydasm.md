@@ -9,7 +9,7 @@ tags:
 ---
 
 ---
-In this post, I would like to show you how to use a famous Python module named **pydasm**. pydasm is a python wrapper for [libdasm](https://github.com/axcheron/libdasm). It attempts to capture all the functionality of libdasm and bring its versatility to Python.
+In this post, I would like to show you how to use a famous Python module named **pydasm**, a python wrapper for [libdasm](https://github.com/axcheron/libdasm). It attempts to capture all the functionality of libdasm and bring its versatility to Python.
 
 **libdasm** is a C-library that tries to provide simple and convenient way to disassemble Intel x86 raw opcode bytes (machine code). It can parse and print out opcodes in *AT&T* and *Intel* syntax.
 
@@ -123,10 +123,10 @@ It decodes an instruction from the given buffer. It takes 3 arguments:
 
 It returns a string representation of the disassembled instruction or zero if there is nothing to desassemble.
 
-**Note:** Although Intel is the standard assembly syntax on the x86 platform and is generally thought to be nicer than AT&T, there is still good reason to learn AT&T as the `gcc` compiler emits code in this syntax. If you don't know what to choose, I suggest to select *FORMAT_INTEL*.
+**Note:** Although Intel is the standard assembly syntax on the x86 platform and is generally thought to be nicer than AT&T, there is still good reason to learn AT&T as the `gcc` compiler emits code in this syntax. If you don't know what to choose, I suggest you to select *FORMAT_INTEL*.
 {: .notice--info}
 
-Note that the `offest` parameter can be set at zero by default. Here is the difference if you specify the base address of the executable. Here is an example With zero as parameter:
+Note that the `offest` parameter can be set at zero by default. Here is the difference if you specify the base address of the executable. Here is an example With **zero** as parameter:
 
 ```nasm
 push byte 0x60
@@ -137,7 +137,7 @@ mov eax,edi
 call 0xffffddee		; RVA
 ```
 
-With the base address as parametert:
+With the **base address** as parameter:
 
 ```nasm
 push byte 0x60
@@ -279,7 +279,7 @@ mov esi,esp
 ...
 ```
 
-## Reading a Shellcode>
+## Reading a Shellcode
 
 You can also read pure binary data, like a shellcode. It could be useful when you download a random shellcode from Internet if you don't know what it really does (think about `rm -rf /` shellcode...).
 
