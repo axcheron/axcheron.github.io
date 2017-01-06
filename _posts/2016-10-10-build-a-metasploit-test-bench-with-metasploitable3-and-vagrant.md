@@ -27,6 +27,9 @@ To prepare the environment you need to install the following dependencies:
 **Note** At the time of writing, the last release of VirtualBox (5.1.8) is breaking the provisioning process. You should use VirtualBox 5.1.6 or the last testing version. For more information, check this issue on GitHub: [https://github.com/rapid7/metasploitable3/issues/41](https://github.com/rapid7/metasploitable3/issues/41).
 {: .notice--warning}
 
+**Update** It seems that the previous issues was fixed in VirtualBox (5.1.12).
+{: .notice--info}
+
 As I am running a macOS system, I used Brew to install the dependencies.
 
 ```bash
