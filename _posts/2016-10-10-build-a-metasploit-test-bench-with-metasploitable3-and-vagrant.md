@@ -21,7 +21,7 @@ To prepare the environment you need to install the following dependencies:
 * [Packer](https://www.packer.io)
 * [Vagrant](https://www.vagrantup.com)
 * [Vagrant Reload Plugin](https://github.com/aidanns/vagrant-reload)
-* [VirtualBox 5.1.6](https://www.virtualbox.org/wiki/Download_Old_Builds_5_1)
+* [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * Internet connection
 
 **Note:** At the time of writing, the last release of VirtualBox (5.1.8) is breaking the provisioning process. You should use VirtualBox 5.1.6 or the last testing version. For more information, check this issue on GitHub: [https://github.com/rapid7/metasploitable3/issues/41](https://github.com/rapid7/metasploitable3/issues/41).
