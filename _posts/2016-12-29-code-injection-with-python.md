@@ -16,7 +16,7 @@ Here we will use Python as it is a really versatile language and also one of the
 
 ## Introdcution
 
-Here, the goal is to inject foreign code into an executable, but we still want the original executable to work (as we don't want to raise any suspiction from our taget). Here is the global idea of how we will modify the application to inject our backdoor:
+Here, the goal is to inject foreign code into an executable, but we still want the original executable to work (as we don't want to raise any suspiction from our target). Here is the global idea of how we will modify the application to inject our backdoor:
 
 <figure class="align-center">
   <img src="{{ site.url }}{{ site.baseurl }}/images/2016-12-29-code-injection-with-python/diff-backdoored.svg.xml.svg" alt="">
