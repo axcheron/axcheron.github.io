@@ -1,3 +1,21 @@
+## Unreleased
+
+### Enhancements
+
+- Add `alt` description to avatar image. [#1226](https://github.com/mmistakes/minimal-mistakes/pull/1226)
+- Clarify documentation about which `assets` folders and files to remove when migrating to the gem version of the theme. [#1268](https://github.com/mmistakes/minimal-mistakes/issues/1268)
+- Add note about Staticman GitHub compatibility. [#1273](https://github.com/mmistakes/minimal-mistakes/issues/1273)
+- Add missing Brazilian Portuguese translations to `ui-text.yml`. [#1278](https://github.com/mmistakes/minimal-mistakes/pull/1278)
+- Update font stack documentation. [#1292](https://github.com/mmistakes/minimal-mistakes/pull/1292)
+- Improve accessibility of navigation menu button. [#1099](https://github.com/mmistakes/minimal-mistakes/issues/1099)
+- Add Naver Webmaster Tools verification. [#1286](https://github.com/mmistakes/minimal-mistakes/pull/1286)
+- Add support for Staticman v2 endpoint and reCAPTCHA.
+- Add Polish localized UI text strings. [#1304](https://github.com/mmistakes/minimal-mistakes/pull/1304)
+
+### Bug Fixes
+
+- Fix system font rendering in Chrome on macOS/OS X. [#1290](https://github.com/mmistakes/minimal-mistakes/pull/1290)
+
 ## [4.6.0](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.6.0)
 
 ### Enhancements
