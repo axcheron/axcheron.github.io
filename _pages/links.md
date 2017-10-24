@@ -17,7 +17,7 @@ tags:
 ---
 {% include toc title="Links" icon="fa-link" %}
 
->**Note:** This section is constantly evolving. **Last update:** 28.01.2017.
+>**Note:** This section is constantly evolving. **Last update:** 24.10.2017.
 
 This is a curated collection of handy bookmarks focusing on hacking, penetration testing and other computer security topics.
 
@@ -571,6 +571,7 @@ A curated list of Awesome lists. An awesome list is a collection of links focuse
 [Awesome | OSINT](https://github.com/jivoi/awesome-osint)<br/>
 [Awesome | Windows Exploitation](https://github.com/enddo/awesome-windows-exploitation)<br/>
 [Awesome | Curated List of Awesome Lists](https://github.com/sindresorhus/awesome)<br/>
+[Awesome | Hacking Resources](https://github.com/vitalysim/Awesome-Hacking-Resources)<br/>
 
 # Miscs
 
