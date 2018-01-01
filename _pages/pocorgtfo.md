@@ -17,8 +17,6 @@ tags:
 ---
 {% include toc title="PoC or GTFO" icon="fa-link" %}
 
-I'm here to share this great magazine so please, read it, share it and enjoy it !
-
 "First they ignore you, then they threaten to sue you, then they deny the vulnerability, then you p0wn them" -- with apologies to Mahatma Gandhi 
 
 >**Legal Note:** Please make an extra copy of this scientific journal, by laserjet or by typewriter самиздат, and give it away. Give it to a friend, leave it in the magazine rack at the doctor’s office, or hide it inside a good technical book at your local library.
