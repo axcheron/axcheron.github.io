@@ -4,7 +4,7 @@ This is the source code of my blog. It is based on [Minimal Mistakes](https://gi
 
 **Compatible with Jekyll 3.0 and up.**
 
-You can visite my blog [here](https://axcheron.github.io).
+You can visit my blog [here](https://axcheron.github.io).
 
 ### Running Jekyll (Local Testing)
 
