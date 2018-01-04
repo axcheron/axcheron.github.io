@@ -99,6 +99,7 @@ There are too much bright people with really interesting blogs in the hacking co
 
 [(IN)SECURE Magazine](https://www.helpnetsecurity.com/insecuremag-archive/)<br/>
 [Phrack](http://www.phrack.org/)<br/>
+[PoC||GTFO](https://www.alchemistowl.org/pocorgtfo/)<br/>
 
 # Wiki
 
