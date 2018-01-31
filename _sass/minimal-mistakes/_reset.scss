@@ -8,7 +8,7 @@ html {
   /* apply a natural box layout model to all elements */
   box-sizing: border-box;
   background-color: $background-color;
-  font-size: 12px; // was 16px
+  font-size: 16px;
 
   @include breakpoint($medium) {
     font-size: 14px; // originally 18px
@@ -20,7 +20,7 @@ html {
 
   @include breakpoint($x-large) {
     font-size: 18px; // originally 22px
-  }
+}
 
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
