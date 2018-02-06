@@ -17,7 +17,7 @@ tags:
 ---
 {% include toc title="Links" icon="fa-link" %}
 
->**Note:** This section is constantly evolving. **Last update:** 24.10.2017.
+>**Note:** This section is constantly evolving. **Last update:** 05.02.2018.
 
 This is a curated collection of handy bookmarks focusing on hacking, penetration testing and other computer security topics.
 
