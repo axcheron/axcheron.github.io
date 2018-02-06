@@ -573,6 +573,7 @@ A curated list of Awesome lists. An awesome list is a collection of links focuse
 [Awesome | Windows Exploitation](https://github.com/enddo/awesome-windows-exploitation)<br/>
 [Awesome | Curated List of Awesome Lists](https://github.com/sindresorhus/awesome)<br/>
 [Awesome | Hacking Resources](https://github.com/vitalysim/Awesome-Hacking-Resources)<br/>
+[Awesome | Fuzzing](https://github.com/secfigo/Awesome-Fuzzing)<br/>
 
 # Miscs
 
