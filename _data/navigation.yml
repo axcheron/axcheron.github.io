@@ -6,8 +6,8 @@ main:
   - title: "Projects"
     url: /projects/
 
-  #- title: "Write-Ups"
-  #  url: /writeups/
+  - title: "Write-Ups"
+    url: /writeups/
 
   - title: "Links"
     url: /links/
@@ -126,7 +126,7 @@ mbe:
       - title: "Installation"
         url: /writeups/mbe/installation/
       - title: "Notes"
-        url: /writeups/mbe/mbe_notes.md/
+        url: /writeups/mbe/mbe_notes/
 
   - title: "Reverse Engineering"
     children:
