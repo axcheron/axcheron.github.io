@@ -18,13 +18,17 @@ main:
   - title: "Disclaimer"
     url: /disclaimer/
 
+# Navigation for DVWA
 dvwa:
   - title: "Getting Started"
     children:
+      - title: "Overview"
+        url: /writeups/dvwa/overview/
       - title: "Installation"
         url: /writeups/dvwa/installation/
       - title: "Notes"
         url: /writeups/dvwa/notes/
+  
   - title: "Brute Force"
     children:
       - title: "Low"
@@ -33,6 +37,7 @@ dvwa:
         url: /writeups/dvwa/bruteforce-medium/
       - title: "High"
         url: /writeups/dvwa/bruteforce-high/
+  
   - title: "Command Injection"
     children:
       - title: "Low"
@@ -41,6 +46,7 @@ dvwa:
         url: /writeups/dvwa/command-injection-medium/
       - title: "High"
         url: /writeups/dvwa/command-injection-high/
+  
   - title: "CSRF"
     children:
       - title: "Low"
@@ -49,6 +55,7 @@ dvwa:
         url: /writeups/dvwa/csrf-medium/
       - title: "High"
         url: /writeups/dvwa/csrf-high/
+  
   - title: "File Inclusion"
     children:
       - title: "Low"
@@ -57,6 +64,7 @@ dvwa:
         url: /writeups/dvwa/file-inclusion-medium/
       - title: "High"
         url: /writeups/dvwa/file-inclusion-high/
+  
   - title: "File Upload"
     children:
       - title: "Low"
@@ -65,6 +73,7 @@ dvwa:
         url: /writeups/dvwa/file-upload-medium/
       - title: "High"
         url: /writeups/dvwa/file-upload-high/
+  
   - title: "Insecure CAPTCHA"
     children:
       - title: "Low"
@@ -73,6 +82,7 @@ dvwa:
         url: /writeups/dvwa/insecure-captcha-medium/
       - title: "High"
         url: /writeups/dvwa/insecure-captcha-high/
+  
   - title: "SQL Injection"
     children:
       - title: "Low"
@@ -81,6 +91,7 @@ dvwa:
         url: /writeups/dvwa/sql-injection-medium/
       - title: "High"
         url: /writeups/dvwa/sql-injection-high/
+  
   - title: "SQL Injection (Blind)"
     children:
       - title: "Low"
@@ -89,6 +100,7 @@ dvwa:
         url: /writeups/dvwa/sql-injection-blind-medium/
       - title: "High"
         url: /writeups/dvwa/sql-injection-blind-high/
+  
   - title: "XSS (Reflected)"
     children:
       - title: "Low"
@@ -97,6 +109,7 @@ dvwa:
         url: /writeups/dvwa/xss-reflected-medium/
       - title: "High"
         url: /writeups/dvwa/xss-reflected-high/
+  
   - title: "XSS (Stored)"
     children:
       - title: "Low"
@@ -105,3 +118,110 @@ dvwa:
         url: /writeups/dvwa/xss-stored-medium/
       - title: "High"
         url: /writeups/dvwa/xss-stored-high/
+
+# Navigation for MBE
+mbe:
+  - title: "Getting Started"
+    children:
+      - title: "Installation"
+        url: /writeups/mbe/installation/
+      - title: "Notes"
+        url: /writeups/mbe/mbe_notes.md/
+
+  - title: "Reverse Engineering"
+    children:
+      - title: "Lab1C"
+        url: /writeups/mbe/lab1c/
+      - title: "Lab1B"
+        url: /writeups/mbe/lab1b/
+      - title: "Lab1A"
+        url: /writeups/mbe/lab1a/
+  
+  - title: "Memory Corruption"
+    children:
+      - title: "Lab2C"
+        url: /writeups/mbe/lab2c/
+      - title: "Lab2B"
+        url: /writeups/mbe/lab2b/
+      - title: "Lab2A"
+        url: /writeups/mbe/lab2a/
+  
+  - title: "Shellcoding"
+    children:
+      - title: "Lab3C"
+        url: /writeups/mbe/lab3c/
+      - title: "Lab3B"
+        url: /writeups/mbe/lab3b/
+      - title: "Lab3A"
+        url: /writeups/mbe/lab3a/
+  
+  - title: "Format Strings"
+    children:
+      - title: "Lab4C"
+        url: /writeups/mbe/lab4c/
+      - title: "Lab4B"
+        url: /writeups/mbe/lab4b/
+      - title: "Lab4A"
+        url: /writeups/mbe/lab4a/
+  
+  - title: "DEP and ROP"
+    children:
+      - title: "Lab5C"
+        url: /writeups/mbe/lab5c/
+      - title: "Lab5B"
+        url: /writeups/mbe/lab5b/
+      - title: "Lab5A"
+        url: /writeups/mbe/lab5a/
+  
+  - title: "ASLR"
+    children:
+      - title: "Lab6C"
+        url: /writeups/mbe/lab6c/
+      - title: "Lab6B"
+        url: /writeups/mbe/lab6b/
+      - title: "Lab6A"
+        url: /writeups/mbe/lab6a/
+
+  - title: "Heap"
+    children:
+      - title: "Lab7C"
+        url: /writeups/mbe/lab7c/
+      - title: "Lab7A"
+        url: /writeups/mbe/lab7a/
+
+  - title: "Misc and Stack Cookies"
+    children:
+      - title: "Lab8C"
+        url: /writeups/mbe/lab8c/
+      - title: "Lab8B"
+        url: /writeups/mbe/lab8b/
+      - title: "Lab8A"
+        url: /writeups/mbe/lab8a/
+
+  - title: "C++"
+    children:
+      - title: "Lab9C"
+        url: /writeups/mbe/lab9c/
+      - title: "Lab9A"
+        url: /writeups/mbe/lab9a/
+
+  - title: "Linux Kernel"
+    children:
+      - title: "Lab10C"
+        url: /writeups/mbe/lab10c/
+      - title: "Lab10A"
+        url: /writeups/mbe/lab10a/
+  
+  - title: "Project 1"
+    children:
+      - title: "Analysis"
+        url: /writeups/mbe/project1/
+      - title: "Solution"
+        url: /writeups/mbe/p1_notes/
+  
+  - title: "Project 2"
+    children:
+      - title: "Analysis"
+        url: /writeups/mbe/project2/
+      - title: "Solution"
+        url: /writeups/mbe/p2_notes/

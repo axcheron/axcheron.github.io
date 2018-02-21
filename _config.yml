@@ -244,6 +244,9 @@ collections:
   dvwa:
     output: true
     permalink: /:collection/:path/
+  mbe:
+    output: true
+    permalink: /:collection/:path/
 
 # Defaults
 defaults:
@@ -278,3 +281,16 @@ defaults:
       related: false
       sidebar:
         nav: "dvwa"
+  # _mbe
+  - scope:
+      path: ""
+      type: mbe
+    values:
+      layout: single
+      read_time: false
+      author_profile: false
+      share: false
+      comments: false
+      related: false
+      sidebar:
+        nav: "mbe"
