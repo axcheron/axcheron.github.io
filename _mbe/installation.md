@@ -9,7 +9,13 @@ excerpt: "How to install the MBE Lab (Warzone)."
 
 This procedure is based on the [official documentation](https://github.com/RPISEC/MBE) of the MBE repository. I suggest you to read it if you need more details.
 
+You can download the [slides](https://github.com/RPISEC/MBE/releases/download/v1.1_release/MBE_lectures.tar.gz) or clone the repository with the following command: 
+
+`git clone https://github.com/RPISEC/MBE`
+
 ## Lab Breakdown
+
+The challenges are based on the lectures present in the Github [repository](https://github.com/RPISEC/MBE). If you don't have the necessary knowledge to solve the labs, I advise you read them before starting.
 
 Write-up | Topic | Corresponding Lectures
 -------- | ----- | ----------------------
@@ -29,21 +35,42 @@ Write-up | Topic | Corresponding Lectures
 ## Virtual Machine Setup
 
 The Warzone is a custom wargame that was built from the ground up for this course. It provided a complete and consistent learning platform for us to release the labs and projects to the students. The wargame was built ontop of a vanilla Ubuntu 14.04 32-bit server install, and is modeled after existing local privilege escalation themed wargames.
+{: .text-justify}
+
+You can download the VMDK (disk image) of the Warzone that is already setup [here](https://github.com/RPISEC/MBE/releases/download/v1.1_release/MBE_VM.vmdk.gz). To install the VM, extract the VMDK and create a new custom virtual machine in VMWare.
+
+![image-center](/images/mbe/mbe_custom_vm.png){: .align-center}{:width="600px"}
+
+Then, select **Ubuntu** as operating system.
+
+![image-center](/images/mbe/mbe_os.png){: .align-center}{:width="600px"}
+
+Finally, select the extracted **VMDK** as disk image.
+
+![image-center](/images/mbe/mbe_disk.png){: .align-center}{:width="600px"}
+
+As resources, you can stick to the following specifications:
+* 1 CPU/Core
+* 512MB RAM
+* NAT Networking
 
 ## How to use the Warzone
 
-TBD
+Once the Virtual Machine is created, you can get the IP address by login as **gameadmin** (`gameadmin:gameadmin`) and type the command `ip addr`.
+
+![image-center](/images/mbe/mbe_ip.png){: .align-center}{:width="600px"}
+
+Then, you can SSH into the first challenge by using the credentials `lab1C:lab01start`. This pattern is the same for the following challenges (eg. `lab2C:lab02start`)
+
+The Warzone is structured like any local privilege escalation wargame. You must exploit a challenge to escalate your privileges and gain access to another user (level). Once you exploit a level and escalate to the next user (confirm with `whoami`) and read their password from their home dir `/home/$USER/.pass`
+
+**Note:** The easiest level is **labXC**, then **labXB** and, finally **labXA**.
+
+The levels (challenges) are located in `/levels`. If you need to write scripts/exploits, `/tmp` is writable.
 
 ## Licensing
 This course was explicitly designed for academic & educational use only. Please keep this in mind when sharing and distributing our course material. The specific licenses involved can be found below.
 
-**Lecture Slides**
-
 The lectures are covered by the Creative Commons Attribution-NonCommercial 4.0 International license [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/legalcode).
-<p align="center">
-<a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="/resources/images/cc-by-nc.png" alt="CC BY-NC 4.0"/></a>
-</p>
-
-**Code**
 
 The code in is covered by the BSD 2-Clause license. You can view this license in [LICENSE](https://github.com/RPISEC/MBE/blob/master/LICENSE).
