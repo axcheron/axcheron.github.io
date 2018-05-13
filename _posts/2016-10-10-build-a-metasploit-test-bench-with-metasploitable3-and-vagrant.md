@@ -1,6 +1,6 @@
 ---
 title: "Build a Metasploit Test Bench with Metasploitable3 & Vagrant"
-excerpt: "How to install Metasploitable3 with Vagrant on macOS"
+excerpt: "How to install Metasploitable3 with Vagrant on macOS."
 tags:
   - metasploit
   - metasploitable
