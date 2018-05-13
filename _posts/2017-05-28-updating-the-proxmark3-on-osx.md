@@ -10,11 +10,7 @@ tags:
 ---
 I own a [Proxmark3](http://www.proxmark.org/) for some times now and I would like to show you how to update it to add new features. Well, I also have a Macbook Pro, so I will explain the procedure on this plateform (with [Brew](http://brew.sh)). At the time of the writing, I use OSX El Capitan (version 10.11.5) with full update.
 
-<figure class="align-center">
-  <img src="{{ site.url }}{{ site.baseurl }}/images/2016-05-28-updating-the-proxmark3-on-osx/proxmark3_01.jpg" alt="">
-  <figcaption>The Proxmark III is a device that enables sniffing, reading and cloning of RFID.</figcaption>
-</figure> 
-
+![image-center](/images/2017-05-28-updating-the-proxmark3-on-osx/proxmark3_01.jpg){: .align-center}
 
 ## Requirements
 
@@ -57,9 +53,7 @@ $ brew tap chrisfu/proxmark3
 $ brew install proxmark3
 ```
 
-<figure>
-  <img src="{{ base_path }}/images/2016-05-28-updating-the-proxmark3-on-osx/homebrew_pm3.gif">
-</figure>
+![image-center](/images/2017-05-28-updating-the-proxmark3-on-osx/homebrew_pm3.gif){: .align-center}
 
 > **Note**: `brew install proxmark3` for stable release or `brew install --HEAD proxmark3` for latest non-stable from GitHub.
 
@@ -116,9 +110,7 @@ $ ./bin/proxmark3-flasher /dev/cu.usbmodem1411 -b ./share/firmware/bootrom.elf
 $ ./bin/proxmark3-flasher /dev/cu.usbmodem1411 ./share/firmware/fullimage.elf
 ```
 
-<figure>
-  <img src="{{ base_path }}/images/2016-05-28-updating-the-proxmark3-on-osx/update_pm3.gif">
-</figure>
+![image-center](/images/2017-05-28-updating-the-proxmark3-on-osx/update_pm3.gif){: .align-center}
 
 ## Testing
 
@@ -159,7 +151,7 @@ Displaying LF tuning graph. Divisor 89 is 134khz, 95 is 125khz.
 So, the LF antenna seems to be working fine. Let's give a try with a real RFID tag (ProxCard II).
 
 <figure class="align-center">
-  <img src="{{ site.url }}{{ site.baseurl }}/images/2016-05-28-updating-the-proxmark3-on-osx/proxmark3_02.jpg" alt="">
+  <img src="{{ site.url }}{{ site.baseurl }}/images/2017-05-28-updating-the-proxmark3-on-osx/proxmark3_02.jpg" alt="">
   <figcaption>The Proxmark III with the Low Frequency (LF) antenna plugged-in.</figcaption>
 </figure> 
 

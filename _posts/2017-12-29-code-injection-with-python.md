@@ -18,9 +18,7 @@ Here we will use Python as it is a really versatile language and also one of the
 
 Here, the goal is to inject foreign code into an executable, but we still want the original executable to work (as we don't want to raise any suspiction from our target). Here is the global idea of how we will modify the application to inject our backdoor:
 
-<figure class="align-center">
-  <img src="{{ site.url }}{{ site.baseurl }}/images/2016-12-29-code-injection-with-python/diff-backdoored.svg.xml.svg" alt="">
-</figure> 
+![image-center](/images/2017-12-29-code-injection-with-python/diff-backdoored.svg.xml.svg){: .align-center}
 
 There are 2 main methods to inject code to an executable: 
 
@@ -274,9 +272,7 @@ addSection(exe_path)
 
 If we check the result in a random debugger, we should see the new section. At this point, *putty* should run perfectly as we properly added a section header.
 
-<figure class="align-center">
-  <img src="{{ site.url }}{{ site.baseurl }}/images/2016-12-29-code-injection-with-python/added-section.png" alt="">
-</figure> 
+![image-center](/images/2017-12-29-code-injection-with-python/added-section.png){: .align-center}
 
 **Note:** Here I used [Immunity Debugger](http://debugger.immunityinc.com/) to get this output.
 {: .notice--info}
@@ -418,7 +414,7 @@ pe.write(exe_path)
 
 This backdoored executable should display a message box and give back the control to the main application.
 
-![image-center](/images/2016-12-29-code-injection-with-python/messagebox.png){: .align-center}{:width="250px"}
+![image-center](/images/2017-12-29-code-injection-with-python/messagebox.png){: .align-center}{:width="250px"}
 
 ### Source Code
 
