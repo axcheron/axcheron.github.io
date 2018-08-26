@@ -7,7 +7,10 @@ main:
     url: /projects/
 
   #- title: "Write-Ups"
-    #url: /writeups/
+  #  url: /writeups/
+
+  - title: "Trainings"
+    url: /trainings/
 
   - title: "Links"
     url: /links/
