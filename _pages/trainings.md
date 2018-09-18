@@ -25,5 +25,6 @@ Here is a list of some free trainings and courses about information security I f
 [RE101](https://sites.google.com/secured.org/malwareunicorn/reverse-engineering/re101) is a free workshop provided by Amanda Rousseau ([@malwareunicorn](https://twitter.com/malwareunicorn)). This workshop provides the fundamentals of reversing engineering (RE) Windows malware using a hands-on experience with RE tools and techniques. It will teach you RE terms and processes, followed by creating a basic x86 assembly program, and reviewing RE tools and malware techniques. The course will conclude by participants performing hands-on malware analysis that consists of Triage, Static, and Dynamic analysis.
 {: .text-justify}
 
+## SQLi Labs
 
-
+[SQLi Labs](https://github.com/Audi-1/sqli-labs) provides multiple workshops to experients various SQL Injections type.
