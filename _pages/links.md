@@ -15,7 +15,7 @@ tags:
 ---
 
 ---
-{% include toc title="Links" icon="fa-link" %}
+{% include toc title="Links" %}
 
 >**Note:** This section is constantly evolving. **Last update:** 05.02.2018.
 

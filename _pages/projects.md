@@ -19,3 +19,9 @@ This version allows you to use alternative layout. It supports ASCII, ISO-8859-1
 Simple Python tool to decrypt the "enc_GroupPwd" variable in PCF files (and Type 5/7 passwords).
 
 **Link:** [cisco_pwdecrypt](https://github.com/axcheron/cisco_pwdecrypt)
+
+## pyvboxdie-cracker
+
+Simple Python tool to crack VirtualBox Disk Image Encryption passwords.
+
+**Link:** [pyvboxdie-cracker](https://github.com/axcheron/pyvboxdie-cracker)
