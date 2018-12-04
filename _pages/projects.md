@@ -25,3 +25,9 @@ Simple Python tool to decrypt the "enc_GroupPwd" variable in PCF files (and Type
 Simple Python tool to crack VirtualBox Disk Image Encryption passwords.
 
 **Link:** [pyvboxdie-cracker](https://github.com/axcheron/pyvboxdie-cracker)
+
+## pyvmx-cracker
+
+Simple tool to crack VMware VMX encryption passwords.
+
+**Link:** [pyvmx-cracker](https://github.com/axcheron/pyvmx-cracker)
