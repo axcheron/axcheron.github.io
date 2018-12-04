@@ -28,3 +28,9 @@ Here is a list of some free trainings and courses about information security I f
 ## SQLi Labs
 
 [SQLi Labs](https://github.com/Audi-1/sqli-labs) provides multiple workshops to experients various SQL Injections type.
+{: .text-justify}
+
+## Heap Exploitation
+
+[Heap Exploitation](https://github.com/DhavalKapil/heap-exploitation) is a short book wrote for people who want to understand the internals of 'heap memory', particularly the implementation of glibc's 'malloc' and 'free' procedures, and also for security researchers who want to get started in the field of heap exploitation.
+{: .text-justify}
