@@ -25,6 +25,11 @@ Here is a list of some free trainings and courses about information security I f
 Developed from the materials of NYU Tandon's old Penetration Testing and Vulnerability Analysis course, [Hack Night](https://github.com/osirislab/Hack-Night) is a sobering introduction to offensive security. A lot of complex technical content is covered including, source code auditing, web security, application security and reverse engineering.
 {: .text-justify}
 
+## Offensive Computer Security
+
+Developed by the Florida State University Computer Science Department, the [Offensive Computer Security](http://www.cs.fsu.edu/~redwood/OffensiveComputerSecurity/) class vision is to fill the common gaps left by most University level security courses, by giving students a deep technical perspective of how things are attacked and hacked.
+{: .text-justify}
+
 ## RE101
 
 [RE101](https://sites.google.com/secured.org/malwareunicorn/reverse-engineering/re101) is a free workshop provided by Amanda Rousseau ([@malwareunicorn](https://twitter.com/malwareunicorn)). This workshop provides the fundamentals of reversing engineering (RE) Windows malware using a hands-on experience with RE tools and techniques. It will teach you RE terms and processes, followed by creating a basic x86 assembly program, and reviewing RE tools and malware techniques. The course will conclude by participants performing hands-on malware analysis that consists of Triage, Static, and Dynamic analysis.
