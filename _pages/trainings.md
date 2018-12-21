@@ -8,7 +8,7 @@ excerpt: "Free Trainings"
 Here is a list of some free trainings and courses about information security I found while browsing the Web. I hope it will help you to get a better understanding of the various field of information security.
 {: .text-justify}
 
->**Note:** This section is constantly evolving. **Last update:** December 4, 2018.
+>**Note:** This section is constantly evolving. **Last update:** December 21, 2018.
 
 ## Modern Binary Exploitation 
 
@@ -33,6 +33,11 @@ Developed by the Florida State University Computer Science Department, the [Offe
 ## RE101
 
 [RE101](https://sites.google.com/secured.org/malwareunicorn/reverse-engineering/re101) is a free workshop provided by Amanda Rousseau ([@malwareunicorn](https://twitter.com/malwareunicorn)). This workshop provides the fundamentals of reversing engineering (RE) Windows malware using a hands-on experience with RE tools and techniques. It will teach you RE terms and processes, followed by creating a basic x86 assembly program, and reviewing RE tools and malware techniques. The course will conclude by participants performing hands-on malware analysis that consists of Triage, Static, and Dynamic analysis.
+{: .text-justify}
+
+## Bugcrowd University
+
+[Bugcrowd University](https://github.com/bugcrowd/bugcrowd_university.git) is a free and open source project to help level-up our security researchers. It includes content modules to help our researchers find the most critical and prevalent bugs that impact our customers. Each module will have slide content, videos, and labs for researchers to master the art of bug hunting.
 {: .text-justify}
 
 ## SQLi Labs
