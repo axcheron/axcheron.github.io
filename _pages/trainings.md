@@ -8,7 +8,7 @@ excerpt: "Free Trainings"
 Here is a list of some free trainings and courses about information security I found while browsing the Web. I hope it will help you to get a better understanding of the various field of information security.
 {: .text-justify}
 
->**Note:** This section is constantly evolving. **Last update:** December 21, 2018.
+>**Note:** This section is constantly evolving. **Last update:** January 1, 2019.
 
 ## Modern Binary Exploitation 
 
@@ -40,17 +40,17 @@ Developed by the Florida State University Computer Science Department, the [Offe
 [Bugcrowd University](https://github.com/bugcrowd/bugcrowd_university.git) is a free and open source project to help level-up our security researchers. It includes content modules to help our researchers find the most critical and prevalent bugs that impact our customers. Each module will have slide content, videos, and labs for researchers to master the art of bug hunting.
 {: .text-justify}
 
-## SQLi Labs
-
-[SQLi Labs](https://github.com/Audi-1/sqli-labs) provides multiple workshops to experients various SQL Injections type.
-{: .text-justify}
-
 ## Heap Exploitation
 
-[Heap Exploitation](https://github.com/DhavalKapil/heap-exploitation) is a short book wrote for people who want to understand the internals of 'heap memory', particularly the implementation of glibc's 'malloc' and 'free' procedures, and also for security researchers who want to get started in the field of heap exploitation.
+[Heap Exploitation](https://github.com/DhavalKapil/heap-exploitation) is a short book wrote for people who want to understand the internals of *heap memory*, particularly the implementation of glibc's *malloc* and *free* procedures, and also for security researchers who want to get started in the field of heap exploitation.
 {: .text-justify}
 
 ## ROP Emporium
 
 [ROP Emporium](https://ropemporium.com/) helps you to learn return-oriented programming through a series of challenges designed to teach ROP techniques in isolation, with minimal reverse-engineering and bug-hunting.
+{: .text-justify}
+
+## SQLi Labs
+
+[SQLi Labs](https://github.com/Audi-1/sqli-labs) provides multiple workshops to experients various SQL Injections type.
 {: .text-justify}
