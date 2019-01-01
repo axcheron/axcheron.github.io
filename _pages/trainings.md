@@ -49,3 +49,8 @@ Developed by the Florida State University Computer Science Department, the [Offe
 
 [Heap Exploitation](https://github.com/DhavalKapil/heap-exploitation) is a short book wrote for people who want to understand the internals of 'heap memory', particularly the implementation of glibc's 'malloc' and 'free' procedures, and also for security researchers who want to get started in the field of heap exploitation.
 {: .text-justify}
+
+## ROP Emporium
+
+[ROP Emporium](https://ropemporium.com/) helps you to learn return-oriented programming through a series of challenges designed to teach ROP techniques in isolation, with minimal reverse-engineering and bug-hunting.
+{: .text-justify}
