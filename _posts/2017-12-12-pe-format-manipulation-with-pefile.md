@@ -8,7 +8,7 @@ tags:
 ---
 
 ---
-{% include toc title="PE Format Manipulation" %}
+{% include toc icon="cog" title="PE Format Manipulation" %}
 A long time ago, I wrote an article about how to use the **pefile** module to analyze the *Portable Executable* file format, but this post does not exist anymore. As I use this module quite often, I decided to rewrite it. This module now supports Python 3 and some bugs have been fixed.
 
 **pefile** is a Python module to read and work with PE (Portable Executable) files, it was developed by [Ero Carrera](https://github.com/erocarrera). This module is multi-platform and is able to parse and edit Portable Executable files. Most of the information contained in the PE headers is accessible as well as all sections' details and their data. To fully appreciate this post it is required to have some basic understanding of the layout of a PE file.
