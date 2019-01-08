@@ -14,7 +14,8 @@ The [Leviathan](http://overthewire.org/wargames/leviathan/) wargame is an online
 sense and some knowledge about basic \*nix commands. This is a quick write-up of my solutions but, before you read that post, please, try it yourself.
 {: .text-justify}
 
-The passwords for each of the challenges can be found in **/etc/leviathan_pass/\<username\>**.
+**Note:** The passwords for each of the challenges can be found in **/etc/leviathan_pass/\<username\>**.
+{: .notice--info}
 
 ## Level 00 Solution
 
