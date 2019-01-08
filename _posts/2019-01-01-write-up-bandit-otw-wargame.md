@@ -1,10 +1,11 @@
 ---
-title: "Write-up for the Bandit Wargame "
-excerpt: "Quick write-up for the famous Bandit wargame from OverTheWire."
+title: "[OTW] Write-up for the Bandit Wargame "
+excerpt: "Quick write-up for the Bandit wargame from OverTheWire."
 tags:
   - linux
   - write-ups
   - wargame
+  - otw
 ---
 
 ---
