@@ -46,7 +46,7 @@ leviathan0@leviathan:~/.backup$ cat bookmarks.html | grep password
 
 I have to admit that the solution for this one came naturally. If you know the movie [Hackers](https://www.imdb.com/title/tt0113243/), this challenge is an easy one.
 
-![image-center](/images/2019-01-10-write-up-leviathan-otw-wargame/hackers-movie-01.gif)
+![image-center](/images/2019-01-10-write-up-leviathan-otw-wargame/hackers-movie-01.gif){: .align-center}
 
 >**PHREAK:** Alright, what are the three most commonly used passwords?<br/>
 >**JOEY:** Love, secret, and uh, sex. But not in that order, necessarily, right?<br/>
