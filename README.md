@@ -54,6 +54,7 @@ $ bundle exec jekyll serve
 - [FitVids.JS](http://fitvidsjs.com/)
 - [GreedyNav.js](https://github.com/lukejacksonn/GreedyNav)
 - [jQuery Smooth Scroll](https://github.com/kswedberg/jquery-smooth-scroll)
+- [jQuery throttle / debounce](http://benalman.com/projects/jquery-throttle-debounce-plugin/)
 - [Lunr](http://lunrjs.com)
 
 ---
@@ -62,7 +63,7 @@ $ bundle exec jekyll serve
 
 The MIT License (MIT)
 
-Copyright (c) 2013-2018 Michael Rose and contributors
+Copyright (c) 2013-2019 Michael Rose and contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -112,6 +113,10 @@ Minimal Mistakes incorporates [jQuery Smooth Scroll](https://github.com/kswedber
 Copyright (c) 2017 Karl Swedberg.
 jQuery Smooth Scroll is distributed under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
+Minimal Mistakes incorporates [jQuery throttle / debounce](http://benalman.com/projects/jquery-throttle-debounce-plugin/),
+Copyright (c) 2010 "Cowboy" Ben Alman.
+jQuery throttle / debounce is distributed under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
 Minimal Mistakes incorporates [GreedyNav.js](https://github.com/lukejacksonn/GreedyNav),
 Copyright (c) 2015 Luke Jackson.
 GreedyNav.js is distributed under the terms of the [MIT License](http://opensource.org/licenses/MIT).
@@ -125,5 +130,5 @@ Copyright (c) 2017 Vladimir Jimenez.
 Pure Liquid Jekyll Table of Contents is distributed under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
 Minimal Mistakes incorporates [Lunr](http://lunrjs.com),
-Copyright (c) 2017 Oliver Nightingale.
+Copyright (c) 2018 Oliver Nightingale.
 Lunr is distributed under the terms of the [MIT License](http://opensource.org/licenses/MIT).
