@@ -420,53 +420,7 @@ FJDUEHZJZALUIOTJSGYZDQGVFPDLSO
 FJDUEHZJZA
 ```
 
-Now, we know that we have some consistency in the encryption algorithm. Let's try to recover the shifts between cleartext and the ciphertext:
-
-```python
-crypt = 'EICTDGYIYZKTHNSIRFXYCPFUEOCKRN'
-clear = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-
-for c in range(len(clear)):
-    k = ord(clear[c]) - ord(crypt[c])
-    print(k)
-```
-
-We get the following results:
-
-```text
--4
--8
--2
--19
--3
--6
--24
--8
--24
--25
--10
--19
--7
--13
--18
--8
--17
--5
--23
--24
--2
--15
--5
--20
--4
--14
--2
--10
--17
--13
-```
-
-It means that if we apply the same shifts to the encrypted key we should get the plaintext.
+Now, let's try to recover the ciphertext...
 
 ```python
 crypt = 'EICTDGYIYZKTHNSIRFXYCPFUEOCKRN'
