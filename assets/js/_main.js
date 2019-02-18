@@ -43,6 +43,16 @@ $(document).ready(function() {
     $(".author__urls-wrapper button").toggleClass("open");
   });
 
+  // Close search screen with Esc key
+  $(document).keyup(function(e) {
+    if (e.keyCode === 27) {
+      if ($(".initial-content").hasClass("is--hidden")) {
+        $(".search-content").toggleClass("is--visible");
+        $(".initial-content").toggleClass("is--hidden");
+      }
+    }
+  });
+
   // Search toggle
   $(".search__toggle").on("click", function() {
     $(".search-content").toggleClass("is--visible");
@@ -59,7 +69,7 @@ $(document).ready(function() {
   var smoothScrolling = false;
   $(window).bind("popstate", function (event) {
     $.smoothScroll({
-      scrollTarget: location.hash,
+      scrollTarget: decodeURI(location.hash),
       offset: -20,
       beforeScroll: function() { smoothScrolling = true; },
       afterScroll: function() { smoothScrolling = false; }
@@ -103,7 +113,7 @@ $(document).ready(function() {
       if (top <= scrollTop && scrollTop < bottom) {
         // Mark all ancestors as active
         links[i].link.parents("li").children("a").addClass('active');
-        if (links[i].href !== location.hash) {
+        if (links[i].href !== decodeURI(location.hash)) {
           history.replaceState(null, null, links[i].href);
         }
         return;
