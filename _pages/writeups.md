@@ -6,9 +6,10 @@ excerpt: "Write-Ups"
 
 ---
 Here is a list of some write-ups I have done. I hope it will help you to get a better understanding of how to exploit vulnerabilities in the various field of information security.
+{: .text-justify}
 
 I left the passwords in cleartext for each level because, if you google it, you'll find them anyway... But, try to do it yourself because "It's not about the destination; it's about the journey".
-
+{: .text-justify}
 
 ## OTW - OverTheWire 
 
