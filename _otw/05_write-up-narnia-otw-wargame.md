@@ -1,12 +1,7 @@
 ---
-title: "[OTW] Write-up for the Narnia Wargame "
+title: "[OTW] Write-up for the Narnia Wargame"
+permalink: /writeups/otw/narnia/
 excerpt: "Quick write-up for the Narnia wargame from OverTheWire."
-tags:
-  - linux
-  - write-ups
-  - wargame
-  - otw
-  - natas
 ---
 
 ---

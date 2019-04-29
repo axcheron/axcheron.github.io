@@ -6,8 +6,8 @@ main:
   - title: "Projects"
     url: /projects/
 
-  #- title: "Write-Ups"
-  #  url: /writeups/
+  - title: "Write-Ups"
+    url: /writeups/
 
   - title: "Trainings"
     url: /trainings/
@@ -228,3 +228,22 @@ mbe:
   #      url: /writeups/mbe/project2/
   #    - title: "Solution"
   #      url: /writeups/mbe/p2_notes/
+
+# Navigation for OTW
+otw:
+  - title: "OverTheWire"
+    children:
+      - title: "Summary"
+        url: /writeups/otw/otw_wargames/
+      - title: "Bandit"
+        url: /writeups/otw/bandit/
+      - title: "Leviathan"
+        url: /writeups/otw/leviathan/
+      - title: "Krypton"
+        url: /writeups/otw/krypton/
+      - title: "Natas"
+        url: /writeups/otw/natas/
+      - title: "Narnia"
+        url: /writeups/otw/narnia/
+      - title: "Behemoth"
+        url: /writeups/otw/behemoth/

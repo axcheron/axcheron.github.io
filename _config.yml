@@ -303,6 +303,9 @@ collections:
   mbe:
     output: true
     permalink: /:collection/:path/
+  otw:
+    output: true
+    permalink: /:collection/:path/
 
 # Defaults
 defaults:
@@ -350,3 +353,17 @@ defaults:
       related: false
       sidebar:
         nav: "mbe"
+  # _otw
+  - scope:
+      path: ""
+      type: otw
+    values:
+      layout: single
+      read_time: false
+      author_profile: false
+      share: false
+      comments: false
+      related: false
+      sidebar:
+        nav: "otw"
+

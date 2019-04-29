@@ -1,11 +1,7 @@
 ---
-title: "[OTW] Write-up for the Natas Wargame "
+title: "[OTW] Write-up for the Natas Wargame"
+permalink: /writeups/otw/natas/
 excerpt: "Quick write-up for the Natas wargame from OverTheWire."
-tags:
-  - web
-  - write-ups
-  - wargame
-  - otw
 ---
 
 ---

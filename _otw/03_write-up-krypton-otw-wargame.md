@@ -1,11 +1,7 @@
 ---
-title: "[OTW] Write-up for the Krypton Wargame "
+title: "[OTW] Write-up for the Krypton Wargame"
+permalink: /writeups/otw/krypton/
 excerpt: "Quick write-up for the Krypton wargame from OverTheWire."
-tags:
-  - linux
-  - write-ups
-  - wargame
-  - otw
 ---
 
 ---

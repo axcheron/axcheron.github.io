@@ -1,11 +1,7 @@
 ---
 title: "[OTW] Write-up for the Leviathan Wargame "
+permalink: /writeups/otw/leviathan/
 excerpt: "Quick write-up for the Leviathan wargame from OverTheWire."
-tags:
-  - linux
-  - write-ups
-  - wargame
-  - otw
 ---
 
 ---
