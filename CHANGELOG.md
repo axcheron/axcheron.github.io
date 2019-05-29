@@ -1,3 +1,17 @@
+## [4.16.4](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.16.4)
+
+### Enhancements
+
+- Update Brazilian Portuguese localized UI text strings. [#2162](https://github.com/mmistakes/minimal-mistakes/pull/2162)
+- Update Font Awesome to v5.8.2. [#2150](https://github.com/mmistakes/minimal-mistakes/pull/2150)
+- Add missing Spanish localized UI text strings. [#2149](https://github.com/mmistakes/minimal-mistakes/pull/2149)
+
+### Bug Fixes
+
+- Fix arithmetic in `_form.scss` partial. [#2169](https://github.com/mmistakes/minimal-mistakes/pull/2169)
+- Fix pound symbol not displaying properly for post categories and tags. [#2156](https://github.com/mmistakes/minimal-mistakes/issues/2156)
+- Fix permalink stacking order and click-able area in archives.
+
 ## [4.16.3](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.16.3)
 
 ### Enhancements
