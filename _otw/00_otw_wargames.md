@@ -15,4 +15,5 @@ Write-up | Topic
 [Natas](/writeups/otw/natas/) | Web 
 [Narnia](/writeups/otw/narnia/) | Memory Corruption
 [Behemoth](/writeups/otw/behemoth/) | Memory Corruption/RCE
+[Utumno](/writeups/otw/utumno/) | Memory Corruption/RCE
 

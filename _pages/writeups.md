@@ -19,7 +19,7 @@ I left the passwords in cleartext for each level because, if you google it, you'
 **You can access to the write-ups with the following link:** [OTW Write-Ups](/writeups/otw/otw_wargames/).
 
 >**Note:** This write-up is not done yet. It will be completed as soon as possible. <br/>
->**Last update:** April 20, 2019.
+>**Last update:** October 7, 2019.
 
 
 <!---

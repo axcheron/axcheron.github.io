@@ -365,7 +365,7 @@ utumno0@utumno:/tmp/axc$ LD_PRELOAD="./preload.so" /utumno/utumno0
 Hello from 'puts' !
 ```
 
-So it seems that the program is using *puts()* to print the message. Now, we could use *printf()* to read data on the **stack** by employing the same method used by the [Format String](https://axcheron.github.io/exploit-101-format-strings/) vulnerability.
+So, it seems that the program is using *puts()* to print the message. Now, we could use *printf()* to read data on the **stack** by employing the same method used by the [Format String](https://axcheron.github.io/exploit-101-format-strings/) vulnerability.
 
 ```c
 #include <stdio.h>
