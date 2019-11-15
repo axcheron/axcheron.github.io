@@ -13,7 +13,7 @@ The challenges can be found in the **/behemoth/** folder and the passwords for e
 
 Ready ?!
 
-![image-center](/images/2019-04-28-write-up-behemoth-otw-wargame/swordfish.gif){: .align-center}
+![image-center](/images/otw/swordfish.gif){: .align-center}
 
 ## Behemoth 00 Solution
 

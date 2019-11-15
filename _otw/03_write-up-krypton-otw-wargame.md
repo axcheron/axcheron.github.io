@@ -9,7 +9,7 @@ excerpt: "Quick write-up for the Krypton wargame from OverTheWire."
 The [Krypton](http://overthewire.org/wargames/krypton/) wargame is an online game offered by the [OverTheWire](http://overthewire.org) community. This one is about cipher and cryptanalysis. Let's get started ! 
 {: .text-justify}
 
-![image-center](/images/2019-01-27-write-up-krypton-otw-wargame/hack-the-planet-01.gif){: .align-center}
+![image-center](/images/otw/hack-the-planet-01.gif){: .align-center}
 
 ## Level 00 Solution
 
@@ -165,7 +165,7 @@ We obtain the following frequencies in the ciphertext files :
 
 So now, according to [Wikipedia](https://en.wikipedia.org/wiki/Frequency_analysis) the letter frequency in the English language looks like that :
 
-![image-center](/images/2019-01-27-write-up-krypton-otw-wargame/english_letter_frequency.png){: .align-center}
+![image-center](/images/otw/english_letter_frequency.png){: .align-center}
 
 Now, let's write a quick script to try to decipher the encrypted text by using the letter frequency used in the English language.
 
@@ -235,7 +235,7 @@ HCIKV RJOX
 
 So, in this level *"pure"* frequency analysis won't work very well, but there are ways around it. Here is a **Vigenère square** (or table):
 
-![image-center](/images/2019-01-27-write-up-krypton-otw-wargame/vigenere_square.png){: .align-center}
+![image-center](/images/otw/vigenere_square.png){: .align-center}
 
 With Vigenère, first you choose a key, like : **SECURE** and your cleartext : **DONT WORRY BE HAPPY**. If the message is longer than the key, you just repeat the key. 
 

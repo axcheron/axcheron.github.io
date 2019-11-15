@@ -13,7 +13,7 @@ The challenges can be found in the **/utumno/** folder and the passwords for eac
 
 Kick back and relax, it's gonna be fun !
 
-![image-center](/images/2019-10-06-write-up-utumno-otw-wargame/wargame.gif){: .align-center}
+![image-center](/images/otw/wargame.gif){: .align-center}
 
 ## Utumno 00 Solution
 
@@ -279,7 +279,7 @@ void main() {
 
 Then, we can use *envp* to pass arguments to our binary. Why ? Well, if you take a look at the stack of a loaded binary, you'll have **argc** (or the arguments counter), **argv** (list of pointer to arguments) and **envp** (list of pointers to environment variables).
 
-![image-center](/images/2019-10-06-write-up-utumno-otw-wargame/elf_stack.png){: .align-center}{:width="500px"}
+![image-center](/images/otw/elf_stack.png){: .align-center}{:width="500px"}
 
 So, as we don't have any arguments, we will play with environment variables. Here, we can do whatever we want, as we are using *execve()* all the environment variables are cleared. Now, with that assumptions, let's analyze the second part of the code.
 

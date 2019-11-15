@@ -14,7 +14,7 @@ Each level has access to the password of the next level. Your job is to obtain t
 
 Let's get started !
 
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/crash_override.gif){: .align-center}
+![image-center](/images/otw/crash_override.gif){: .align-center}
 
 ## Natas 00 Solution
 
@@ -139,7 +139,7 @@ Here is the response :
 ```
 
 As we can see we got a cookie **'Set-Cookie': 'loggedin=0'**. We can try to modify it with the value **1** and refresh the page. This can be done directly in **Chrome** by using the *Javascript Console*.
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/edit_cookie.png){: .align-center}
+![image-center](/images/otw/edit_cookie.png){: .align-center}
 Done !
 
 ```text
@@ -189,7 +189,7 @@ Access granted. The password for natas7 is 7z3hEENjQtflzgnT29q7wAvMNfZdh0i9
 **Credentials :** *natas7:7z3hEENjQtflzgnT29q7wAvMNfZdh0i9*
 
 In this level, we get 2 links to random pages. If you check the URL, you can see that the *index.php* takes the page name as variable.
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas7_home.png){: .align-center}
+![image-center](/images/otw/natas7_home.png){: .align-center}
 
 ```text
 http://natas7.natas.labs.overthewire.org/index.php?page=home
@@ -514,9 +514,9 @@ We should be able to get the password for the next level. However, if you take a
 ```
 
 The extension of the file if modified on the client side. If we want to keep the ".php" extension, we need to intercept the upload request and modify the extension to *.php*, it can be done using a proxy like *Burp*
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/file_upload_01_burp.png){: .align-center}
+![image-center](/images/otw/file_upload_01_burp.png){: .align-center}
 Then, you can browse the link returned by the server and get the password :
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/file_upload_01_chrome.png){: .align-center}
+![image-center](/images/otw/file_upload_01_chrome.png){: .align-center}
 Here you go ...
 
 ```text
@@ -590,9 +590,9 @@ echo system("cat /etc/natas_webpass/natas14");
 ```
 
 Then we use the same trick as before to modify the file extension in **Burp**.
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/file_upload_02_burp.png){: .align-center}
+![image-center](/images/otw/file_upload_02_burp.png){: .align-center}
 Then, you can browse the link returned by the server and get the password :
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/file_upload_02_chrome.png){: .align-center}
+![image-center](/images/otw/file_upload_02_chrome.png){: .align-center}
 Here is the password :
 
 ```text
@@ -1164,7 +1164,7 @@ if(array_key_exists("name", $_SESSION)) {
 Here we got lots of code but, let me simplify that for you. First, because of the `debug($msg)` function, we can get more details about the management of the sessions. 
 
 For exemple, if you enter *natas* in the **name** field, submit it and change your URL with [http://natas20.natas.labs.overthewire.org/index.php?debug](http://natas20.natas.labs.overthewire.org/index.php?debug) you should get debug information :
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas20_debug.png){: .align-center}
+![image-center](/images/otw/natas20_debug.png){: .align-center}
 Second, we need the following conditions to get the password :
 
 ```php
@@ -1290,7 +1290,7 @@ http://natas21-experimenter.natas.labs.overthewire.org?submit&admin=1
 ```
 
 Then, we get the *PHPSESSID* and use it on the first website. I used **Burp** to do that :
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas21_query.png){: .align-center}
+![image-center](/images/otw/natas21_query.png){: .align-center}
 And, we got it !
 
 ```text
@@ -1327,7 +1327,7 @@ if(array_key_exists("revelio", $_GET)) {
 ```
 
 We have an empty page but, when you look at the source it looks fairly easy. We just need to add the **revelio** parameter to the query. Let's start *Burp* and check that out! Here, I just added `?revelio=1`to the query :
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas23_request.png){: .align-center}
+![image-center](/images/otw/natas23_request.png){: .align-center}
 We have it !
 
 ```text
@@ -1479,7 +1479,7 @@ Now, the exploit, 3 steps :
 
 Here is the modified query :
 
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas25_query.png){: .align-center}
+![image-center](/images/otw/natas25_query.png){: .align-center}
 
 And the result :
 
@@ -1675,9 +1675,9 @@ Tzo2OiJMb2dnZXIiOjM6e3M6MTU6IgBMb2dnZXIAbG9nRmlsZSI7czoxMDoiaW1nL2F4LnBocCI7czox
 ```
 
 Then replay the forged **drawing** cookie with *Burp*. Don't forget to urlencode the **/** and **=**.
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas26_burp.png){: .align-center}
+![image-center](/images/otw/natas26_burp.png){: .align-center}
 Then, try to access the file you just created :
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas26_password.png){: .align-center}
+![image-center](/images/otw/natas26_password.png){: .align-center}
 Done.
 
 ```text
@@ -1817,7 +1817,7 @@ natas28                                                                         
 ```
 
 Then, try to login with **natas28** without password, you'll get the flag :
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas27_password.png){: .align-center}
+![image-center](/images/otw/natas27_password.png){: .align-center}
 Done.
 
 ```text
@@ -1830,7 +1830,7 @@ JWwR438wkgTsNKBbcJoowyysdM82YjeF
 **Credentials :** *natas28:JWwR438wkgTsNKBbcJoowyysdM82YjeF*
 
 In this challenge we don't get the source code. After some test, I tried to mess with the *query* variable by removing some characters and got the following error :
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas28_error.png){: .align-center}
+![image-center](/images/otw/natas28_error.png){: .align-center}
 Hum... It looks like the **query** variable is in fact some kind of cipher encoded with **Base64**. Let's write a quick script to get a larger sample. I also made sure to increment the size of the query to see if there is any differences.
 
 ```python
@@ -1952,7 +1952,7 @@ I tried all the punctuation characters, but only **"** (double quote), **'** (si
 - The escape characters is the same and is propably **\\**. We can tell that because the 3rd block is always identical when we use **"**, **'** and **\\**.
 
 Back to the Web page, if you search something like **x**, you'll get a result :
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas28_results.png){: .align-center}
+![image-center](/images/otw/natas28_results.png){: .align-center}
 It means that we probably have some kind of SQL database in the backend. Based on the previous level, probably **MySQL**. It also means that our previous assumptions concerning a sanitization mecanism could be true.
 
 What now ? Well, it's probably a SQL injection. However, we can't send it directly in cleartext beacause of the sanitization but, we could bypass it using the behavior of the **ECB** cipher. 
@@ -2048,7 +2048,7 @@ http://natas29.natas.labs.overthewire.org/index.pl?file=|ls%00
 ```
 
 Ok, so it's a command injection. You can see the file listing at the bottom of the page. Note, that I used the *pipe* character to concat a command to the script.
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas29_file_list.png){: .align-center}
+![image-center](/images/otw/natas29_file_list.png){: .align-center}
 Now, let's get the code of the **index.pl** with the following injection :
 
 ```text
@@ -2193,9 +2193,9 @@ ARGV
 ```
 
 Here is the query :
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas31_query.png){: .align-center}
+![image-center](/images/otw/natas31_query.png){: .align-center}
 And the answer (with the password):
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas31_response.png){: .align-center}
+![image-center](/images/otw/natas31_response.png){: .align-center}
 Done !
 
 ```text
@@ -2407,11 +2407,11 @@ if(md5_file("pwn.php") == True){
 ```
 
 First, let's upload the PHP file and remame it using **Burp** :
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas33_php_upload.png){: .align-center}
+![image-center](/images/otw/natas33_php_upload.png){: .align-center}
 Then, upload the generated Phar archive and rename it:
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas33_phar_upload.png){: .align-center}
+![image-center](/images/otw/natas33_phar_upload.png){: .align-center}
 Finally send the previous request to the Burp's Repeater tool and modify the filename to **phar://test.phar/test.txt** to force the *md5_file()* function to interpret the Phar archive.
-![image-center](/images/2019-03-29-write-up-natas-otw-wargame/natas33_phar_exec.png){: .align-center}
+![image-center](/images/otw/natas33_phar_exec.png){: .align-center}
 Success !!
 
 ```text

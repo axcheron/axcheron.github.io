@@ -8,7 +8,7 @@ excerpt: "Free Trainings"
 Here is a list of some free trainings and courses about information security I found while browsing the Web. I hope it will help you to get a better understanding of the various field of information security.
 {: .text-justify}
 
->**Note:** This section is constantly evolving. **Last update:** January 1, 2019.
+>**Note:** This section is constantly evolving. **Last update:** October 16, 2019.
 
 ## Modern Binary Exploitation 
 
@@ -54,3 +54,7 @@ Developed by the Florida State University Computer Science Department, the [Offe
 
 [SQLi Labs](https://github.com/Audi-1/sqli-labs) provides multiple workshops to experients various SQL Injections type.
 {: .text-justify}
+
+## Web Security Academy
+
+The [Web Security Academy](https://portswigger.net/web-security) contains free training on cybersecurity topics, including security vulnerabilities, techniques for finding and exploiting security flaws, and defensive measures for avoiding them.
