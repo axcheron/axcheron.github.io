@@ -31,3 +31,9 @@ Simple Python tool to crack VirtualBox Disk Image Encryption passwords.
 Simple tool to crack VMware VMX encryption passwords.
 
 **Link:** [pyvmx-cracker](https://github.com/axcheron/pyvmx-cracker)
+
+## crestron_getsudopwd
+
+Tool to exploit CVE-2018-13341 and recover hidden account password on Crestron devices.
+
+**Link:** [crestron_getsudopwd](https://github.com/axcheron/crestron_getsudopwd)

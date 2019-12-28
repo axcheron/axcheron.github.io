@@ -58,3 +58,7 @@ Developed by the Florida State University Computer Science Department, the [Offe
 ## Web Security Academy
 
 The [Web Security Academy](https://portswigger.net/web-security) contains free training on cybersecurity topics, including security vulnerabilities, techniques for finding and exploiting security flaws, and defensive measures for avoiding them.
+
+## Computer Network Security
+
+The [CNS - CTF Crunch](https://ocw.cs.pub.ro/courses/cns) course aims at providing a set of tools for vulnerability assessment and security calibration both at the network and at the operating system level. You will spend a large part of the labs and assignments working with *binaries*. You will have to find vulnerabilities in those binaries, then exploit them and  fix the vulnerabilities in order to illustrate various secure coding practices.

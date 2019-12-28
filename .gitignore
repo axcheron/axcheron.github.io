@@ -2,6 +2,7 @@
 *.sublime-workspace
 .DS_Store
 .jekyll-metadata
+.jekyll-cache
 .sass-cache
 .vscode
 .idea
