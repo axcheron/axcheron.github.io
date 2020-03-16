@@ -8,7 +8,7 @@ excerpt: "Free Trainings"
 Here is a list of some free trainings and courses about information security I found while browsing the Web. I hope it will help you to get a better understanding of the various field of information security.
 {: .text-justify}
 
->**Note:** This section is constantly evolving. **Last update:** October 16, 2019.
+>**Note:** This section is constantly evolving. **Last update:** March 16, 2020.
 
 ## Modern Binary Exploitation 
 
@@ -62,3 +62,11 @@ The [Web Security Academy](https://portswigger.net/web-security) contains free t
 ## Computer Network Security
 
 The [CNS - CTF Crunch](https://ocw.cs.pub.ro/courses/cns) course aims at providing a set of tools for vulnerability assessment and security calibration both at the network and at the operating system level. You will spend a large part of the labs and assignments working with *binaries*. You will have to find vulnerabilities in those binaries, then exploit them and  fix the vulnerabilities in order to illustrate various secure coding practices.
+
+## Malware-Analysis-Training
+
+The [Malware-Analysis-Training](https://github.com/OpenRCE/Malware-Analysis-Training) course was designed for students who have an introductory / basic understanding of x86 assembly and reverse engineering as well as more advanced students wishing to refresh their skills and learn new approaches to familiar problems. The course will cover the basics of x86 assembly and pattern recognition, Windows process memory layout, tools of the trade (such as IDA Pro and OllyDbg), the PE file format and basic exploitation methodologies abused by worms to penetrate a target system (stack/heap overflows). As this course is focused on malicious code analysis, students will be given real-world virus samples to reverse engineer. The details of executable packing, obfuscation methods, anti-debugging and anti-disassembling will be revealed and re-enforced with hands-on exercises.
+
+## CS6038/CS5138 Malware Analysis
+
+The [CS6038/CS5138 Malware Analysis](https://class.malware.re/) will introduce the students to malware concepts, malware analysis, and black-box reverse engineering techniques. It is intended to introduce the students to types of malware, common attack recipes, some tools, and a wide array of malware analysis techniques. You can find videos [here](https://www.youtube.com/user/cincykane/videos).
