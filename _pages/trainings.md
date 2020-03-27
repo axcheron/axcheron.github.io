@@ -70,3 +70,7 @@ The [Malware-Analysis-Training](https://github.com/OpenRCE/Malware-Analysis-Trai
 ## CS6038/CS5138 Malware Analysis
 
 The [CS6038/CS5138 Malware Analysis](https://class.malware.re/) will introduce the students to malware concepts, malware analysis, and black-box reverse engineering techniques. It is intended to introduce the students to types of malware, common attack recipes, some tools, and a wide array of malware analysis techniques. You can find videos [here](https://www.youtube.com/user/cincykane/videos).
+
+## CS253 Web Security
+
+The [CS253 Web Security](https://web.stanford.edu/class/cs253/) is a comprehensive overview of web security. The goal is to build an understanding of the most common web attacks and their countermeasures. Given the pervasive insecurity of the modern web landscape, there is a pressing need for programmers and system designers to improve their understanding of web security issues.
