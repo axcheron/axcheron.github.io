@@ -32,7 +32,7 @@ Developed by the Florida State University Computer Science Department, the [Offe
 
 ## RE101
 
-[RE101](https://sites.google.com/secured.org/malwareunicorn/reverse-engineering/re101) is a free workshop provided by Amanda Rousseau ([@malwareunicorn](https://twitter.com/malwareunicorn)). This workshop provides the fundamentals of reversing engineering (RE) Windows malware using a hands-on experience with RE tools and techniques. It will teach you RE terms and processes, followed by creating a basic x86 assembly program, and reviewing RE tools and malware techniques. The course will conclude by participants performing hands-on malware analysis that consists of Triage, Static, and Dynamic analysis.
+[RE101](https://malwareunicorn.org/workshops/re101.html) is a free workshop provided by Amanda Rousseau ([@malwareunicorn](https://twitter.com/malwareunicorn)). This workshop provides the fundamentals of reversing engineering (RE) Windows malware using a hands-on experience with RE tools and techniques. It will teach you RE terms and processes, followed by creating a basic x86 assembly program, and reviewing RE tools and malware techniques. The course will conclude by participants performing hands-on malware analysis that consists of Triage, Static, and Dynamic analysis.
 {: .text-justify}
 
 ## Bugcrowd University
@@ -58,23 +58,29 @@ Developed by the Florida State University Computer Science Department, the [Offe
 ## Web Security Academy
 
 The [Web Security Academy](https://portswigger.net/web-security) contains free training on cybersecurity topics, including security vulnerabilities, techniques for finding and exploiting security flaws, and defensive measures for avoiding them.
+{: .text-justify}
 
 ## Computer Network Security
 
 The [CNS - CTF Crunch](https://ocw.cs.pub.ro/courses/cns) course aims at providing a set of tools for vulnerability assessment and security calibration both at the network and at the operating system level. You will spend a large part of the labs and assignments working with *binaries*. You will have to find vulnerabilities in those binaries, then exploit them and  fix the vulnerabilities in order to illustrate various secure coding practices.
+{: .text-justify}
 
 ## Malware-Analysis-Training
 
 The [Malware-Analysis-Training](https://github.com/OpenRCE/Malware-Analysis-Training) course was designed for students who have an introductory / basic understanding of x86 assembly and reverse engineering as well as more advanced students wishing to refresh their skills and learn new approaches to familiar problems. The course will cover the basics of x86 assembly and pattern recognition, Windows process memory layout, tools of the trade (such as IDA Pro and OllyDbg), the PE file format and basic exploitation methodologies abused by worms to penetrate a target system (stack/heap overflows). As this course is focused on malicious code analysis, students will be given real-world virus samples to reverse engineer. The details of executable packing, obfuscation methods, anti-debugging and anti-disassembling will be revealed and re-enforced with hands-on exercises.
+{: .text-justify}
 
 ## CS6038/CS5138 Malware Analysis
 
 The [CS6038/CS5138 Malware Analysis](https://class.malware.re/) will introduce the students to malware concepts, malware analysis, and black-box reverse engineering techniques. It is intended to introduce the students to types of malware, common attack recipes, some tools, and a wide array of malware analysis techniques. You can find videos [here](https://www.youtube.com/user/cincykane/videos).
+{: .text-justify}
 
 ## CS253 Web Security
 
 The [CS253 Web Security](https://web.stanford.edu/class/cs253/) is a comprehensive overview of web security. The goal is to build an understanding of the most common web attacks and their countermeasures. Given the pervasive insecurity of the modern web landscape, there is a pressing need for programmers and system designers to improve their understanding of web security issues.
+{: .text-justify}
 
 ## Offensive Software Exploitation (OSE) Course
 
 The [Offensive Software Exploitation](https://github.com/ashemery/exploitation-course) covers offensive exploitation concepts taught at Champlain College during Spring 20/21. It includes multiple topics like exploitation techniques, post exploitation, reverse engineering, code injection and much more.
+{: .text-justify}
