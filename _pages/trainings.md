@@ -8,7 +8,7 @@ excerpt: "Free Trainings"
 Here is a list of some free trainings and courses about information security I found while browsing the Web. I hope it will help you to get a better understanding of the various field of information security.
 {: .text-justify}
 
->**Note:** This section is constantly evolving. **Last update:** July 1, 2021.
+>**Note:** This section is constantly evolving. **Last update:** October 18, 2021.
 
 ## Modern Binary Exploitation 
 
@@ -83,4 +83,9 @@ The [CS253 Web Security](https://web.stanford.edu/class/cs253/) is a comprehensi
 ## Offensive Software Exploitation (OSE) Course
 
 The [Offensive Software Exploitation](https://github.com/ashemery/exploitation-course) covers offensive exploitation concepts taught at Champlain College during Spring 20/21. It includes multiple topics like exploitation techniques, post exploitation, reverse engineering, code injection and much more.
+{: .text-justify}
+
+## Evading Detection: A Beginner's Guide to Obfuscation
+
+The [Evading Detection: A Beginner's Guide to Obfuscation](https://github.com/BC-SECURITY/Beginners-Guide-to-Obfuscation) is a hands-on class to learn the methodology behind malware delivery and avoiding detection. This workshop explores the inner workings of Microsoft's Antimalware Scan Interface (AMSI), Windows Defender, and Event Tracing for Windows (ETW). We will learn how to employ obfuscated malware using Visual Basic (VB), PowerShell, and C# to avoid Microsoft's defenses. Students will learn to build AMSI bypass techniques, obfuscate payloads from dynamic and static signature detection methods, and learn about alternative network evasion methods.
 {: .text-justify}

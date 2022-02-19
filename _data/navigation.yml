@@ -260,3 +260,19 @@ otw:
       #   url: /writeups/otw/manpage/
       # - title: "Drifter"
       #   url: /writeups/otw/drifter/
+
+# Navigation for HTB
+htb:
+  - title: "Hack The Box"
+    children:
+      - title: "Summary"
+        url: /writeups/htb/htb_writeups/
+
+  - title: "Machines"
+    children:
+      - title: "Forest"
+        url: /writeups/htb/forest/
+      - title: "Sauna"
+        url: /writeups/htb/sauna/
+      - title: "Active"
+        url: /writeups/htb/active/

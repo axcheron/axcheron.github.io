@@ -307,6 +307,9 @@ collections:
   otw:
     output: true
     permalink: /:collection/:path/
+  htb:
+    output: true
+    permalink: /:collection/:path/
 
 # Defaults
 defaults:
@@ -367,3 +370,16 @@ defaults:
       related: false
       sidebar:
         nav: "otw"
+  # _htb
+  - scope:
+      path: ""
+      type: htb
+    values:
+      layout: single
+      read_time: false
+      author_profile: false
+      share: false
+      comments: false
+      related: false
+      sidebar:
+        nav: "htb"

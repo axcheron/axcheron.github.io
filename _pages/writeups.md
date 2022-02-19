@@ -18,8 +18,16 @@ I left the passwords in cleartext for each level because, if you google it, you'
 
 **You can access to the write-ups with the following link:** [OTW Write-Ups](/writeups/otw/otw_wargames/).
 
->**Note:** This write-up is not done yet. It will be completed as soon as possible. <br/>
->**Last update:** October 7, 2019.
+>**Note:** This write-up is is constantly evolving. **Last update:** October 7, 2019.
+
+## HTB - Hack The Box 
+
+[Hack The Box](https://www.hackthebox.com) is a massive, online cybersecurity training platform, allowing individuals, companies, universities and all kinds of organizations around the world to level up their hacking skills.
+{: .text-justify}
+
+**You can access to the write-ups with the following link:** [HTB Write-Ups](/writeups/htb/htb_writeups/).
+
+>**Note:** This write-up is is constantly evolving. **Last update:** February 14, 2022.
 
 
 <!---
