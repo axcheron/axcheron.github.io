@@ -15,13 +15,23 @@ tags:
 {% include toc icon="cog" title="Resolute Solution" %}
 
 The [Resolute](https://app.hackthebox.com/machines/Resolute) machine has been created by [egre55](https://app.hackthebox.com/users/1190). This is an easy Windows Machine with a strong focus on Active Directory exploitation.
-{: .text-justify}
+
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_black.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_resolute_infocard.png){: .align-center}
 
 **Note:** All the actions performed against the target machine have been done with a standard *Kali Linux* machine. You can download Kali from the official website [here](https://www.kali.org/).
 {: .notice--info}
 
+# Recon/Enumeration
+
+Reconnaissance consists of techniques that involve adversaries actively or passively gathering information that can be used to support targeting. Such information may include details of the victim organization, infrastructure, or staff/personnel. This information can be leveraged by the adversary to aid in other phases of the adversary lifecycle, such as using gathered information to plan and execute Initial Access, to scope and prioritize post-compromise objectives, or to drive and lead further Reconnaissance efforts.
+
+Here, we don't have any credentials or hints about how to approach this machine, it's fairly common on HTB boxes. The first step would be reconnaissance, to check what we can see with the info we have, meaning, an IP address.
+
+## Scan with Nmap
+
+Let's start with a classic service scan with [Nmap](https://nmap.org/) in order to reveal some of the TCP ports open on the machine.
 
 ```bash
 $ nmap -sV -Pn 10.129.96.155
