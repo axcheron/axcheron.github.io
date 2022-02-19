@@ -272,7 +272,7 @@ htb:
     children:
       - title: "Forest"
         url: /writeups/htb/forest/
-      - title: "Sauna"
-        url: /writeups/htb/sauna/
-      - title: "Active"
-        url: /writeups/htb/active/
+      #- title: "Sauna"
+      #  url: /writeups/htb/sauna/
+      #- title: "Active"
+      #  url: /writeups/htb/active/
