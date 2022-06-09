@@ -8,7 +8,7 @@ excerpt: "Write-Ups"
 Here is a list of some write-ups I did. I hope it will help you to get a better understanding of how to exploit vulnerabilities in the various field of information security.
 {: .text-justify}
 
-I left the passwords in cleartext for each level because, if you google it, you'll find them anyway... But, try to do it yourself because "It's not about the destination; it's about the journey".
+I left the passwords in cleartext for most of the level because, if you google it, you'll find them anyway... But, try to do it yourself because *"It's not about the destination; it's about the journey"*.
 {: .text-justify}
 
 ## OTW - OverTheWire 
@@ -27,7 +27,7 @@ I left the passwords in cleartext for each level because, if you google it, you'
 
 **You can access to the write-ups with the following link:** [HTB Write-Ups](/writeups/htb/htb_writeups/).
 
->**Note:** This write-up is is constantly evolving. **Last update:** February 14, 2022.
+>**Note:** This write-up is is constantly evolving. **Last update:** June 6, 2022.
 
 
 <!---

