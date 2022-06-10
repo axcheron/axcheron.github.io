@@ -23,6 +23,7 @@ Write-up | Difficulty | Topics
 [Active](/writeups/htb/active/) | [EASY](#){: .btn .btn--success} | WinRM, Kerberoasting, GPP
 [Resolute](/writeups/htb/resolute/) | [MEDIUM](#){: .btn .btn--warning} | Metasploit, Cleartext Credentials
 [Cascade](/writeups/htb/cascade/) | [MEDIUM](#){: .btn .btn--warning} | Cryptography, Reverse Engineering, SQL
+[Intelligence](/writeups/htb/intelligence/) | [MEDIUM](#){: .btn .btn--warning} | GMSA, DNS, Cracking, Bloodhound
 [Blackfield](/writeups/htb/blackfield/) | [HARD](#){: .btn .btn--danger} | ASREPRoast, Token Abuse, SMB, LSASS
 [Reel](/writeups/htb/reel/) | [HARD](#){: .btn .btn--danger} | Phishing, AppLocker, PowerShell, Metasploit
 [Mantis](/writeups/htb/mantis/) | [HARD](#){: .btn .btn--danger} | Web, SQL, CVE, Kerberos

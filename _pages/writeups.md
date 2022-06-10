@@ -27,7 +27,7 @@ I left the passwords in cleartext for most of the level because, if you google i
 
 **You can access to the write-ups with the following link:** [HTB Write-Ups](/writeups/htb/htb_writeups/).
 
->**Note:** This write-up is is constantly evolving. **Last update:** June 6, 2022.
+>**Note:** This write-up is is constantly evolving. **Last update:** June 10, 2022.
 
 
 <!---

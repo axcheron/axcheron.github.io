@@ -280,6 +280,8 @@ htb:
         url: /writeups/htb/resolute/
       - title: "Cascade"
         url: /writeups/htb/cascade/
+      - title: "Intelligence"
+        url: /writeups/htb/intelligence/
       - title: "Backfield"
         url: /writeups/htb/blackfield/
       - title: "Reel"
