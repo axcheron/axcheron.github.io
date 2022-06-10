@@ -66,11 +66,11 @@ As we can see, the machine seems to be a domain controller for **intelligence.ht
 
 ## HTTP
 
-By looking at the website located, we found two (2) downloadable documents.
+By looking at the website located at the following URL *http://10.129.95.154*, we found two (2) downloadable documents.
 
 ![image-center](/images/htb/htb_intelligence_website.png){: .align-center} 
 
-While the documents did not contain any interesting information, by looking at their link we can see a pattern:
+While the documents did not contain any interesting information, by looking at their links we can see a pattern:
 
 - http://10.129.95.154/documents/2020-01-01-upload.pdf
 - http://10.129.95.154/documents/2020-12-15-upload.pdf
