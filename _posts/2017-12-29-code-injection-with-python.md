@@ -12,7 +12,7 @@ tags:
 {% include toc title="Code Injection" %}
 If you perform penetration testing as your daily job, it is often useful to inject backdoor into legit application. There are lots of tools out there that can perform those kind of tasks, but do you know how they really work ? In this post, I will show you a simple method to inject a backdoor into an executable.
 
-Here we will use Python as it is a really versatile language and also one of the most used in offensive computing. I strongly suggest you read my previous [article](https://axcheron.github.io/code-injection-with-python/) about the Portable Executable format to fully understand this post.
+Here we will use Python as it is a really versatile language and also one of the most used in offensive computing. I strongly suggest you read my previous [article](https://axcheron.github.io/pe-format-manipulation-with-pefile/) about the Portable Executable format to fully understand this post.
 
 ## Introdcution
 
