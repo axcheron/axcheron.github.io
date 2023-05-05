@@ -458,7 +458,7 @@ Breakpoint 1, 0x08048568 in main ()
 0xffffd660:	"/whatever"
 ``` 
 
-Awesome ! Now, we can write where we want. As **/tmp/** is read/write/exec we can create something like **/tmp/FOOBARFOOBARFOOBARFOOBARFOO/tmp** and create a *symbolic link* of **/etc/narnia_pass/narnia4** to **/tmp/FOOBARFOOBARFOOBARFOOBARFOO/tmp/ax** file so the program can write the password into our file. 
+Awesome! Now, we can write where we want. As **/tmp/** is read/write/exec we can create something like **/tmp/FOOBARFOOBARFOOBARFOOBARFOO/tmp** and create a *symbolic link* of **/etc/narnia_pass/narnia4** to **/tmp/FOOBARFOOBARFOOBARFOOBARFOO/tmp/ax** file so the program can write the password into our file. 
 
 Here are the steps :
 

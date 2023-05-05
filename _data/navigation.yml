@@ -165,46 +165,46 @@ mbe:
       - title: "Lab4A (hard)"
         url: /writeups/mbe/lab4a/
   
-  #- title: "DEP and ROP"
-  #  children:
-  #    - title: "Lab5C (easy)"
-  #      url: /writeups/mbe/lab5c/
-  #    - title: "Lab5B (medium)"
-  #      url: /writeups/mbe/lab5b/
-  #    - title: "Lab5A (hard)"
-  #      url: /writeups/mbe/lab5a/
+  - title: "DEP and ROP"
+    children:
+      - title: "Lab5C (easy)"
+        url: /writeups/mbe/lab5c/
+      - title: "Lab5B (medium)"
+        url: /writeups/mbe/lab5b/
+      - title: "Lab5A (hard)"
+        url: /writeups/mbe/lab5a/
   
-  #- title: "ASLR"
-  #  children:
-  #    - title: "Lab6C (easy)"
-  #      url: /writeups/mbe/lab6c/
-  #    - title: "Lab6B (medium)"
-  #      url: /writeups/mbe/lab6b/
-  #    - title: "Lab6A (hard)"
-  #      url: /writeups/mbe/lab6a/
+  - title: "ASLR"
+    children:
+      - title: "Lab6C (easy)"
+        url: /writeups/mbe/lab6c/
+  #   - title: "Lab6B (medium)"
+  #     url: /writeups/mbe/lab6b/
+  #   - title: "Lab6A (hard)"
+  #     url: /writeups/mbe/lab6a/
 
   #- title: "Heap"
-  #  children:
-  #    - title: "Lab7C (easy)"
-  #      url: /writeups/mbe/lab7c/
-  #    - title: "Lab7A (hard)"
-  #      url: /writeups/mbe/lab7a/
+  # children:
+  #   - title: "Lab7C (easy)"
+  #     url: /writeups/mbe/lab7c/
+  #   - title: "Lab7A (hard)"
+  #     url: /writeups/mbe/lab7a/
 
   #- title: "Misc and Stack Cookies"
-  #  children:
-  #    - title: "Lab8C (easy)"
-  #      url: /writeups/mbe/lab8c/
-  #    - title: "Lab8B (medium)"
-  #      url: /writeups/mbe/lab8b/
-  #    - title: "Lab8A (hard)"
-  #      url: /writeups/mbe/lab8a/
+  # children:
+  #   - title: "Lab8C (easy)"
+  #     url: /writeups/mbe/lab8c/
+  #   - title: "Lab8B (medium)"
+  #     url: /writeups/mbe/lab8b/
+  #   - title: "Lab8A (hard)"
+  #     url: /writeups/mbe/lab8a/
 
   #- title: "C++"
-  #  children:
-  #    - title: "Lab9C (easy)"
-  #      url: /writeups/mbe/lab9c/
-  #    - title: "Lab9A (hard)"
-  #      url: /writeups/mbe/lab9a/
+  # children:
+  #   - title: "Lab9C (easy)"
+  #     url: /writeups/mbe/lab9c/
+  #   - title: "Lab9A (hard)"
+  #     url: /writeups/mbe/lab9a/
 
   #- title: "Linux Kernel"
   #  children:
@@ -270,27 +270,38 @@ htb:
 
   - title: "Active Directory Machines"
     children:
-      - title: "Forest"
+      - title: "Forest (Easy)"
         url: /writeups/htb/forest/
-      - title: "Sauna"
+      - title: "Sauna (Easy)"
         url: /writeups/htb/sauna/
-      - title: "Active"
+      - title: "Active (Easy)"
         url: /writeups/htb/active/
-      - title: "Resolute"
+      - title: "Resolute (Medium)"
         url: /writeups/htb/resolute/
-      - title: "Cascade"
+      - title: "Cascade (Medium)"
         url: /writeups/htb/cascade/
-      - title: "Intelligence"
+      - title: "Intelligence (Medium)"
         url: /writeups/htb/intelligence/
-      - title: "Backfield"
+      - title: "Monteverde (Medium)"
+        url: /writeups/htb/monteverde/
+      - title: "StreamIO (Medium)"
+        url: /writeups/htb/streamio/
+      - title: "Backfield (Hard)"
         url: /writeups/htb/blackfield/
-      - title: "Reel"
+      - title: "Reel (Hard)"
         url: /writeups/htb/reel/
-      - title: "Mantis"
+      - title: "Mantis (Hard)"
         url: /writeups/htb/mantis/
-      - title: "Sizzle"
+      - title: "Search (Hard)"
+        url: /writeups/htb/search/
+      - title: "Acute (Hard)"
+        url: /writeups/htb/acute/
+      - title: "Object (Hard)"
+        url: /writeups/htb/object/  
+      - title: "Sizzle (Insane)"
         url: /writeups/htb/sizzle/
-      - title: "Multimaster"
+      - title: "Multimaster (Insane)"
         url: /writeups/htb/multimaster/
+
       
 

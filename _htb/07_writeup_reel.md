@@ -18,7 +18,7 @@ tags:
 The [Reel](https://app.hackthebox.com/machines/Reel) machine has been created by [egre55](https://app.hackthebox.com/users/1190). This is an **hard** Windows Machine with a strong focus on Active Directory exploitation. This box was fun, it was nice to finally have a phishing part as well as a small DACL abuse attack chain.
 {: .text-justify}
 
-If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/ocd-mindmaps/blob/main/img/pentest_ad_dark_2023_02.svg) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_reel_infocard.png){: .align-center}
 
@@ -34,6 +34,9 @@ This information can then be leveraged by an adversary to aid in other phases of
 ## Scan with Nmap
 
 Let's start with a classic service scan with [Nmap](https://nmap.org/) in order to reveal some of the ports open on the machine.
+
+**Note:** Always allow a few minutes after the start of an HTB box to make sure that all the services are properly running. If you scan the machine right away, you may miss some ports that should be open.
+{: .notice--info}
 
 ```bash
 $ nmap -sV -Pn 10.129.147.8
@@ -56,11 +59,14 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 171.76 seconds
 ```
 
-We have a few interesting ports, including SSH (TCP/22), FTP (TCP/21) and SMTP (TCP/25). Let's dig a bit more.
+**Remember:** By default, **Nmap** will scans the 1000 most common TCP ports on the targeted host(s). Make sure to read the [documentation](https://nmap.org/docs.html) if you need to scan more ports or change default behaviors.
+{: .notice--warning}
+
+We have a few interesting ports, including **SSH** (22/TCP), **FTP** (21/TCP) and **SMTP** (25/TCP). Let's dig a bit more.
 
 ## Anonymous FTP
 
-After playing around with Nmap scripts, we found an [anonymous FTP](https://datatracker.ietf.org/doc/html/rfc1635) access.
+After playing around with Nmap [scripts](https://nmap.org/nsedoc/scripts/ftp-anon.html), we found an [anonymous FTP](https://datatracker.ietf.org/doc/html/rfc1635) access.
 
 ```bash
 $ nmap -p 21 --script=ftp-anon -Pn 10.129.147.8
@@ -76,7 +82,7 @@ PORT   STATE SERVICE
 Nmap done: 1 IP address (1 host up) scanned in 0.38 seconds
 ```
 
-Here, it seems that we have an anonymous access to the FTP server. An anonymous account accepts any string as a password and has limited access rights to an FTP server, but enough to be able to retrieve content.
+An anonymous account accepts any string as a password and has limited access rights to an FTP server, but enough to be able to retrieve content.
 
 ```bash
 $ ftp 10.129.147.8
@@ -104,7 +110,7 @@ ftp> dir
 ftp> 
 ```
 
-Here, we found a bunch of documents on the FTP. Let's start with the **readme.txt** file.
+Here, we found a bunch of documents on the FTP server. Let's start with the **readme.txt** file.
 
 ```bash
 $ cat readme.txt         
@@ -118,10 +124,11 @@ It talks about sending RTF documents via email. In our context, it could make se
 Now, let's check **AppLocker.docx**. It contains the following text:
 
 ```text
-AppLocker procedure to be documented - hash rules for exe, msi and scripts (ps1,vbs,cmd,bat,js) are in effect.
+AppLocker procedure to be documented - hash rules for exe, 
+msi and scripts (ps1,vbs,cmd,bat,js) are in effect.
 ```
 
-It seems the target computer have some [AppLocker](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-application-control/applocker/applocker-overview) rules in place, we may need to use a specific bypass later.
+It seems the target computer have some [AppLocker](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-application-control/applocker/applocker-overview) rules in place, we may need to bypass this security feature later.
 
 For the last document, **WindowsEventForwarding.docx**, we didn't find anything interesting in it. However, using [exiftool](https://exiftool.org), a metadata reader, we were able to extract an email address.
 
@@ -153,9 +160,9 @@ According to the [MITRE](https://attack.mitre.org/techniques/T1566/), adversarie
 
 ## CVE-2017-0199
 
-As we need to send an RTF file, it seemed pretty obvious to start with the [CVE-2017-0199](https://www.mandiant.com/resources/cve-2017-0199-hta-handler) exploit, named [office_word_hta](https://github.com/rapid7/metasploit-framework/blob/master/documentation/modules/exploit/windows/fileformat/office_word_hta.md) in Metasploit. This module creates a malicious RTF file that when opened in vulnerable versions of Microsoft Word will lead to code execution.
+As we need to send an RTF file, it seemed pretty obvious to start with the [CVE-2017-0199](https://www.mandiant.com/resources/cve-2017-0199-hta-handler) exploit, named [office_word_hta](https://github.com/rapid7/metasploit-framework/blob/master/documentation/modules/exploit/windows/fileformat/office_word_hta.md) in Metasploit. 
 
-Let's configure this module with Metasploit.
+This module creates a malicious RTF file that, when opened in vulnerable versions of Microsoft Word will lead to code execution. Let's configure this module with Metasploit.
 
 ```bash
 msf6 exploit(windows/fileformat/office_word_hta) > show options 
@@ -297,7 +304,7 @@ The file contains a **PSCredential** object with an encrypted password for **Tom
 </Objs>
 ```
 
-Thanks to PowerShell we can [easily](https://mcpmag.com/articles/2017/07/20/save-and-read-sensitive-data-with-powershell.aspx) retrieve the cleartext password.
+Thanks to PowerShell and the corresponding Metasploit module,. we can [easily](https://mcpmag.com/articles/2017/07/20/save-and-read-sensitive-data-with-powershell.aspx) retrieve the cleartext password.
 
 ```bash
 meterpreter > load powershell 
@@ -309,7 +316,7 @@ PS > $credential.GetNetworkCredential().Password
 PS > 
 ```
 
-We didn't get any access using WinRM/SMB with these credentials, however, the remote machine does have an SSH (TCP/22) server running.
+We didn't get any access using WinRM/SMB with these credentials, however, the remote machine does have an **SSH** (TCP/22) server running. Let's see if **tom** can use the service.
 
 ```
 $ ssh tom@10.129.147.8   
@@ -369,7 +376,7 @@ PS C:\Users\tom\Desktop\AD Audit\BloodHound\Ingestors> Get-Content .\acls.csv | 
 "Backup_Admins@HTB.LOCAL","GROUP","","claire@HTB.LOCAL","USER","WriteDacl","","AccessAllowed","False"                           
 ```
 
-That's really interesting, **claire** has *WriteDacl* privileges over **Backup_Admins** which means we could modify object's ACEs and take over  **Backup_Admins**. For now, we don't really know what **Backup_Admins** can do, but we will see when we get there.
+That's really interesting, **claire** has *WriteDacl* privileges over **Backup_Admins** which means we could modify object's ACEs and take over  **Backup_Admins**.
 
 Let's abuse the *WriteOwner* permission **tom** has over **claire**. Here, we used the *PowerView.ps1* PowerShell script that was already present on the machine. As a reminder, [PowerView](https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1) is a tool that helps to gain network situational awareness on Windows domains, but it also has some interesting functionality.
 
@@ -388,7 +395,7 @@ d----         5/29/2018   8:57 PM            Ingestors
 
 ```
 
-Here, the *PowerView.ps1* module is imported in our PowerShell session. Using [Set-DomainObjectOwner](https://powersploit.readthedocs.io/en/latest/Recon/Set-DomainObjectOwner/) we can modify the owner of **claire** and set it to **tom**. Given we have full control over **claire**, we can use the [Add-DomainObjectAc](https://powersploit.readthedocs.io/en/latest/Recon/Add-DomainObjectAcl/) command to allow **tom** to reset claire's password.
+Here, the *PowerView.ps1* module is imported in our PowerShell session. Using [Set-DomainObjectOwner](https://powersploit.readthedocs.io/en/latest/Recon/Set-DomainObjectOwner/) we can modify the owner of **claire** and set it to **tom**. Given we have full control over **claire**, we can use the [Add-DomainObjectAcl](https://powersploit.readthedocs.io/en/latest/Recon/Add-DomainObjectAcl/) command to allow **tom** to reset claire's password.
 
 Finally, we can use the [Set-DomainUserPassword](https://powersploit.readthedocs.io/en/latest/Recon/Set-DomainUserPassword/) command to modify claire's password.
 
@@ -414,7 +421,7 @@ Microsoft Windows [Version 6.3.9600]
 claire@REEL C:\Users\claire>
 ```
 
-Yep ! Now, since **claire** has *WriteDacl* privileges over **Backup_Admins**, we can add our account to this group.
+Yep! Now, given **claire** has *WriteDacl* privileges over **Backup_Admins**, we can add our account to this group.
 
 ```bash
 claire@REEL C:\Users\claire>net group backup_admins claire /add                                                                  
@@ -435,7 +442,7 @@ Done and done.
 
 ## Getting the admin password
 
-After some unsuccessful escalation paths, we found something interesting. Being a member of the **Backup_Admins** group give us full (F) access over the *C:\Users\Administrator* folder.
+After some unsuccessful escalation paths, we found something interesting. Being a member of the **Backup_Admins** group gives us a full (F) access over the *C:\Users\Administrator* folder.
 
 Note that we used the [icacls](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/icacls) command to display discretionary access control lists (DACLs) on the specified folder.
 
@@ -520,4 +527,4 @@ administrator@REEL C:\Users\Administrator\Desktop>dir
 
 We now have access to the **second flag**.
 
-Awesome ! I hope you enjoyed it, I know I did :)
+Awesome! I hope you enjoyed it, I know I did :)

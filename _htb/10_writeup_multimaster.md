@@ -21,7 +21,7 @@ tags:
 The [Multimaster](https://app.hackthebox.com/machines/Multimaster) machine has been created by [MinatoTW](https://app.hackthebox.com/users/8308) and [egre55](https://app.hackthebox.com/users/1190). This is an **insane** Windows Machine with a strong focus on Active Directory exploitation. This box was really tricky, more CTF-style than real-world scenarios as the exploitation path was a bit weird, but it was an insane box so, no surprise here. However, some of the attacks were fun like the SQL injection and the VS Code exploit.
 {: .text-justify}
 
-If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/ocd-mindmaps/blob/main/img/pentest_ad_dark_2023_02.svg) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_multimaster_infocard.png){: .align-center}
 
@@ -37,6 +37,9 @@ This information can then be leveraged by an adversary to aid in other phases of
 ## Scan with Nmap
 
 Let's start with a classic service scan with [Nmap](https://nmap.org/) in order to reveal some of the ports open on the machine.
+
+**Note:** Always allow a few minutes after the start of an HTB box to make sure that all the services are properly running. If you scan the machine right away, you may miss some ports that should be open.
+{: .notice--info}
 
 ```bash
 $ nmap -Pn -sV 10.129.247.110  
@@ -64,11 +67,14 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 13.81 seconds
 ```
 
-Here the **Multimaster** host seems to be the domain controller of **megacorp.local**. We have a few interesting ports open including an HTTP (TCP/80) port and an RDP (TCP/3389) port.
+**Remember:** By default, **Nmap** will scans the 1000 most common TCP ports on the targeted host(s). Make sure to read the [documentation](https://nmap.org/docs.html) if you need to scan more ports or change default behaviors.
+{: .notice--warning}
 
-## HTTP
+Here the host seems to be the domain controller of **megacorp.local**. We have a few interesting ports open including an **HTTP** (80/TCP) port and an **RDP** (3389/TCP) port.
 
-By looking at the website hosted at *http://10.129.247.110* we found a login page. However, as per the error message, the login system does not seem to be working.
+## HTTP Recon
+
+Let's start with a bit of HTTP recon. By looking at the website hosted at *http://10.129.247.110* we found a login page. However, as per the error message, the login system does not seem to be working.
 
 ![image-center](/images/htb/htb_multimaster_login.png){: .align-center}
 
@@ -76,11 +82,11 @@ Another interesting finding was the **Colleague Finder** page. This page allowed
 
 ![image-center](/images/htb/htb_multimaster_colleague_finder.png){: .align-center}
 
-By intercepting the HTTP **POST** request send to the web server, we could also try an SQL injection. Here we used [Burp Suite](https://portswigger.net/burp), a well-known web proxy, in order to interact with the requests.
+Here we used [Burp Suite](https://portswigger.net/burp), a well-known web proxy, in order to interact with the requests. By intercepting the HTTP **POST** request sent to the web server, it was possible to identify the **name** parameter. Maybe we could also try an SQL injection. 
 
 ![image-center](/images/htb/htb_multimaster_burp_01.png){: .align-center}
 
-As we can see, by sending a request to */api/getColleagues* with the parameter **name** set as **"a"** we get multiple results. Note that we are dealing with the [JSON](/api/getColleagues) format. Now let's try to send a single quote (**'**) with the name parameter.
+As we can see, by sending a request to */api/getColleagues* with the parameter **name** set as **"a"** we get multiple results. Note that we are dealing with the [JSON](/api/getColleagues) format. Now let's try to send a single quote (**'**) in the **name** parameter.
 
 ![image-center](/images/htb/htb_multimaster_burp_02.png){: .align-center}
 
@@ -100,11 +106,15 @@ This time we don't have any error, but we also don't have any results. Given we 
 
 ![image-center](/images/htb/htb_multimaster_burp_04.png){: .align-center}
 
-Nice, given we got **null** as response, we may have broken the request on the server side. Let's see if we can use [sqlmap](https://sqlmap.org) to automate this SQL injection. Note that it took lots of time to find the proper `sqlmap` command. It was due to the WAF present on the remote system that was blocking us when sending multiple query in a row.
+Nice, given we got **null** as response, we may have broken the request on the server side. Let's see if we can use [sqlmap](https://sqlmap.org) to automate this SQL injection. 
+
 
 ## Exploitation
 
 Here, we saved the **Burp Suite** POST request in *post_me.txt* and specified the *charunicodeescape* tamper script to encode the queries performed by `sqlmap`. The `--delay 3` was found to be enough to avoid being blocked by the WAF.
+
+**Note:** It took lots of time to find the proper `sqlmap` command. It was due to the WAF present on the remote system that was blocking us when sending multiple query in a row.
+{: .notice--info}
 
 ```bash
 $ sqlmap -r post_me.txt --tamper=charunicodeescape --delay 3 --level 5 --risk 3 --dbms=mssql -technique=U --batch --dbs -v 3                      
@@ -214,7 +224,7 @@ Table: Logins
 +----+--------------------------------------------------------------------------------------------------+----------+
 ```
 
-Awesome ! We now have a complete list of usernames and password hashes.
+Awesome! We now have a complete list of usernames and password hashes.
 
 ## Hashes Cracking
 
@@ -284,7 +294,7 @@ Finally, we can send our payload using **Burp**.
 
 ![image-center](/images/htb/htb_multimaster_sid.png){: .align-center}
 
-It worked ! The obtained SID value (hexadecimal) is **56** bytes. The first **48** bytes are domain SID and the remaining **8** bytes are the RID. Now we have:
+It worked! The obtained SID value (hexadecimal) is **56** bytes. The first **48** bytes are domain SID and the remaining **8** bytes are the RID. Now we have:
 
 ```text
 - The full SID **0x0105000000000005150000001c00d1bcd181f1492bdfc23600020000** (58 bytes)
@@ -392,7 +402,7 @@ SMB         10.129.247.110  445    MULTIMASTER      [+] MEGACORP.LOCAL\tushikika
 ...[snip]...
 ```
 
-Finally ! We have valid credentials for the **tushikikatomo** domain account (`tushikikatomo:finance1`). 
+Finally! We have valid credentials for the **tushikikatomo** domain account (`tushikikatomo:finance1`). 
 
 Again, with [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec), we can check if the user's can access to the remote machine with WinRM.
 
@@ -655,7 +665,7 @@ Mode                LastWriteTime         Length Name
 
 ```
 
-Now, you can import the generated file (*20220605132235_BloodHound.zip*) in BloodHound by running `sudo neo4j console`, then execute BloodHound in another terminal with the `bloodhound` command.
+Now, you can import the generated file (*20220605132235_BloodHound.zip*) in BloodHound by running `sudo neo4j start`, then execute BloodHound in another terminal with the `bloodhound` command.
 
 
 The user `sbauer` has *GenericWrite* access to the user `jorden`.
@@ -793,4 +803,4 @@ Mode                LastWriteTime         Length Name
 
 ```
 
-Awesome ! I hope you enjoyed it, I know I did :)
+Awesome! I hope you enjoyed it, I know I did :)

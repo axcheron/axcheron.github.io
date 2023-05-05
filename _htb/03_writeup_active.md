@@ -17,7 +17,7 @@ tags:
 
 The [Active](https://app.hackthebox.com/machines/Active) machine has been created by [eks](https://app.hackthebox.com/users/302) and [mrb3n](https://app.hackthebox.com/users/2984). This is an **easy** Windows Machine with a strong focus on Active Directory exploitation. This machine was fun, it shows some basics about SMB reconnaissance as well as Kerberos abuse technique.
 
-If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/ocd-mindmaps/blob/main/img/pentest_ad_dark_2023_02.svg) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_active_infocard.png){: .align-center}
 
@@ -33,6 +33,9 @@ This information can then be leveraged by an adversary to aid in other phases of
 ## Scan with Nmap
 
 Let's start with a classic service scan with [Nmap](https://nmap.org/). Note the **-sV** switch which enables *version detection* and allows Nmap to check its internal database to try to determine the service protocol, application name and version number.
+
+**Note:** Always allow a few minutes after the start of an HTB box to make sure that all the services are properly running. If you scan the machine right away, you may miss some ports that should be open.
+{: .notice--info}
 
 ```bash
 $ nmap -sV -Pn 10.129.99.191
@@ -64,10 +67,10 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 83.87 seconds
 ```
 
-**Remember:** By default, **Nmap** only target the 1000 most common ports. You can find the full list here: [https://github.com/nmap/nmap/blob/master/nmap-services](https://github.com/nmap/nmap/blob/master/nmap-services). However, they are sorted by port numbers, not by open frequency.
+**Remember:** By default, **Nmap** will scans the 1000 most common TCP ports on the targeted host(s). Make sure to read the [documentation](https://nmap.org/docs.html) if you need to scan more ports or change default behaviors.
 {: .notice--warning}
 
-As we can see, the output reveals an LDAP (TCP/389) port with the **active.htb** domain name and an SMB (TCP/445) port.
+As we can see, the output reveals an **LDAP** (TCP/389) port with the **active.htb** domain name and an **SMB** (TCP/445) port.
 
 ## Open Shares
 
@@ -198,7 +201,7 @@ INFO: Done in 00M 03S
 INFO: Compressing output into 20220220175122_bloodhound.zip
 ```
 
-Now, you can import the generated file (*20220220175122_bloodhound.zip*) in BloodHound by running `sudo neo4j console`, then execute BloodHound in another terminal with the `bloodhound` command.
+Now, you can import the generated file (*20220220175122_bloodhound.zip*) in BloodHound by running `sudo neo4j start`, then execute BloodHound in another terminal with the `bloodhound` command.
 
 ## Gaining Access
 
@@ -269,4 +272,4 @@ SMB         10.129.99.191  445    DC               1 File(s)             34 byte
 SMB         10.129.99.191  445    DC               2 Dir(s)   1.131.638.784 bytes free                                                                     
 ```
 
-Awesome ! I hope you enjoyed it, I know I did :)
+Awesome! I hope you enjoyed it, I know I did :)

@@ -19,7 +19,7 @@ tags:
 The [Blackfield](https://app.hackthebox.com/machines/Blackfield) machine has been created by [aas](https://app.hackthebox.com/users/6259). This is an **hard** Windows Machine with a strong focus on Active Directory exploitation. Lots of reconnaissance was involved to get administrative privileges on this machine but the token abuse part was interesting.
 {: .text-justify}
 
-If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/ocd-mindmaps/blob/main/img/pentest_ad_dark_2023_02.svg) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_blackfield_infocard.png){: .align-center}
 
@@ -35,6 +35,9 @@ This information can then be leveraged by an adversary to aid in other phases of
 ## Scan with Nmap
 
 Let's start with a classic service scan with [Nmap](https://nmap.org/) in order to reveal some of the ports open on the machine.
+
+**Note:** Always allow a few minutes after the start of an HTB box to make sure that all the services are properly running. If you scan the machine right away, you may miss some ports that should be open.
+{: .notice--info}
 
 ```bash
 $ nmap -sV -Pn 10.129.140.139
@@ -55,6 +58,9 @@ Service Info: Host: DC01; OS: Windows; CPE: cpe:/o:microsoft:windows
 Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 12.56 seconds
 ```
+
+**Remember:** By default, **Nmap** will scans the 1000 most common TCP ports on the targeted host(s). Make sure to read the [documentation](https://nmap.org/docs.html) if you need to scan more ports or change default behaviors.
+{: .notice--warning}
 
 This computer seems to be a domain controller for **blackfield.local**. Let's see if we can extract some users.
 
@@ -130,7 +136,7 @@ smb: \> ls
 smb: \> 
 ```
 
-Folder with usernames ! While we could explore the folders one by one, let's dump all the usernames first and see if there is a faster way to get access. 
+Folder with usernames! While we could explore the folders one by one, let's dump all the usernames first and see if there is a faster way to get access. 
 
 Given we are a bit lazy, we did a quick and dirty regex to dump the usernames to a file.
 
@@ -327,7 +333,7 @@ luid 406458
 ...[snip]...
 ```
 
-We have an NTLM hash for **svc_backup**. Using the recovered hash and `crackmapexec` we could perform a *Pass-the-Hash** attack and try to authenticate as **svc_backup**.
+We have an NTLM hash for **svc_backup**. Using the recovered hash and `crackmapexec` we could perform a **Pass-the-Hash** attack and try to authenticate as **svc_backup**.
 
 Note that **Pass the hash** (or *PtH*) is a method of authenticating as a user without having access to the user's cleartext password. This method bypasses standard authentication steps that require a cleartext password, moving directly into the portion of the authentication that uses the password hash.
 
@@ -367,7 +373,7 @@ We now have a remote shell access and the **first flag**.
 
 Privilege Escalation consists of techniques that adversaries use to gain higher-level permissions on a system or network. Adversaries can often enter and explore a network with unprivileged access but require elevated permissions to follow through on their objectives. Common approaches are to take advantage of system weaknesses, misconfigurations, and vulnerabilities.
 
-## Thanks Mike
+## SeBackupPrivilege
 
 After looking around for potential privilege escalation paths, we found an interesting privilege for our user.
 
@@ -444,4 +450,4 @@ Mode                LastWriteTime         Length Name
 -a----        11/5/2020   8:38 PM             32 root.txt
 ```
 
-Awesome ! I hope you enjoyed it, I know I did :)
+Awesome! I hope you enjoyed it, I know I did :)

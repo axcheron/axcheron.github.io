@@ -16,10 +16,10 @@ tags:
 
 {% include toc icon="cog" title="Mantis Solution" %}
 
-The [Mantis](https://app.hackthebox.com/machines/Mantis) machine has been created by [lkys37en](https://app.hackthebox.com/users/709). This is a **hard** Windows Machine with a strong focus on Active Directory exploitation. This box was interesting as we had to play with SQL and old exploit.
+The [Mantis](https://app.hackthebox.com/machines/Mantis) machine has been created by [lkys37en](https://app.hackthebox.com/users/709). This is an **hard** Windows Machine with a strong focus on Active Directory exploitation. This box was interesting as we had to play with SQL and old exploit.
 {: .text-justify}
 
-If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/ocd-mindmaps/blob/main/img/pentest_ad_dark_2023_02.svg) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_mantis_infocard.png){: .align-center}
 
@@ -35,6 +35,9 @@ This information can then be leveraged by an adversary to aid in other phases of
 ## Scan with Nmap
 
 Let's start with a classic service scan with [Nmap](https://nmap.org/) in order to reveal some of the TCP ports open on the machine.
+
+**Note:** Always allow a few minutes after the start of an HTB box to make sure that all the services are properly running. If you scan the machine right away, you may miss some ports that should be open.
+{: .notice--info}
 
 ```bash
 $ nmap -Pn -sV 10.129.100.147          
@@ -68,14 +71,14 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 61.09 seconds
 ```
 
-**Remember:** By default, **Nmap** only target the 1000 most common ports. You can find the full list here: [https://github.com/nmap/nmap/blob/master/nmap-services](https://github.com/nmap/nmap/blob/master/nmap-services). However, they are sorted by port numbers, not by open frequency.
+**Remember:** By default, **Nmap** will scans the 1000 most common TCP ports on the targeted host(s). Make sure to read the [documentation](https://nmap.org/docs.html) if you need to scan more ports or change default behaviors.
 {: .notice--warning}
 
-Here we have a few interesting ports including an HTTP server on TCP/8080. The Web server seems to be running [Orchard](https://orchardcore.net) an ASP.NET CMS.
+Here we have a few interesting ports including an **HTTP** server on TCP/8080. The host is also the domain controller for **htb.local**.
 
 ## HTTP Recon
 
-After looking around we didn't find any specific vulnerability on the CMS. Using [gobuster](https://github.com/OJ/gobuster), a brute-force tool for Web services, and a standard wordlist we started a directory enumeration.
+The Web server seems to be running [Orchard](https://orchardcore.net) an ASP.NET CMS. After looking around we didn't find any specific vulnerability on the CMS. Using [gobuster](https://github.com/OJ/gobuster), a brute-force tool for Web services, and a standard wordlist we started a directory enumeration.
 
 ```bash
 $ gobuster dir -u http://10.129.100.147:8080 -w /usr/share/wordlists/dirb/common.txt
@@ -172,13 +175,15 @@ One folder seems to be interesting: **secure_notes**.
 
 ![image-center](/images/htb/htb_mantis_folder.png){: .align-center}
 
-Moreover, one of the file name seems to have some kind of Base64 encoded value in it. We will get back to that later.
+Moreover, one of the file name seems to have some kind of Base64 encoded value in it, but we will get back to that later.
 
 # Initial Access
 
+In a real-world scenario, adversaries may search network shares on computers they have compromised to find files of interest. Sensitive data can be collected from remote systems via shared network drives or other services.
+
 ## Decoding Passwords
 
-By looking at the end of the **dev_notes_NmQyNDI0NzE2YzVmNTM0MDVmNTA0MDczNzM1NzMwNzI2NDIx.txt.txt** file, we found an interesting value.
+By looking at the end of the discovered file, we found an interesting value.
 
 ![image-center](/images/htb/htb_mantis_notes.png){: .align-center}
 
@@ -254,7 +259,7 @@ Password:
 SQL>
 ```
 
-Finally ! Let's explore the database to see if we have some interesting things on it.
+Finally! Let's explore the database to see if we have some interesting things on it.
 
 ## MSSQL Access
 
@@ -323,7 +328,7 @@ However, it requieres to use the domain FQDN so let's add the following line to 
 10.129.100.147 mantis htb.local mantis.htb.local
 ```
 
-Now, we can use `impacket-goldenPac` to get a **SYSTEM** shell and grab our flags.
+Now, we can use `impacket-goldenPac` to get a **SYSTEM** shell and grab our **first** and **second** flags.
 
 ```bash
 $ impacket-goldenPac 'htb.local/james:J@m3s_P@ssW0rd!@mantis'                                
@@ -369,4 +374,4 @@ C:\Windows\system32>dir c:\users\administrator\desktop
 ```
 
 
-Awesome ! I hope you enjoyed it, I know I did :)
+Awesome! I hope you enjoyed it, I know I did :)

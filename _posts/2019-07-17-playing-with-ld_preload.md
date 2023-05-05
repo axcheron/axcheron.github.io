@@ -414,7 +414,7 @@ Read me! :P
 password: [..removed..]
 ```
 
-Awesome ! We got the password (well, I got the password)!
+Awesome! We got the password (well, I got the password)!
 
 # Conclusion
 

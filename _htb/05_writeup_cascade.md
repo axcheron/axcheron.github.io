@@ -18,7 +18,7 @@ tags:
 
 The [Cascade](https://app.hackthebox.com/machines/Cascade) machine has been created by [VbScrub](https://app.hackthebox.com/users/158833). This is a **medium** Windows Machine with a strong focus on Active Directory exploitation, but also a bit of cryptography and reverse engineering. It should be noted that the machine is a bit CTF-y.
 
-If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/arsenal/blob/master/mindmap/pentest_ad_dark.png?raw=true) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
+If you didn't solve this challenge and just look for answers, first you should take a look at this [mind map](https://github.com/Orange-Cyberdefense/ocd-mindmaps/blob/main/img/pentest_ad_dark_2023_02.svg) from [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) and try again. It could give you some hints for attack paths when dealing with an Active Directory.
 
 ![image-center](/images/htb/htb_cascade_infocard.png){: .align-center}
 
@@ -34,6 +34,9 @@ This information can then be leveraged by an adversary to aid in other phases of
 ## Scan with Nmap
 
 Let's start with a classic service scan with [Nmap](https://nmap.org/) in order to reveal some of the ports open on the machine.
+
+**Note:** Always allow a few minutes after the start of an HTB box to make sure that all the services are properly running. If you scan the machine right away, you may miss some ports that should be open.
+{: .notice--info}
 
 ```bash
 $ nmap -sV -Pn 10.129.140.139                                                                   
@@ -61,7 +64,10 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 58.95 seconds
 ```
 
-This computer seems to be a domain controller for **cascade.local**. Let's see if we can extract some users.
+**Remember:** By default, **Nmap** will scans the 1000 most common TCP ports on the targeted host(s). Make sure to read the [documentation](https://nmap.org/docs.html) if you need to scan more ports or change default behaviors.
+{: .notice--warning}
+
+The **LDAP** (389/TCP) port is open and this computer seems to be a domain controller for **cascade.local**. Let's see if we can extract some users.
 
 ## LDAP
 
@@ -86,7 +92,7 @@ userPrincipalName: j.allen@cascade.local
 userPrincipalName: i.croft@cascade.local
 ```
 
-We got some users. Now, for the CTF-y part, we had to take a closer look at `ldapsearch` output and found an attribute named **cascadeLegacyPwd** for the **r.thompson@cascade.local** user.
+We got some users. Now, for the CTF-y part, we had to take a closer look at `ldapsearch` command output and found an attribute named **cascadeLegacyPwd** for the **r.thompson@cascade.local** user.
 
 ```bash
 $ ldapsearch -x -b "dc=cascade,dc=local" -H ldap://10.129.140.139 | grep -E 'userPrincipalName|cascadeLegacyPwd'
@@ -119,7 +125,7 @@ SMB         10.129.140.139  445    CASC-DC1         [+] cascade.local\r.thompson
 
 ## Shared Folders
 
-While **r.thompson** does not have any remote access to the computer, using `crackmapexec` and the `--shares` switch, it was possible to list some shares accessible by **r.thompson** on the target computer.
+While **r.thompson** does not have any remote access to the computer, using `crackmapexec` and the `--shares` switch, it was possible to list some shares accessible by this user on the target computer.
 
 ```bash
 $ crackmapexec smb 10.129.140.139 -d cascade.local -u r.thompson -p rY4n5eva --shares
@@ -138,7 +144,7 @@ SMB         10.129.140.139  445    CASC-DC1         print$          READ        
 SMB         10.129.140.139  445    CASC-DC1         SYSVOL          READ            Logon server share 
 ```
 
-Here, we can see that **r.thompson** has the **READ** persmission on some folders. 
+Here, we can see that **r.thompson** has the **READ** permission on some folders. 
 
 ```bash
 $ smbclient \\\\10.129.140.139\\Data -U r.thompson
@@ -161,7 +167,7 @@ By taking a look at the **Data** share, we found multiple folders.
 
 # Initial Access
 
-It's now time to take a look at these folders, it is possible that some of them contain interesting information.
+In a real-world scenario, adversaries may search network shares on computers they have compromised to find files of interest. Sensitive data can be collected from remote systems via shared network drives. With the previously discovered shares, let's see if we can find interesting files.
 
 ## VNC Password
 
@@ -182,14 +188,18 @@ getting file \IT\Temp\s.smith\VNC Install.reg of size 2680 as IT/Temp/s.smith/VN
 smb: \> exit
 ```
 
-Done. Let's start by taking a look at *Meeting_Notes_June_2018.html*.
+Done. Let's start by taking a look at the *Meeting_Notes_June_2018.html* file.
 
 ```bash
 $ cat IT/Email\ Archives/Meeting_Notes_June_2018.html
 
 ...[snip]...
 
-<p>-- We will be using a temporary account to perform all tasks related to the network migration and this account will be deleted at the end of 2018 once the migration is complete. This will allow us to identify actions related to the migration in security logs etc. Username is TempAdmin (password is the same as the normal admin account password). </p>
+<p>-- We will be using a temporary account to perform all tasks related 
+to the network migration and this account will be deleted at the end of 
+2018 once the migration is complete. This will allow us to identify 
+actions related to the migration in security logs etc. Username is 
+TempAdmin (password is the same as the normal admin account password). </p>
 
 ...[snip]...
 ```
@@ -350,7 +360,7 @@ CascAudit.exe:  PE32 executable (console) Intel 80386 Mono/.Net assembly, for MS
 CascCrypto.dll: PE32 executable (DLL) (GUI) Intel 80386 Mono/.Net assembly, for MS Windows
 ```
 
-.NET files (32-bit) ! Alright, let's fire up a Windows machine with [dnSpy](https://github.com/dnSpy/dnSpy) installed. **dnSpy** is a debugger and .NET assembly editor. You can use it to edit and debug assemblies even if you don't have any source code available.
+.NET files (32-bit)! Alright, let's fire up a Windows machine with [dnSpy](https://github.com/dnSpy/dnSpy) installed. **dnSpy** is a debugger and .NET assembly editor. You can use it to edit and debug assemblies even if you don't have any source code available.
 
 After a bit of reverse engineering, we found two (2) interesting methods. The first one, **DecryptString()** seems to be using AES128 as encryption algorithm, we even have the cleartext IV: **1tdyjCbY1Ix49842**.
 
@@ -451,4 +461,4 @@ SMB         10.129.140.139  445    CASC-DC1         1 File(s)             34 byt
 SMB         10.129.140.139  445    CASC-DC1         2 Dir(s)   6,664,507,392 bytes free
 ```
 
-Awesome ! I hope you enjoyed it, I know I did :)
+Awesome! I hope you enjoyed it, I know I did :)
