@@ -4,6 +4,7 @@ permalink: /writeups/htb/resolute/
 excerpt: "Quick write-up for the Resolute machine from Hack The Box."
 tags:
   - hackthebox
+  - htb
   - activedirectory
   - pentest
   - writeup

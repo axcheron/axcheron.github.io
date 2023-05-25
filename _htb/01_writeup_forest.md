@@ -4,6 +4,7 @@ permalink: /writeups/htb/forest/
 excerpt: "Quick write-up for the Forest machine from Hack The Box."
 tags:
   - hackthebox
+  - htb
   - activedirectory
   - pentest
   - writeup

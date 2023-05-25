@@ -4,6 +4,7 @@ permalink: /writeups/htb/sizzle/
 excerpt: "Quick write-up for the Sizzle machine from Hack The Box."
 tags:
   - hackthebox
+  - htb
   - activedirectory
   - pentest
   - writeup

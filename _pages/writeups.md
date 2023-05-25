@@ -27,7 +27,7 @@ I left the passwords in cleartext for most of the levels because, if you google 
 
 **You can access to the write-ups with the following link:** [HTB Writeups](/writeups/htb/htb_writeups/).
 
->**Note:** This write-up is constantly evolving. **Last update:** May 3, 2023.
+>**Note:** This write-up is constantly evolving. **Last update:** May 21, 2023.
 
 ## MBE - Modern Binary Exploitation 
 

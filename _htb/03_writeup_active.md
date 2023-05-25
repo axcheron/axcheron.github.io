@@ -4,6 +4,7 @@ permalink: /writeups/htb/active/
 excerpt: "Quick write-up for the Active machine from Hack The Box."
 tags:
   - hackthebox
+  - htb
   - activedirectory
   - pentest
   - writeup

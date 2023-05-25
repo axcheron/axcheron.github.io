@@ -4,6 +4,7 @@ permalink: /writeups/htb/intelligence/
 excerpt: "Quick write-up for the Intelligence machine from Hack The Box."
 tags:
   - hackthebox
+  - htb
   - activedirectory
   - pentest
   - writeup

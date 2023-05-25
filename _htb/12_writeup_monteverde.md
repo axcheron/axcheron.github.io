@@ -4,6 +4,7 @@ permalink: /writeups/htb/monteverde/
 excerpt: "Quick write-up for the Monteverde machine from Hack The Box."
 tags:
   - hackthebox
+  - htb
   - activedirectory
   - pentest
   - writeup

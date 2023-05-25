@@ -4,6 +4,7 @@ permalink: /writeups/htb/mantis/
 excerpt: "Quick write-up for the Mantis machine from Hack The Box."
 tags:
   - hackthebox
+  - htb
   - activedirectory
   - pentest
   - writeup

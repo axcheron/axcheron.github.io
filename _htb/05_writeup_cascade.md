@@ -4,6 +4,7 @@ permalink: /writeups/htb/cascade/
 excerpt: "Quick write-up for the Cascade machine from Hack The Box."
 tags:
   - hackthebox
+  - htb
   - activedirectory
   - pentest
   - writeup

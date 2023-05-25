@@ -4,6 +4,7 @@ permalink: /writeups/htb/sauna/
 excerpt: "Quick write-up for the Sauna machine from Hack The Box."
 tags:
 - hackthebox
+- htb
 - activedirectory
 - pentest
 - writeup

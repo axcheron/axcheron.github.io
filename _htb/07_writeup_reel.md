@@ -4,6 +4,7 @@ permalink: /writeups/htb/reel/
 excerpt: "Quick write-up for the Reel machine from Hack The Box."
 tags:
   - hackthebox
+  - htb
   - activedirectory
   - pentest
   - writeup
